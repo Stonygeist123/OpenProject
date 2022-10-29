@@ -1,0 +1,55 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
+    Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+@import "abstract/functions";
+@import "abstract/variables";
+@import "abstract/mixins";
+
+// @import "vendors/bootstrap";
+
+// // @import "base/reset";
+// // @import "base/typography";
+
+// @import "layout/navigation";
+// @import "layout/grid";
+// @import "layout/header";
+// @import "layout/footer";
+// @import "layout/sidebar";
+// @import "layout/forms";
+
+// @import "pages/index";
+
+// @import "components/buttons";
+// @import "components/carousel";
+// @import "components/cover";
+// @import "components/dropdown";
+
+// @import "pages/home";
+// @import "pages/contact";
+
+// @import "themes/theme";
+// @import "themes/admin";
