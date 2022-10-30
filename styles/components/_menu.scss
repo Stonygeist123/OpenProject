@@ -1,0 +1,92 @@
+$menu-color-light: whitesmoke;
+$menu-color-dark: darkgrey;
+
+.menu-modal {
+    @include mobile-tablet-only;
+}
+
+.modal-background {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: transparent;
+    /* Fallback color */
+    /* Black w/ opacity */
+}
+
+.navbar-menu {
+    border-radius: 4px;
+    position: absolute;
+    z-index: 1;
+    height: 30vh;
+    top: 80px;
+    background-color: white;
+    right: 0;
+    margin-right: 3%;
+    width: 400px;
+    color: black;
+    overflow: hidden;
+
+    @media screen and (max-width: 600px) {
+        margin: 0;
+        right: 50%;
+        transform: translate(50%, 0);
+    }
+
+    outline: 1px solid black;
+}
+
+.menu-list li {
+    height: 10vh;
+    font-size: 1.7rem;
+    padding: 3% 7%;
+    text-align: center;
+    list-style: none;
+    border-bottom: dashed 1px;
+}
+
+.menu-list .list-item {
+    position: relative;
+}
+
+.menu-list li p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+// .menu-list .list-item:nth-child(odd) {
+//     background-color: $menu-color-dark;
+
+// }
+
+.menu-list .list-item:nth-child(even) {
+    background-color: blue;
+}
+
+// .navbar-menu table {
+//     width: 100%;
+//     border-collapse: collapse;
+// }
+
+// .menu-list tr:nth-child(even) {
+//     background-color: rgb(121, 121, 121);
+//     color: white;
+// }
+
+// .menu-list tr:nth-child(odd) {
+//     color: white;
+//     background-color: rgb(37, 37, 37);
+// }
