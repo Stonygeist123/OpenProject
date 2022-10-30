@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import { api } from "../../constants";
-import "./Searchbar.scss"
+// import "./Searchbar.scss"
+import styles from "../../styles/modules/SearchBar.module.scss"
 
 enum ResultType {
     User = "User"
@@ -12,16 +13,16 @@ const SearchResults = ({
     results: Record<string, ResultType>;
     query: string;
 }) => (
-    <div className="result-container">
-        <ul className="results">
+    <div className={styles["result-container"]}>
+        <ul className={styles["results"]}>
             {Object.entries(results).filter(x => x[0].includes(query)).map((x, i, arr) => (
                 <li
-                    className="result"
+                    className={styles["result"]}
                     id={i === arr.length - 1 ? "last-result" : ""}
                 >
-                    <button className="result-button">
-                        <p className="result-name">{x[0]}</p>
-                        <code className="result-type">{x[1]}</code>
+                    <button className={styles["result-button"]}>
+                        <p className={styles["result-name"]}>{x[0]}</p>
+                        <code className={styles["result-type"]}>{x[1]}</code>
                     </button>
                 </li>
             ))}
@@ -43,11 +44,11 @@ const SearchBar = () => {
     // }, [query]);
 
     return (
-        <div className="search-bar">
-            <div className="search-container">
-                <input className="search-input" type="text" value={query} onChange={e => setUserQuery(e.target.value)} />
+        <div className={styles["search-bar"]}>
+            <div className={styles["search-container"]}>
+                <input className={styles["search-input"]} type="text" value={query} onChange={e => setUserQuery(e.target.value)} />
             </div>
-            <div className={query.length === 0 ? "hidden" : ""}>
+            <div className={styles[query.length === 0 ? "hidden" : ""]}>
                 <SearchResults results={resultsData} query={query} />
             </div>
         </div>);

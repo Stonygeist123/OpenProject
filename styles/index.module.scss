@@ -3,7 +3,7 @@
 .home-container {
     text-align: center;
     position: relative;
-    left: 3rem;
+    left: 7rem;
     margin-top: 15rem;
 }
 
@@ -21,7 +21,9 @@
 
 .project-previews {
     margin: auto;
-    margin-top: 50px;
+    margin-top: 5rem;
+    left: 10rem;
+    position: relative;
 }
 
 .project-preview-container {
@@ -84,6 +86,8 @@
     margin-right: 7%;
     margin-left: 50px;
     margin-top: 5%;
+    left: 5rem;
+    position: relative;
 
     @media screen and (max-width: 1500px) {
         display: none;
@@ -126,6 +130,8 @@
 
 .project-preview-title {
     font-size: 28px;
+    font-weight: bolder;
+    text-align: center;
 }
 
 .community-preview-title {
