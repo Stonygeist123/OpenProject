@@ -10,7 +10,7 @@ const ProjectPreview = () => (
     <div
       className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}
     >
-      <h1 className={styles["project-preview-title "]}>Project Name</h1>
+      <h1 className={styles["project-preview-title"]}>Project Name</h1>
       <div className={styles["project-preview-pp"]}></div>
     </div>
     <p className={styles["project-preview-description"]}>
@@ -127,7 +127,7 @@ const Home = () => {
         </div>
 
         <div className={styles["project-previews"]}>
-          <div className="home-nav">
+          <div className={styles["home-nav"]}>
             <div
               className={`${styles["home-heading"]} ${
                 highlight === "projects" ? styles["highlight"] : null
