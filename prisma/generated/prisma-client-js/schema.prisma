@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma-client-js"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  name        String      @id @unique
+  createdAt   DateTime    @default(now())
+  image       String
+  communities Community[]
+  projects    Project[]
+  password    String
+token String @unique
+}
+
+model Community {
+  name        String    @id @unique
+  description String
+  subscribers User[]
+  projects    Project[]
+  createdAt   DateTime
+}
+
+model Project {
+  id            Int        @id @unique @default(autoincrement())
+  name          String
+  description   String
+  owner         String
+  contributors  User[]
+  community     Community? @relation(fields: [communityName], references: [name])
+  tasks         Json
+  createdAt     DateTime   @default(now())
+  isPrivate     Boolean
+  image         String
+  communityName String?
+}

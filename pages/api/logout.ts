@@ -1,12 +1,9 @@
 // pages/api/logout.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
-import { sessionOptions } from "../../utils/ironSessionUtil";
+import { sessionOptions } from "../../lib/session";
 
-export default withIronSessionApiRoute(
-    function logoutRoute(req, res, session) {
-        req.session.destroy();
-        res.send({ ok: true });
-    },
-    sessionOptions,
-);
+export default withIronSessionApiRoute((req, res) => {
+  req.session.destroy();
+  res.send({ ok: true });
+}, sessionOptions);
