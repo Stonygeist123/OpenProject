@@ -91,7 +91,7 @@ function makeEnum(x) { return x; }
 exports.Prisma.CommunityScalarFieldEnum = makeEnum({
   name: 'name',
   description: 'description',
-  createdAt: 'createdAt'
+  created_at: 'created_at'
 });
 
 exports.Prisma.JsonNullValueFilter = makeEnum({
@@ -109,16 +109,41 @@ exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   name: 'name',
   description: 'description',
   owner: 'owner',
-  tasks: 'tasks',
-  createdAt: 'createdAt',
-  isPrivate: 'isPrivate',
+  created_at: 'created_at',
+  is_private: 'is_private',
   image: 'image',
-  communityName: 'communityName'
+  community_name: 'community_name'
 });
 
 exports.Prisma.SortOrder = makeEnum({
   asc: 'asc',
   desc: 'desc'
+});
+
+exports.Prisma.SubmissionScalarFieldEnum = makeEnum({
+  id: 'id',
+  user_name: 'user_name',
+  content: 'content',
+  images: 'images',
+  created_at: 'created_at'
+});
+
+exports.Prisma.TaskScalarFieldEnum = makeEnum({
+  name: 'name',
+  description: 'description',
+  prerequisites: 'prerequisites',
+  files: 'files',
+  created_at: 'created_at',
+  projectId: 'projectId'
+});
+
+exports.Prisma.TaskSubmissionScalarFieldEnum = makeEnum({
+  id: 'id',
+  task_name: 'task_name',
+  content: 'content',
+  images: 'images',
+  createdAt: 'createdAt',
+  userName: 'userName'
 });
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
@@ -130,7 +155,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = makeEnum({
   name: 'name',
-  createdAt: 'createdAt',
+  created_at: 'created_at',
   image: 'image',
   password: 'password',
   token: 'token'
@@ -140,7 +165,10 @@ exports.Prisma.UserScalarFieldEnum = makeEnum({
 exports.Prisma.ModelName = makeEnum({
   User: 'User',
   Community: 'Community',
-  Project: 'Project'
+  Project: 'Project',
+  Task: 'Task',
+  Submission: 'Submission',
+  TaskSubmission: 'TaskSubmission'
 });
 
 /**
