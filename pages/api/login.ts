@@ -1,18 +1,20 @@
 // pages/api/login.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
-import { sessionOptions } from "../../utils/ironSessionUtil";
+import { sessionOptions } from "../../lib/session";
 
+export default withIronSessionApiRoute(async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    req.session.user = {
+      username,
+      password,
+      isLoggedIn: true,
+    };
 
-export default withIronSessionApiRoute(
-    async function loginRoute(req, res) {
-        // get user from database then:
-        req.session.user = {
-            id: 230,
-            admin: true,
-        };
-        await req.session.save();
-        res.send({ ok: true });
-    },
-    sessionOptions,
-);
+    await req.session.save();
+    res.status(200).json(req.session.user);
+  } catch (e) {
+    res.status(500).json({ message: (e as Error).message });
+  }
+}, sessionOptions);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-// import ProjectCreationModal from "../../Components/Modals/CreateProjectModal/CreateProjectModal";
-// import CommunityCreationModal from "../../Components/Modals/CreateCommunityModal/CreateCommunityModal";
-import styles from "../styles/index.module.scss";
+import ProjectCreationModal from "../components/Modals/CreateProjectModal";
+import CommunityCreationModal from "../components/Modals/CreateProjectModal";
+import styles from "../styles/pages/index.module.scss";
 // import { getTheme } from "../../utils";
 // import { Theme } from "../../constants";
 
@@ -83,24 +83,20 @@ const Home = () => {
     <>
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
         <div className={styles["home-container"]}>
-          {showModal
-            ? null /* (
+          {showModal ? (
             <CommunityCreationModal
               closeFunction={() => {
                 setShowModal(v => !v);
               }}
             />
-          ) */
-            : null}
-          {showProjectModal
-            ? null /*(
-             <ProjectCreationModal
+          ) : null}
+          {showProjectModal ? (
+            <ProjectCreationModal
               closeFunction={() => {
                 setShowProjectModal(v => !v);
               }}
             />
-          ) */
-            : null}
+          ) : null}
 
           <div className="">
             <button

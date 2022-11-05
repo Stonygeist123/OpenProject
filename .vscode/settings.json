@@ -1,6 +1,6 @@
 {
     "[typescript]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
     "[json]": {
@@ -8,16 +8,16 @@
         "editor.formatOnSave": true
     },
     "[typescriptreact]": {
-        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
     "[javascript]": {
-        "editor.defaultFormatter": "ms-vscode.vscode-js-profile-table",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
     "[scss]": {
         "editor.suggest.insertMode": "replace",
-        "editor.defaultFormatter": "ms-vsliveshare.vsliveshare",
+        "editor.defaultFormatter": "vscode.css-language-features",
         "editor.formatOnSave": true
     }
 }

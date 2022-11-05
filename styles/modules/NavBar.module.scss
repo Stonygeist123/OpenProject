@@ -1,20 +1,18 @@
-
-.nav header{
+.nav header {
     background-color: black;
     margin: 0px 0px;
     padding: 0;
     height: 80px;
 }
 
-.nav-flex-container{
+.nav-flex-container {
     position: relative;
     justify-content: center;
     align-items: center;
     margin: 0 20px;
-
 }
 
-.nav-links{
+.nav-links {
     margin: 0;
     align-items: center;
     justify-content: center;
@@ -22,16 +20,13 @@
     right: 5px;
 }
 
-
-.nav-links li{
+.nav-links li {
     color: white;
     list-style: none;
     margin: 0px 25px;
-
 }
 
-
-.logo{
+.logo {
     margin: 0;
     line-height: 80px;
     color: white;
@@ -39,18 +34,16 @@
     text-align: center;
 }
 
-
-.search-back-div{
+.search-back-div {
     height: 80px;
     width: 100%;
     align-items: center;
     justify-content: center;
     z-index: -1;
-
 }
 
-.links-container{
-    position:absolute;
+.links-container {
+    position: absolute;
     margin: 0;
     padding: 0;
     right: 5px;

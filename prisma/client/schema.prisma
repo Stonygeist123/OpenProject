@@ -1,0 +1,71 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "./client"
+  binaryTargets = ["native"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  name           String           @id @unique
+  created_at     DateTime         @default(now())
+  image          String
+  communities    Community[]
+  projects       Project[]
+  password       String
+  token          String           @unique
+  TaskSubmission TaskSubmission[]
+}
+
+model Community {
+  name        String    @id @unique
+  description String
+  subscribers User[]
+  projects    Project[]
+  created_at  DateTime  @default(now())
+}
+
+model Project {
+  id             Int        @id @unique @default(autoincrement())
+  name           String
+  description    String
+  owner          String
+  contributors   User[]
+  community      Community? @relation(fields: [community_name], references: [name])
+  tasks          Task[]
+  created_at     DateTime   @default(now())
+  is_private     Boolean
+  image          String
+  community_name String?
+}
+
+model Task {
+  project       Project  @relation(fields: [projectId], references: [id])
+  name          String   @id @unique
+  description   String
+  prerequisites Json
+  files         Json
+  created_at    DateTime @default(now())
+  projectId     Int
+}
+
+model Submission {
+  id         String   @id @unique
+  user_name  String
+  content    String
+  images     Json
+  created_at DateTime @default(now())
+}
+
+model TaskSubmission {
+  id        String   @id @unique
+  task_name String
+  author    User     @relation(fields: [userName], references: [name])
+  content   String
+  images    Json
+  createdAt DateTime @default(now())
+  userName  String
+}
