@@ -1,0 +1,59 @@
+$default-bg: rgb(233, 232, 229);
+$default-fg: rgb(22, 22, 22);
+
+$dark-bg: rgb(37, 37, 37);
+$dark-fg: rgb(241, 239, 231);
+
+.btn {
+    border: none;
+    outline: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: $default-bg;
+    color: $default-fg;
+
+    &:hover {
+        background-color: darken($default-bg, 8%);
+        color: darken($default-fg, 8%);
+        cursor: pointer;
+    }
+
+    &.dark {
+        background-color: $dark-bg;
+        color: $dark-fg;
+
+        &:hover {
+            background-color: lighten($dark-bg, 8%);
+            color: lighten($dark-fg, 8%);
+        }
+    }
+
+    &.small {
+        font-size: 12px;
+        padding: 8px 10px;
+
+    }
+
+    &.medium {
+        font-size: 16px;
+        padding: 12px 16px;
+    }
+
+    &.large {
+        font-size: 18px;
+        padding: 14px 20px;
+    }
+
+    &.extra-large {
+        font-size: 20px;
+        padding: 16px 22px;
+    }
+
+    &.extra-extra-large {
+        font-size: 22px;
+        padding: 18px 24px;
+    }
+
+
+}
