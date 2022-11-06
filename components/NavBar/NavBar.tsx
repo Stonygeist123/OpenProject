@@ -4,7 +4,7 @@ import SearchBar from "../SearchBar/SearchBar";
 
 export default function NavBar() {
   return (
-    <header className={styles["nav"]}>
+    <nav className={styles["nav"]}>
       <div className={styles["nav-flex-container"]}>
         <Link href="/">
           <div className={styles["logo-container"]}>
@@ -26,6 +26,6 @@ export default function NavBar() {
                 </ul> */}
         {/* </nav> */}
       </div>
-    </header>
+    </nav>
   );
 }
