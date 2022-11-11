@@ -10,14 +10,14 @@ datasource db {
 }
 
 model User {
-  name           String           @id @unique
-  created_at     DateTime         @default(now())
-  image          String
-  communities    Community[]
-  projects       Project[]
-  password       String
-  token          String           @unique
-  TaskSubmission TaskSubmission[]
+  name             String           @id @unique
+  created_at       DateTime         @default(now())
+  image            String
+  communities      Community[]
+  projects         Project[]
+  password         String
+  token            String           @unique
+  task_submissions TaskSubmission[]
 }
 
 model Community {

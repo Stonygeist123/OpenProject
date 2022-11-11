@@ -7,5 +7,6 @@
     "arrowParens": "avoid",
     "parser": "typescript",
     "singleAttributePerLine": true,
-    "singleQuote": false
+    "singleQuote": false,
+    "printWidth": 150
 }

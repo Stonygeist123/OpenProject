@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { api } from "../lib/constants";
 import { useAppContext } from "../context/LoginContext";
 import styles from "../styles/pages/login.module.scss";
 import useUser from "../lib/useUser";
 import fetchJson, { FetchError } from "../lib/fetchJson";
+import { useRouter } from "next/router";
 
 const LoginPage = () => {
   const [name, setName] = useState("");
@@ -19,13 +19,9 @@ const LoginPage = () => {
     redirectTo: "/",
     redirectIfFound: true,
   });
-
-  // type ctx = {
-  //     token?: string;
-  // };
-
   const ctx = useAppContext();
   const [invalidLogin, setInvalidLogin] = useState(false);
+  const router = useRouter();
 
   const inputValidator = (e: React.ChangeEvent<HTMLInputElement>) => {
     const iElement = e.currentTarget.name;
@@ -34,13 +30,13 @@ const LoginPage = () => {
       case "username":
         setValidation(v => ({
           ...v,
-          name: value !== "",
+          name: value !== "" && !invalidLogin,
         }));
         break;
       case "password":
         setValidation(v => ({
           ...v,
-          password: value !== "",
+          password: value !== "" && !invalidLogin,
         }));
         break;
     }
@@ -53,9 +49,7 @@ const LoginPage = () => {
     inputValidator(e);
   };
 
-  const handleOnClick = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleOnClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (name.trim() === "") return console.log("No username provided.");
     if (password.trim() === "") return console.log("No password provided.");
 
@@ -63,51 +57,49 @@ const LoginPage = () => {
     e.preventDefault();
     console.log("login attempted");
 
-    const response = await fetch(
-      api + `user?name=${name}&password=${password}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "cors",
-      }
-    );
-    const data = await response.json();
-    try {
-      console.log(response);
-      console.log(data);
-      if (Object.keys(data).length === 0) return;
+    const data = (await fetchJson(`/api/login`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({
+        username: name,
+        password,
+      }),
+      mode: "cors",
+    })) as {
+      message: string;
+      allowed: boolean;
+      found: boolean;
+      user: UserSession;
+    };
 
-      const { user, allowed } = data;
-      if (allowed === false) {
+    try {
+      const { user, allowed, found } = data;
+      if (!allowed) {
         setInvalidLogin(true);
         console.log("Login prohibited.", user);
-      } else if (response.status === 401) {
+      } else if (!found) {
         setInvalidLogin(true);
         console.log("User doesn't exist.");
-      } else if (allowed === true && response.status === 200) {
+      } else if (allowed) {
         if (ctx === null) return;
         ctx!.onLogin(name);
         console.log("ctx.token" + ctx.token);
-        console.log("User logged in.", user);
+        console.log("User logged in:\n\t", user);
+        mutateUser(data.user as UserSession, false);
+        await router.push("/home");
       }
-      setDisableControls(false);
 
-      mutateUser(
-        await fetchJson("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, password }),
-        }),
-        false
-      );
+      setDisableControls(false);
+      if (allowed) {
+      }
     } catch (e) {
       if (e instanceof FetchError) console.log(e.data.message);
       else console.error("An unexpected error happened:", e);
     }
   };
 
-  console.log(ctx);
   if (ctx !== null && ctx!.token !== "")
     return (
       <>
@@ -128,9 +120,7 @@ const LoginPage = () => {
           <div className={styles["login-entry"]}>
             <label className={styles["login-label"]}> Username </label>
             <input
-              className={`${styles["login-input"]} ${
-                validation.name || !focussed ? null : styles["invalid-input"]
-              }`}
+              className={`${styles["login-input"]} ${validation.name || !focussed ? null : styles["invalid-input"]}`}
               onChange={handleChange}
               onClick={() => setFocussed(v => !v)}
               name="username"
@@ -141,11 +131,7 @@ const LoginPage = () => {
           <div className={styles["login-entry"]}>
             <label className={styles["login-label"]}> Password </label>
             <input
-              className={`${styles["login-input"]} ${
-                validation.password || !focussed
-                  ? null
-                  : styles["invalid-input"]
-              }`}
+              className={`${styles["login-input"]} ${validation.password || !focussed ? null : styles["invalid-input"]}`}
               onChange={handleChange}
               onClick={() => setFocussed(v => !v)}
               name="password"
@@ -155,17 +141,11 @@ const LoginPage = () => {
             ></input>
           </div>
           <div className={styles["button-div"]}>
-            <h3
-              className={`${styles["invalid-msg"]} ${
-                invalidLogin ? null : styles["hidden"]
-              }`}
-            >
-              Invalid username or password
-            </h3>
+            <h3 className={`${styles["invalid-msg"]} ${invalidLogin ? null : styles["hidden"]}`}>Invalid username or password</h3>
             <button
               className={styles["login-button"]}
               onClick={handleOnClick}
-              disabled={disableControls ? true : false}
+              disabled={disableControls || !validation.name || !validation.password}
             >
               Login
             </button>
