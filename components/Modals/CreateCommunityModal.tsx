@@ -3,11 +3,7 @@ import Image from "next/image";
 import "../../styles/layout/checkbox.module.scss";
 import styles from "../../styles/modules/CreateCommunityModal.module.scss";
 
-const ProjectCreationModal = ({
-  closeFunction,
-}: {
-  closeFunction: () => void;
-}) => {
+const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [tagText, setTagText] = useState("");
 
@@ -87,4 +83,4 @@ const ProjectCreationModal = ({
   );
 };
 
-export default ProjectCreationModal;
+export default CommunityCreationModal;

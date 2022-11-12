@@ -1,19 +1,12 @@
-import React, { useState } from "react";
-// import { api } from "../../constants";
-// import "./Searchbar.scss"
+import React, { useEffect, useState } from "react";
+import fetchJson from "../../lib/fetchJson";
 import styles from "../../styles/modules/SearchBar.module.scss";
 
 enum ResultType {
   User = "User",
 }
 
-const SearchResults = ({
-  results,
-  query,
-}: {
-  results: Record<string, ResultType>;
-  query: string;
-}) => (
+const SearchResults = ({ results, query }: { results: Record<string, ResultType>; query: string }) => (
   <div className={styles["result-container"]}>
     <ul className={styles["results"]}>
       {Object.entries(results)
@@ -36,16 +29,15 @@ const SearchResults = ({
 
 const SearchBar = () => {
   const [query, setUserQuery] = useState("");
-  const [resultsData, _] = useState<Record<string, ResultType>>({});
+  const [resultsData, setResultsData] = useState<Record<string, ResultType>>({});
 
-  // useEffect(() => {
-  //     console.log("use effect called")
-  //     fetch(api + "users")
-  //         .then(x => x.json())
-  //         .then((data: any[]) => {
-  //             data.forEach(x => setResultsData(r => ({ ...r, [x.name]: ResultType.User })));
-  //         });
-  // }, [query]);
+  useEffect(() => {
+    console.log("use effect called");
+    fetchJson("/api/user/all").then((data: unknown) => {
+      if (Array.isArray(data)) data.forEach(u => setResultsData(r => ({ ...r, [u.name]: ResultType.User })));
+      console.log(resultsData);
+    });
+  }, [query, resultsData]);
 
   return (
     <div className={styles["search-bar"]}>

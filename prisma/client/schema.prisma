@@ -37,7 +37,7 @@ model Project {
   community      Community? @relation(fields: [community_name], references: [name])
   tasks          Task[]
   created_at     DateTime   @default(now())
-  is_private     Boolean
+  isPrivate      Boolean
   image          String
   community_name String?
 }
@@ -68,4 +68,8 @@ model TaskSubmission {
   images    Json
   createdAt DateTime @default(now())
   userName  String
+}
+
+model Tag {
+  name String @id @unique
 }

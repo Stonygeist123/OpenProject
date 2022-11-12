@@ -11,3 +11,14 @@ type User = {
   password: string;
   token: string;
 };
+
+type Project = {
+  id: number;
+  name: string;
+  description: string;
+  owner: string;
+  created_at: Date;
+  isPrivate: boolean;
+  image: string;
+  community_name: string | null;
+};

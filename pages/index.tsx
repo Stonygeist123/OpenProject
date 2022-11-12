@@ -1,40 +1,34 @@
 import React, { useState } from "react";
-import ProjectCreationModal from "../components/Modals/CreateProjectModal";
+// import ProjectCreationModal from "../components/Modals/CreateProjectModal";
 import CommunityCreationModal from "../components/Modals/CreateProjectModal";
 import styles from "../styles/pages/index.module.scss";
+import ProjectCreationModal2 from "../components/Modals/ProjectCreationModal2";
 // import { getTheme } from "../../utils";
 // import { Theme } from "../../constants";
 
-const ProjectPreview = () => (
+const ProjectPreview = ({ name, description }: { name: string; description: string }) => (
   <div className={styles["project-preview-container"]}>
-    <div
-      className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}
-    >
-      <h1 className={styles["project-preview-title"]}>Project Name</h1>
+    <div className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}>
+      <h1 className={styles["project-preview-title"]}>{name}</h1>
       <div className={styles["project-preview-pp"]}></div>
     </div>
     <p className={styles["project-preview-description"]}>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat
-      distinctio quidem sint provident laborum placeat, adipisci dignissimos
-      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus
-      asperiores delectus obcaecati!
+      {description}
+      {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos
+      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus asperiores delectus obcaecati! */}
     </p>
   </div>
 );
 
 const SubmissionPreview = () => (
   <div className={styles["submission-preview-container"]}>
-    <div
-      className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["submission-preview-container-heading"]}`}
-    >
+    <div className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["submission-preview-container-heading"]}`}>
       <h1 className={styles["project-preview-title"]}>Submission Name</h1>
       <div className="project-preview-pp"></div>
     </div>
     <p className={styles["project-preview-description"]}>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat
-      distinctio quidem sint provident laborum placeat, adipisci dignissimos
-      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus
-      asperiores delectus obcaecati!
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos
+      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus asperiores delectus obcaecati!
     </p>
   </div>
 );
@@ -42,17 +36,13 @@ const SubmissionPreview = () => (
 const CommunityPreview = () => {
   return (
     <div className={styles["community-preview"]}>
-      <div
-        className={`${styles["flex-container"]} ${styles["relative-container"]}`}
-      >
+      <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
         <h1 className={styles["community-preview-title"]}> Community Name </h1>
         <div className={styles["community-preview-pp"]}></div>
       </div>
       <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad
-        dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
-        voluptatum explicabo non, voluptatibus pariatur nam, quas nemo
-        voluptate.
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
+        voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
       </p>
       <p>Member count: </p>
     </div>
@@ -62,9 +52,18 @@ const CommunityPreview = () => {
 const RenderMain = (props: any) =>
   props.highlight === "projects" ? (
     <>
-      <ProjectPreview />
-      <ProjectPreview />
-      <ProjectPreview />
+      <ProjectPreview
+        description="a"
+        name="ba"
+      />
+      <ProjectPreview
+        description="a"
+        name="b"
+      />
+      <ProjectPreview
+        description="x"
+        name="dy"
+      />
     </>
   ) : (
     <>
@@ -81,34 +80,38 @@ const Home = () => {
 
   return (
     <>
+      {/* {showProjectModal ? (
+        <ProjectCreationModal
+          closeFunction={() => {
+            setShowProjectModal(v => !v);
+          }}
+        />
+      ) : null} */}
+      {showProjectModal ? (
+        <ProjectCreationModal2
+          closeFunction={() => {
+            setShowProjectModal(v => !v);
+          }}
+        />
+      ) : null}
+      {showModal ? (
+        <CommunityCreationModal
+          closeFunction={() => {
+            setShowModal(v => !v);
+          }}
+        />
+      ) : null}
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
         <div className={styles["home-container"]}>
-          {showModal ? (
-            <CommunityCreationModal
-              closeFunction={() => {
-                setShowModal(v => !v);
-              }}
-            />
-          ) : null}
-          {showProjectModal ? (
-            <ProjectCreationModal
-              closeFunction={() => {
-                setShowProjectModal(v => !v);
-              }}
-            />
-          ) : null}
-
-          <div className="">
-            <button
-              className={styles["home-button"]}
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              <h1>Create a new community</h1>
-              <p>Find collaborators and work on something new</p>
-            </button>
-          </div>
+          <button
+            className={styles["home-button"]}
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            <h1>Create a new community</h1>
+            <p>Find collaborators and work on something new</p>
+          </button>
           <div>
             <button
               className={styles["home-button"]}
@@ -124,11 +127,7 @@ const Home = () => {
 
         <div className={styles["project-previews"]}>
           <div className={styles["home-nav"]}>
-            <div
-              className={`${styles["home-heading"]} ${
-                highlight === "projects" ? styles["highlight"] : null
-              }`}
-            >
+            <div className={`${styles["home-heading"]} ${highlight === "projects" ? styles["highlight"] : null}`}>
               <strong
                 onClick={() => {
                   setHighlight("projects");
@@ -137,11 +136,7 @@ const Home = () => {
                 Projects
               </strong>
             </div>
-            <div
-              className={`${styles["home-heading"]} ${
-                highlight === "submissions" ? styles["highlight"] : null
-              } `}
-            >
+            <div className={`${styles["home-heading"]} ${highlight === "submissions" ? styles["highlight"] : null} `}>
               <strong
                 onClick={() => {
                   setHighlight("submissions");

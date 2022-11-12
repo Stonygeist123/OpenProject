@@ -72,7 +72,7 @@ const SignupPage = () => {
     e.preventDefault();
     console.log("Signup attempted");
 
-    const data = (await fetchJson(`/api/signup`, {
+    const data = (await fetchJson(`/api/user/signup`, {
       headers: {
         "Content-Type": "application/json",
       },

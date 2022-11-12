@@ -57,7 +57,7 @@ const LoginPage = () => {
     e.preventDefault();
     console.log("login attempted");
 
-    const data = (await fetchJson(`/api/login`, {
+    const data = (await fetchJson(`/api/user/login`, {
       headers: {
         "Content-Type": "application/json",
       },
