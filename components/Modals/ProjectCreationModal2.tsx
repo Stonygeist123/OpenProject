@@ -10,7 +10,7 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isPrivate, setIsPrivate] = useState(true);
+  // const [isPrivate, setIsPrivate] = useState(true);
 
   return (
     <div
@@ -96,4 +96,4 @@ export default ProjectCreationModal2;
 // are they on main now? I mean development
 // idk
 // can you open another terminal?
-//did
+// did
