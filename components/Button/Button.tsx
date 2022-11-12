@@ -1,13 +1,17 @@
-import { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.scss";
 
 type Size = "s" | "m" | "l" | "xl" | "xxl";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = React.ButtonHTMLAttributes<React.ReactElement> & {
   size?: Size;
   text?: string;
   dark?: boolean;
 };
+// type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+//   size?: Size;
+//   text?: string;
+//   dark?: boolean;
+// };
 
 const sizes = {
   s: styles["small"],
@@ -21,21 +25,10 @@ const getSize = (size: Size) => {
   return sizes[size];
 };
 
-const Button = ({
-  dark = false,
-  size = "m",
-  text = "button",
-  ...props
-}: ButtonProps) => {
+const Button = ({ dark = false, size = "m", text = "button", ...props }: ButtonProps) => {
   return (
     <>
-      <button
-        className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(
-          size
-        )}`}
-      >
-        {text}
-      </button>
+      <button className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)}`}>{props.children ? props.children : text}</button>
     </>
   );
 };

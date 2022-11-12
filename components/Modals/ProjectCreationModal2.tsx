@@ -2,6 +2,7 @@ import styles from "./ProjectCreationModal2.module.scss";
 import { useRef, useState } from "react";
 import useCloseFunction from "./OutsideAlerter";
 import Image from "next/image";
+import Button from "../Button";
 // import ToggleButton from "../ToggleButton/ToggleButton";
 
 const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void }) => {
@@ -13,22 +14,13 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
   // const [isPrivate, setIsPrivate] = useState(true);
 
   return (
-    <div
-      id={styles["myModal"]}
-      className={styles["modal"]}
-    >
-      <div
-        className={styles["modal-content"]}
-        ref={someRef}
-      >
-        <h1 className={styles["cc-title"]}> Create a new project! </h1>
-        <input
-          className={styles["cc-title-input"]}
-          placeholder="Enter a name"
-        />
+    <div id={styles["myModal"]} className={styles["modal"]}>
+      <div className={styles["modal-content"]} ref={someRef}>
+        <h1 className={styles["modal-title"]}> Create a new project! </h1>
+        <input className={styles["modal-input"]} placeholder="Enter a name" />
         <div className={styles["input-wrapper"]}>
           <input
-            className={styles["cc-title-input tag-input"]}
+            className={styles["modal-input"]}
             placeholder="Enter categories/tags"
             onChange={e => setName(e.currentTarget.value)}
             value={name}
@@ -67,7 +59,7 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
         </div>
         <div>
           <textarea
-            className={styles["project-description-text-area"]}
+            className={styles["modal-description-input"]}
             placeholder="Description"
             value={description}
             onChange={e => setDescription(e.currentTarget.value)}
@@ -76,12 +68,9 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
         <br />
         {/* <ToggleButton setState={setIsPrivate} /> */}
         <br />
-        <button onClick={() => console.log("submit called")}>Submit</button>
+        <Button onClick={() => console.log("submit called")}>Submit</Button>
 
-        <span
-          className={styles["close"]}
-          onClick={() => closeFunction()}
-        >
+        <span className={styles["close"]} onClick={() => closeFunction()}>
           &times;
         </span>
         <p>Some text in the Modal..</p>
