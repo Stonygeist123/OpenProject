@@ -7,11 +7,6 @@ type ButtonProps = React.ButtonHTMLAttributes<React.ReactElement> & {
   text?: string;
   dark?: boolean;
 };
-// type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-//   size?: Size;
-//   text?: string;
-//   dark?: boolean;
-// };
 
 const sizes = {
   s: styles["small"],
@@ -21,9 +16,7 @@ const sizes = {
   xxl: styles["extra-extra-large"],
 };
 
-const getSize = (size: Size) => {
-  return sizes[size];
-};
+const getSize = (size: Size) => sizes[size];
 
 const Button = ({ dark = false, size = "m", text = "button", ...props }: ButtonProps) => {
   return (

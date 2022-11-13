@@ -13,10 +13,11 @@
     &-content {
         /* Modal Content/Box */
         background-color: #3b3b3b;
-        margin: 15% auto; /* 15% from the top and centered */
+        margin: 5% auto; /* 15% from the top and centered */
         padding: 20px;
         border: 1px solid #888;
         width: 80%; /* Could be more or less, depending on screen size */
+        border-radius: 35px;
         // display: flex;
     }
 
@@ -26,12 +27,20 @@
         height: 40px;
         margin: 10px auto;
         border-radius: 4px;
+        border: solid 1px #000;
+        border-top: none;
+        border-right: none;
+        outline: none;
     }
+
     &-description-input {
         display: block;
         width: 60%;
         height: 300px;
         margin: 10px auto;
+        outline: none;
+        border: solid 1px #000;
+        resize: none;
     }
 }
 

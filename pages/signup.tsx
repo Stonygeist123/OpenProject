@@ -88,15 +88,16 @@ const SignupPage = () => {
       found: boolean;
       user: UserSession;
     };
+    console.log(data);
 
     try {
       const { user, allowed, found } = data;
       if (!allowed) {
         setInvalidsignup(true);
-        console.log("Signup prohibited.", user);
+        console.log("Signup prohibited:\n\t", user);
       } else if (!found) {
         setInvalidsignup(true);
-        console.log("User doesn't exist.");
+        console.log("User does already exist.");
       } else if (allowed && found) {
         if (ctx === null) return;
         ctx!.onLogin(name);
@@ -117,14 +118,12 @@ const SignupPage = () => {
     return (
       <>
         <h1>You are already logged in</h1>
-        <button
-          className={styles["logout-button"]}
-          onClick={ctx!.onLogout}
-        >
+        <button className={styles["logout-button"]} onClick={ctx!.onLogout}>
           Logout?
         </button>
       </>
     );
+
   return (
     <>
       <h1 className={styles["heading"]}> Signup </h1>

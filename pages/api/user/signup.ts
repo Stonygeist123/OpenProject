@@ -69,7 +69,7 @@ export default withIronSessionApiRoute(
       res.json({
         user: exclude<Omit<User, "token">, "password">(exclude<User, "token">(user)),
         allowed: true,
-        message: `The name "${username}" already exists.`,
+        message: `Successfully created user.`,
       });
     } catch (e) {
       console.error((e as Error).message);

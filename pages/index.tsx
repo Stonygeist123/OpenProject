@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 // import ProjectCreationModal from "../components/Modals/CreateProjectModal";
-import CommunityCreationModal from "../components/Modals/CreateProjectModal";
+import CommunityCreationModal from "../components/Modals/CreateCommunityModal";
 import styles from "../styles/pages/index.module.scss";
-import ProjectCreationModal2 from "../components/Modals/ProjectCreationModal2";
+import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
 // import { getTheme } from "../../utils";
 // import { Theme } from "../../constants";
 
@@ -52,18 +52,9 @@ const CommunityPreview = () => {
 const RenderMain = (props: any) =>
   props.highlight === "projects" ? (
     <>
-      <ProjectPreview
-        description="a"
-        name="ba"
-      />
-      <ProjectPreview
-        description="a"
-        name="b"
-      />
-      <ProjectPreview
-        description="x"
-        name="dy"
-      />
+      <ProjectPreview description="a" name="ba" />
+      <ProjectPreview description="a" name="b" />
+      <ProjectPreview description="x" name="dy" />
     </>
   ) : (
     <>
@@ -80,15 +71,8 @@ const Home = () => {
 
   return (
     <>
-      {/* {showProjectModal ? (
-        <ProjectCreationModal
-          closeFunction={() => {
-            setShowProjectModal(v => !v);
-          }}
-        />
-      ) : null} */}
       {showProjectModal ? (
-        <ProjectCreationModal2
+        <ProjectCreationModal
           closeFunction={() => {
             setShowProjectModal(v => !v);
           }}

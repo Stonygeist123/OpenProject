@@ -12,11 +12,7 @@ const SearchResults = ({ results, query }: { results: Record<string, ResultType>
       {Object.entries(results)
         .filter(x => x[0].includes(query))
         .map((x, i, arr) => (
-          <li
-            className={styles["result"]}
-            id={i === arr.length - 1 ? "last-result" : ""}
-            key={x[0]}
-          >
+          <li className={styles["result"]} id={i === arr.length - 1 ? "last-result" : ""} key={x[0]}>
             <button className={styles["result-button"]}>
               <p className={styles["result-name"]}>{x[0]}</p>
               <code className={styles["result-type"]}>{x[1]}</code>
@@ -32,28 +28,18 @@ const SearchBar = () => {
   const [resultsData, setResultsData] = useState<Record<string, ResultType>>({});
 
   useEffect(() => {
-    console.log("use effect called");
     fetchJson("/api/user/all").then((data: unknown) => {
       if (Array.isArray(data)) data.forEach(u => setResultsData(r => ({ ...r, [u.name]: ResultType.User })));
-      console.log(resultsData);
     });
   }, [query, resultsData]);
 
   return (
     <div className={styles["search-bar"]}>
       <div className={styles["search-container"]}>
-        <input
-          className={styles["search-input"]}
-          type="text"
-          value={query}
-          onChange={e => setUserQuery(e.target.value)}
-        />
+        <input className={styles["search-input"]} type="text" value={query} onChange={e => setUserQuery(e.target.value)} />
       </div>
       <div className={styles[query.length === 0 ? "hidden" : ""]}>
-        <SearchResults
-          results={resultsData}
-          query={query}
-        />
+        <SearchResults results={resultsData} query={query} />
       </div>
     </div>
   );

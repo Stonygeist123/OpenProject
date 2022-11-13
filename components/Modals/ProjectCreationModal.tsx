@@ -1,17 +1,17 @@
-import styles from "./ProjectCreationModal2.module.scss";
+import styles from "../../styles/modules/ProjectCreationModal.module.scss";
 import { useRef, useState } from "react";
 import useCloseFunction from "./OutsideAlerter";
 import Image from "next/image";
 import Button from "../Button";
-// import ToggleButton from "../ToggleButton/ToggleButton";
+import ToggleButton from "../ToggleButton/ToggleButton";
 
-const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void }) => {
+const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const someRef = useRef(null);
   useCloseFunction(someRef, closeFunction);
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  // const [isPrivate, setIsPrivate] = useState(true);
+  const [_, setIsPrivate] = useState(true);
 
   return (
     <div id={styles["myModal"]} className={styles["modal"]}>
@@ -66,7 +66,7 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
           ></textarea>
         </div>
         <br />
-        {/* <ToggleButton setState={setIsPrivate} /> */}
+        <ToggleButton setState={setIsPrivate} />
         <br />
         <Button onClick={() => console.log("submit called")}>Submit</Button>
 
@@ -79,10 +79,4 @@ const ProjectCreationModal2 = ({ closeFunction }: { closeFunction: () => void })
   );
 };
 
-export default ProjectCreationModal2;
-
-// the changes with the button component
-// are they on main now? I mean development
-// idk
-// can you open another terminal?
-// did
+export default ProjectCreationModal;
