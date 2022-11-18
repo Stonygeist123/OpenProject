@@ -20,7 +20,7 @@ export default withIronSessionApiRoute(
       project: Project | null;
     }>
   ) => {
-    const { name, description, isPrivate }: { name?: string; description?: string; isPrivate?: boolean } = req.body;
+    let { name, description, isPrivate }: { name?: string; description?: string; isPrivate?: boolean } = req.body;
     if (!req.session.user)
       res.json({
         allowed: false,
@@ -28,7 +28,8 @@ export default withIronSessionApiRoute(
         project: null,
       });
     else {
-      if (!name)
+      console.log(req.body);
+      if (name === undefined || name.trim().length == 0)
         res.json({
           allowed: false,
           message: "No name provided.",
@@ -49,7 +50,7 @@ export default withIronSessionApiRoute(
           const user = await prisma.user.findFirst({ where: { name: req.session.user.username } });
           if (user) {
             const res_project = await prisma.project.create({
-              include: { contributors: true, community: true, tasks: true, tags: true },
+              include: { contributors: true, community: true, tasks: true },
               data: {
                 name,
                 owner: user.name,

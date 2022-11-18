@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useAppContext } from "../context/LoginContext";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/pages/signup.module.scss";
 import useUser from "../lib/useUser";
 import fetchJson, { FetchError } from "../lib/fetchJson";
@@ -17,12 +16,12 @@ const SignupPage = () => {
     confirmedPassword: false,
   });
 
+  const [session, setSession] = useState<UserSession | null>(null);
   const { mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
   });
 
-  const ctx = useAppContext();
   const [invalidsignup, setInvalidsignup] = useState(false);
   const router = useRouter();
 
@@ -70,7 +69,6 @@ const SignupPage = () => {
 
     setDisableControls(true);
     e.preventDefault();
-    console.log("Signup attempted");
 
     const data = (await fetchJson(`/api/user/signup`, {
       headers: {
@@ -88,20 +86,16 @@ const SignupPage = () => {
       found: boolean;
       user: UserSession;
     };
-    console.log(data);
 
     try {
       const { user, allowed, found } = data;
-      if (!allowed) {
+      if (found) {
         setInvalidsignup(true);
-        console.log("Signup prohibited:\n\t", user);
-      } else if (!found) {
+        console.log(`User "${name}" already exists.`);
+      } else if (!allowed) {
         setInvalidsignup(true);
-        console.log("User does already exist.");
-      } else if (allowed && found) {
-        if (ctx === null) return;
-        ctx!.onLogin(name);
-        console.log("ctx.token:\n\t" + ctx.token);
+        console.log("Signup prohibited.");
+      } else {
         console.log("User logged in:\n\t", user);
         mutateUser(data.user, false);
         await router.push("/home");
@@ -114,17 +108,16 @@ const SignupPage = () => {
     }
   };
 
-  if (ctx !== null && ctx!.token !== "")
-    return (
-      <>
-        <h1>You are already logged in</h1>
-        <button className={styles["logout-button"]} onClick={ctx!.onLogout}>
-          Logout?
-        </button>
-      </>
-    );
+  useEffect(() => {
+    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => setSession(data.user));
+  }, [session]);
 
-  return (
+  const logOut = async () => {
+    fetchJson("/api/user/logout");
+    await router.push("/");
+  };
+
+  return session === null ? (
     <>
       <h1 className={styles["heading"]}> Signup </h1>
       <div className={styles["signup-entries"]}>
@@ -174,6 +167,13 @@ const SignupPage = () => {
           </button>
         </div>
       </div>
+    </>
+  ) : (
+    <>
+      <h1>You are already logged in</h1>
+      <button className={styles["logout-button"]} onClick={logOut}>
+        Logout?
+      </button>
     </>
   );
 };

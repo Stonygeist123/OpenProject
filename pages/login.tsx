@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useAppContext } from "../context/LoginContext";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/pages/login.module.scss";
 import useUser from "../lib/useUser";
 import fetchJson, { FetchError } from "../lib/fetchJson";
@@ -15,11 +14,11 @@ const LoginPage = () => {
     password: false,
   });
 
+  const [session, setSession] = useState<UserSession | null>(null);
   const { mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
   });
-  const ctx = useAppContext();
   const [invalidLogin, setInvalidLogin] = useState(false);
   const router = useRouter();
 
@@ -41,6 +40,7 @@ const LoginPage = () => {
         break;
     }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
     const value = e.currentTarget.value;
@@ -55,7 +55,6 @@ const LoginPage = () => {
 
     setDisableControls(true);
     e.preventDefault();
-    console.log("login attempted");
 
     const data = (await fetchJson(`/api/user/login`, {
       headers: {
@@ -75,84 +74,75 @@ const LoginPage = () => {
     };
 
     try {
-      const { user, allowed, found } = data;
+      const { allowed, found } = data;
       if (!allowed) {
         setInvalidLogin(true);
-        console.log("Login prohibited.", user);
       } else if (!found) {
         setInvalidLogin(true);
-        console.log("User doesn't exist.");
       } else if (allowed) {
-        if (ctx === null) return;
-        ctx!.onLogin(name);
-        console.log("ctx.token" + ctx.token);
-        console.log("User logged in:\n\t", user);
         mutateUser(data.user as UserSession, false);
-        await router.push("/home");
+        await router.push("/");
       }
 
       setDisableControls(false);
-      if (allowed) {
-      }
     } catch (e) {
       if (e instanceof FetchError) console.log(e.data.message);
       else console.error("An unexpected error happened:", e);
     }
   };
 
-  if (ctx !== null && ctx!.token !== "")
-    return (
-      <>
-        <h1>You are already logged in</h1>
-        <button
-          className={styles["logout-button"]}
-          onClick={ctx!.onLogout}
-        >
-          Logout?
-        </button>
-      </>
-    );
-  else
-    return (
-      <>
-        <h1 className={styles["heading"]}> Login </h1>
-        <div className={styles["login-entries"]}>
-          <div className={styles["login-entry"]}>
-            <label className={styles["login-label"]}> Username </label>
-            <input
-              className={`${styles["login-input"]} ${validation.name || !focussed ? null : styles["invalid-input"]}`}
-              onChange={handleChange}
-              onClick={() => setFocussed(v => !v)}
-              name="username"
-              value={name}
-              disabled={disableControls}
-            ></input>
-          </div>
-          <div className={styles["login-entry"]}>
-            <label className={styles["login-label"]}> Password </label>
-            <input
-              className={`${styles["login-input"]} ${validation.password || !focussed ? null : styles["invalid-input"]}`}
-              onChange={handleChange}
-              onClick={() => setFocussed(v => !v)}
-              name="password"
-              type="password"
-              value={password}
-              disabled={disableControls}
-            ></input>
-          </div>
-          <div className={styles["button-div"]}>
-            <h3 className={`${styles["invalid-msg"]} ${invalidLogin ? null : styles["hidden"]}`}>Invalid username or password</h3>
-            <button
-              className={styles["login-button"]}
-              onClick={handleOnClick}
-              disabled={disableControls || !validation.name || !validation.password}
-            >
-              Login
-            </button>
-          </div>
+  useEffect(() => {
+    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => setSession(data.user));
+  }, [session]);
+
+  const logOut = async () => {
+    fetchJson("/api/user/logout");
+    await router.push("/");
+  };
+
+  return session === null ? (
+    <>
+      <h1 className={styles["heading"]}>Login</h1>
+      <div className={styles["login-entries"]}>
+        <div className={styles["login-entry"]}>
+          <label className={styles["login-label"]}> Username </label>
+          <input
+            className={`${styles["login-input"]} ${validation.name || !focussed ? null : styles["invalid-input"]}`}
+            onChange={handleChange}
+            onClick={() => setFocussed(v => !v)}
+            name="username"
+            value={name}
+            disabled={disableControls}
+          ></input>
         </div>
-      </>
-    );
+        <div className={styles["login-entry"]}>
+          <label className={styles["login-label"]}> Password </label>
+          <input
+            className={`${styles["login-input"]} ${validation.password || !focussed ? null : styles["invalid-input"]}`}
+            onChange={handleChange}
+            onClick={() => setFocussed(v => !v)}
+            name="password"
+            type="password"
+            value={password}
+            disabled={disableControls}
+          ></input>
+        </div>
+        <div className={styles["button-div"]}>
+          <h3 className={`${styles["invalid-msg"]} ${invalidLogin ? null : styles["hidden"]}`}>Invalid username or password</h3>
+          <button className={styles["login-button"]} onClick={handleOnClick} disabled={disableControls || !validation.name || !validation.password}>
+            Login
+          </button>
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      <h1>You are already logged in</h1>
+      <button className={styles["logout-button"]} onClick={logOut}>
+        Logout?
+      </button>
+    </>
+  );
 };
 
 export default LoginPage;

@@ -3,7 +3,8 @@
     position: relative;
     display: inline-block;
     width: 60px;
-    height: 34px;
+    height: 50px;
+    top: 30px;
 }
 
 /* Hide default HTML checkbox */
@@ -17,13 +18,14 @@
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
+    // top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: #ccc;
     -webkit-transition: 0.4s;
     transition: 0.4s;
+    top: 15px;
 }
 
 .slider:before {
@@ -59,4 +61,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.checkbox-text {
+    position: relative;
+    width: 150px;
+    bottom: 30px;
 }

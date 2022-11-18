@@ -52,16 +52,17 @@ export default withIronSessionApiRoute(
           user_model: null,
           user: null,
         });
-      else if (!bcrypt.compareSync(password, user.password))
+      else if (!bcrypt.compareSync(password, user.password)) {
         return res.json({
-          message: "Access not allowed.",
+          message: "Access denied.",
           allowed: false,
           found: true,
           user_model: null,
           user: null,
         });
+      }
 
-      if (req.session.user && user && bcrypt.compareSync(password, user.password)) {
+      if (bcrypt.compareSync(password, user.password)) {
         req.session.user = {
           username,
           token: user.token,

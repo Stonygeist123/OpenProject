@@ -12,11 +12,7 @@ const ProjectPreview = ({ name, description }: { name: string; description: stri
       <h1 className={styles["project-preview-title"]}>{name}</h1>
       <div className={styles["project-preview-pp"]}></div>
     </div>
-    <p className={styles["project-preview-description"]}>
-      {description}
-      {/* Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos
-      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus asperiores delectus obcaecati! */}
-    </p>
+    <p className={styles["project-preview-description"]}>{description}</p>
   </div>
 );
 

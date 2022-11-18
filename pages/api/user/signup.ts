@@ -4,7 +4,6 @@ import { withIronSessionApiRoute } from "iron-session/next";
 import prisma from "../../../lib/prisma";
 import { sessionOptions } from "../../../lib/session";
 import bcrypt from "bcrypt";
-import { exclude } from "../../../utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default withIronSessionApiRoute(
@@ -16,9 +15,10 @@ export default withIronSessionApiRoute(
       };
     },
     res: NextApiResponse<{
-      user: Omit<Omit<User, "token">, "password"> | null;
+      user: UserSession | null;
       message: string;
       allowed: boolean;
+      found: boolean;
     }>
   ) => {
     if (req.body["username"] === undefined || req.body["password"] === undefined)
@@ -32,6 +32,7 @@ export default withIronSessionApiRoute(
             : "Password"
         } is missing.`,
         allowed: false,
+        found: false,
       });
 
     const { username, password }: { username: string; password: string } = req.body;
@@ -42,21 +43,22 @@ export default withIronSessionApiRoute(
     try {
       if (user !== null)
         return res.json({
-          user: exclude<Omit<User, "token">, "password">(exclude<User, "token">(user)),
+          user: null,
           allowed: false,
-          message: `The name "${username}" already exists.`,
+          found: true,
+          message: `A user with the name "${username}" does already exist.`,
         });
 
       user = await prisma.user.create({
         include: { communities: true, projects: true, task_submissions: true },
         data: {
           name: username,
-          password: bcrypt.hashSync(password, 15),
+          password: bcrypt.hashSync(password, 5),
           image: "",
           communities: {},
           projects: {},
           task_submissions: {},
-          token: await bcrypt.hash(password, 20),
+          token: bcrypt.hashSync(password, 6),
         },
       });
 
@@ -67,13 +69,14 @@ export default withIronSessionApiRoute(
       };
       await req.session.save();
       res.json({
-        user: exclude<Omit<User, "token">, "password">(exclude<User, "token">(user)),
+        user: req.session.user,
         allowed: true,
         message: `Successfully created user.`,
+        found: false,
       });
     } catch (e) {
       console.error((e as Error).message);
-      res.json({ user: null, allowed: false, message: (e as Error).message });
+      res.json({ user: null, allowed: false, message: (e as Error).message, found: false });
     }
   },
   sessionOptions
