@@ -13,11 +13,11 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.5.0
+ * Prisma Client JS version: 4.6.1
  * Query Engine version: 0362da9eebca54d94c8ef5edd3b2e90af99ba452
  */
 Prisma.prismaVersion = {
-  client: "4.5.0",
+  client: "4.6.1",
   engine: "0362da9eebca54d94c8ef5edd3b2e90af99ba452"
 }
 
@@ -68,6 +68,7 @@ In case this error is unexpected for you, please report it in https://github.com
 )}
 Prisma.validator = () => (val) => val
 
+
 /**
  * Shorthand utilities for JSON filtering
  */
@@ -110,7 +111,7 @@ exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   description: 'description',
   owner: 'owner',
   created_at: 'created_at',
-  is_private: 'is_private',
+  isPrivate: 'isPrivate',
   image: 'image',
   community_name: 'community_name'
 });
@@ -126,6 +127,10 @@ exports.Prisma.SubmissionScalarFieldEnum = makeEnum({
   content: 'content',
   images: 'images',
   created_at: 'created_at'
+});
+
+exports.Prisma.TagScalarFieldEnum = makeEnum({
+  name: 'name'
 });
 
 exports.Prisma.TaskScalarFieldEnum = makeEnum({
@@ -168,7 +173,8 @@ exports.Prisma.ModelName = makeEnum({
   Project: 'Project',
   Task: 'Task',
   Submission: 'Submission',
-  TaskSubmission: 'TaskSubmission'
+  TaskSubmission: 'TaskSubmission',
+  Tag: 'Tag'
 });
 
 /**
