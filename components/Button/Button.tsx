@@ -16,8 +16,8 @@ const sizes = {
 };
 
 const getSize = (size: Size) => sizes[size];
-const Button = ({ dark = false, size = "m", text = "button", ...props }: ButtonProps) => (
-  <button className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)}`} {...props}>
+const Button = ({ dark = false, size = "m", text = "button", className, ...props }: ButtonProps) => (
+  <button className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className}`} {...props}>
     {props.children ? props.children : text}
   </button>
 );

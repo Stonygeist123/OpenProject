@@ -3,7 +3,7 @@
     margin: auto;
     margin-top: 3.5rem;
     margin-bottom: 3.5rem;
-    width: 50rem;
+    width: 35rem;
     height: 250px;
     background-color: rgb(87, 250, 231);
     color: black;
@@ -12,16 +12,17 @@
     overflow: hidden;
     font-size: 1.2rem;
 
-    @media screen and (max-width: 800px) {
-        width: 40rem;
+    @media screen and (max-width: 1700px) {
+        width: 35rem;
+        margin-right: 7%;
     }
 
     @media screen and (max-width: 600px) {
-        width: 35rem;
+        width: 30rem;
     }
 
     @media screen and (max-width: 500px) {
-        width: 30rem;
+        width: 25rem;
     }
 }
 

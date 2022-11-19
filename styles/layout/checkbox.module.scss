@@ -13,17 +13,17 @@ input[type="checkbox"].toggle {
     cursor: pionter;
 }
 
-input[type="checkbox"].toggle+label {
+input[type="checkbox"].toggle + label {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-input[type="checkbox"].toggle:focus+label::before {
+input[type="checkbox"].toggle:focus + label::before {
     outline: 1px solid white;
 }
 
-input[type="checkbox"].toggle+label::before {
+input[type="checkbox"].toggle + label::before {
     cursor: pointer;
     content: "";
     width: 2em;
@@ -34,14 +34,14 @@ input[type="checkbox"].toggle+label::before {
     transition: background-color 200ms ease-in-out;
 }
 
-input[type="checkbox"].toggle:checked+label::after {
+input[type="checkbox"].toggle:checked + label::after {
     transform: translateX(100%);
     background-color: $state2-color;
     content: $state2-content;
     animation: check-fade 300ms ease-in-out forwards;
 }
 
-input[type="checkbox"].toggle+label::after {
+input[type="checkbox"].toggle + label::after {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,15 +59,13 @@ input[type="checkbox"].toggle+label::after {
     animation: check-fade 300ms ease-in-out reverse;
 }
 
-
-input[type="checkbox"].toggle:checked+label::before {
+input[type="checkbox"].toggle:checked + label::before {
     background-color: $state2-bg-color;
 }
 
-input[type="checkbox"].toggle:checked+label {
+input[type="checkbox"].toggle:checked + label {
     color: $state2-color;
 }
-
 
 @keyframes check-fade {
     0% {

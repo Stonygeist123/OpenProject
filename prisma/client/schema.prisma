@@ -24,6 +24,7 @@ model Community {
   name        String    @id @unique
   description String
   subscribers User[]
+  owner       String
   projects    Project[]
   created_at  DateTime  @default(now())
 }
