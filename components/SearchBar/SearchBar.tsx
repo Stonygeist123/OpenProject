@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import fetchJson from "../../lib/fetchJson";
+import { Community } from "../../prisma/client";
 import styles from "../../styles/modules/SearchBar.module.scss";
 
 enum ResultType {
   User = "User",
+  Project = "Project",
+  Community = "Community",
 }
 
 const SearchResults = ({ results, query }: { results: Record<string, ResultType>; query: string }) => (
@@ -28,10 +31,12 @@ const SearchBar = () => {
   const [resultsData, setResultsData] = useState<Record<string, ResultType>>({});
 
   useEffect(() => {
-    fetchJson("/api/user/all").then((data: unknown) => {
-      if (Array.isArray(data)) data.forEach(u => setResultsData(r => ({ ...r, [u.name]: ResultType.User })));
-    });
-  }, [query, resultsData]);
+    fetchJson<Array<User>>("/api/user/all").then(data => data.forEach(u => setResultsData(r => ({ ...r, [u.name]: ResultType.User }))));
+    fetchJson<Array<Project>>("/api/project/all").then(data => data.forEach(p => setResultsData(r => ({ ...r, [`${p.name}`]: ResultType.Project }))));
+    fetchJson<Array<Community>>("/api/community/all").then(data =>
+      data.forEach(c => setResultsData(r => ({ ...r, [`${c.name}`]: ResultType.Community })))
+    );
+  }, [query]);
 
   return (
     <div className={styles["search-bar"]}>
