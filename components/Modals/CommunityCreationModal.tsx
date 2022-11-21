@@ -1,36 +1,36 @@
-import styles from "../../styles/modules/ProjectCreationModal.module.scss";
+import styles from "../../styles/modules/CommunityCreationModal.module.scss";
 import { useRef, useState } from "react";
 import useCloseFunction from "./OutsideAlerter";
 import Image from "next/image";
 import Button from "../Button";
-import ToggleButton from "../ToggleButton/ToggleButton";
 import fetchJson from "../../lib/fetchJson";
 
-const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
+const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const someRef = useRef(null);
   useCloseFunction(someRef, closeFunction);
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
 
   const handleOnClick = async () => {
     if (name.trim().length == 0) console.log("No name provided");
     else {
-      await fetchJson("/api/project/create", {
-        body: JSON.stringify({ name, description, isPrivate }),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      console.log(
+        await fetchJson("/api/community/create", {
+          body: JSON.stringify({ name, description }),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      );
     }
   };
 
   return (
     <div id={styles["myModal"]} className={styles["modal"]}>
       <div className={styles["modal-content"]} ref={someRef}>
-        <h1 className={styles["modal-title"]}> Create a new project! </h1>
+        <h1 className={styles["modal-title"]}> Create a new community! </h1>
         <div className={styles["content-wrapper"]}>
           <input className={styles["modal-input"]} value={name} onChange={e => setName(e.target.value)} placeholder="Enter a name..." />
           <div className={styles["input-wrapper"]}>
@@ -78,11 +78,9 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
             ></textarea>
           </div>
           <br />
-          <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" />
-          <br />
         </div>
         <div className={styles["footer"]}>
-          <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
+          <Button onClick={handleOnClick} className={styles["submit-button"]} size="l">
             Submit
           </Button>
         </div>
@@ -95,4 +93,4 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
   );
 };
 
-export default ProjectCreationModal;
+export default CommunityCreationModal;

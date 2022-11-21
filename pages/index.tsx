@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-// import ProjectCreationModal from "../components/Modals/CreateProjectModal";
-import CommunityCreationModal from "../components/Modals/CreateCommunityModal";
 import styles from "../styles/pages/index.module.scss";
+import CommunityCreationModal from "../components/Modals/CommunityCreationModal";
 import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
-// import { getTheme } from "../../utils";
-// import { Theme } from "../../constants";
 
 const ProjectPreview = ({ name, description }: { name: string; description: string }) => (
   <div className={styles["project-preview-container"]}>
@@ -61,7 +58,7 @@ const RenderMain = (props: any) =>
   );
 
 const Home = () => {
-  const [showModal, setShowModal] = useState(false);
+  const [showCommunityModal, setShowCommunityModal] = useState(false);
   const [highlight, setHighlight] = useState("projects");
   const [showProjectModal, setShowProjectModal] = useState(false);
 
@@ -74,19 +71,19 @@ const Home = () => {
           }}
         />
       ) : null}
-      {showModal ? (
+      {showCommunityModal ? (
         <CommunityCreationModal
           closeFunction={() => {
-            setShowModal(v => !v);
+            setShowCommunityModal(v => !v);
           }}
         />
       ) : null}
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
-        <div className={styles["home-container"]}>
+        <div className={styles["home-left-nav"]}>
           <button
             className={styles["home-button"]}
             onClick={() => {
-              setShowModal(true);
+              setShowCommunityModal(true);
             }}
           >
             <h1>Create a new community</h1>

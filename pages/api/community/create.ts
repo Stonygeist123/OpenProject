@@ -1,4 +1,4 @@
-// pages/api/project/create.ts
+// pages/api/community/create.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";
@@ -11,28 +11,27 @@ export default withIronSessionApiRoute(
       body: {
         name: string;
         description: string;
-        isPrivate: boolean;
       };
     },
     res: NextApiResponse<{
       message: string;
       allowed: boolean;
-      project: Project | null;
+      community: Community | null;
     }>
   ) => {
-    let { name, description, isPrivate }: { name?: string; description?: string; isPrivate?: boolean } = req.body;
+    let { name, description }: { name?: string; description?: string } = req.body;
     if (!req.session.user)
       res.json({
         allowed: false,
         message: "User needs to be logged in.",
-        project: null,
+        community: null,
       });
     else {
       if (name === undefined || name.trim().length == 0)
         res.json({
           allowed: false,
           message: "No name provided.",
-          project: null,
+          community: null,
         });
       else {
         const project = await prisma.project.findFirst({
@@ -42,33 +41,31 @@ export default withIronSessionApiRoute(
         if (project)
           res.json({
             allowed: false,
-            message: `Project "${name}" already exists.`,
-            project: null,
+            message: `Community "${name}" already exists.`,
+            community: null,
           });
         else {
           const user = await prisma.user.findFirst({ where: { token: req.session.user.token } });
           if (user) {
-            const res_project = await prisma.project.create({
-              include: { contributors: true, community: true, tasks: true },
+            const res_community = await prisma.community.create({
+              include: { projects: true, subscribers: true },
               data: {
                 name,
                 owner: user.name,
                 description: description ?? "",
-                isPrivate: isPrivate ?? false,
-                image: "",
               },
             });
 
             res.json({
               allowed: true,
-              message: `Successfully created project "${name}".`,
-              project: res_project,
+              message: `Successfully created community "${name}".`,
+              community: res_community,
             });
           } else
             res.json({
               allowed: false,
               message: "User needs to be logged in.",
-              project: null,
+              community: null,
             });
         }
       }

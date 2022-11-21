@@ -13,7 +13,7 @@ export default withIronSessionApiRoute(async (_, res) => {
   const res_users = [];
   for (const user of users) {
     const u = exclude<typeof users[0], "token">(user);
-    for (let i = 0; i < u.projects.length; ++i) if (u.projects[i].isPrivate) delete u.projects[i];
+    u.projects = u.projects.filter(p => !p.isPrivate);
     res_users.push(u);
   }
 

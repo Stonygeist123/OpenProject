@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./ToggleButton.module.scss";
+import styles from "../../styles/modules/ToggleButton.module.scss";
 
 const ToggleButton = ({ setState, text, value }: { setState: React.Dispatch<React.SetStateAction<boolean>>; text: string; value: boolean }) => {
   return (

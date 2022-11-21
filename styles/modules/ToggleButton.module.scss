@@ -67,4 +67,5 @@ input:checked + .slider:before {
     position: relative;
     width: 150px;
     bottom: 30px;
+    user-select: none;
 }

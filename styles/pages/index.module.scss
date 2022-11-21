@@ -22,12 +22,12 @@
 .project-previews {
     margin: auto;
     margin-top: 5rem;
-    left: 10rem;
     position: relative;
 }
 
 .project-preview-container {
     @include style-centre-home-container;
+    font-size: 1.2rem;
 }
 
 .project-preview-container:hover {
@@ -36,6 +36,7 @@
 
 .submission-preview-container {
     @include style-centre-home-container;
+    font-size: 1.2rem;
 }
 
 .submission-preview-container:hover {
@@ -43,11 +44,9 @@
 }
 
 .submission-preview-container-heading {
-    height: 80px;
 }
 
 .home-project-heading-container {
-    height: 80px;
 }
 
 .home-nav {
@@ -73,10 +72,9 @@
 }
 
 .home-left-nav {
-    margin-top: 10%;
+    margin-top: 15%;
     margin-left: 7%;
     margin-right: 50px;
-
     @media screen and (max-width: 1200px) {
         display: none;
     }
@@ -84,7 +82,7 @@
 
 .home-right-nav {
     margin-right: 7%;
-    margin-left: 50px;
+    // margin-left: 10px;
     margin-top: 5%;
     left: 5rem;
     position: relative;
@@ -119,7 +117,7 @@
 }
 
 .project-preview-title {
-    font-size: 40px;
+    font-size: 1.7rem;
     font-weight: bolder;
     text-align: start;
     position: relative;
@@ -138,7 +136,7 @@
 }
 
 .community-preview-title {
-    font-size: 25px;
+    font-size: 1.7rem;
 }
 
 .community-preview-pp {

@@ -14,11 +14,11 @@ exports.Prisma = Prisma
 
 /**
  * Prisma Client JS version: 4.6.1
- * Query Engine version: 0362da9eebca54d94c8ef5edd3b2e90af99ba452
+ * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
  */
 Prisma.prismaVersion = {
   client: "4.6.1",
-  engine: "0362da9eebca54d94c8ef5edd3b2e90af99ba452"
+  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -92,6 +92,7 @@ function makeEnum(x) { return x; }
 exports.Prisma.CommunityScalarFieldEnum = makeEnum({
   name: 'name',
   description: 'description',
+  owner: 'owner',
   created_at: 'created_at'
 });
 

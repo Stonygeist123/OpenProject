@@ -22,3 +22,11 @@ type Project = {
   image: string;
   community_name: string | null;
 };
+
+type Community = {
+  name: string;
+  description: string;
+  created_at: Date;
+  projects: Project[];
+  subscribers: User[];
+};

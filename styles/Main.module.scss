@@ -24,6 +24,7 @@
 
 .project-preview-container {
     @include style-centre-home-container;
+    display: flex;
 }
 
 .project-preview-container:hover {
