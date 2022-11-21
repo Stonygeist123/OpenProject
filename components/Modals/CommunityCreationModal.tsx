@@ -1,6 +1,6 @@
 import styles from "../../styles/modules/CommunityCreationModal.module.scss";
 import { useRef, useState } from "react";
-import useCloseFunction from "./OutsideAlerter";
+import useCloseFunction from "./utils/OutsideAlerter";
 import Image from "next/image";
 import Button from "../Button";
 import fetchJson from "../../lib/fetchJson";
@@ -80,7 +80,7 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
           <br />
         </div>
         <div className={styles["footer"]}>
-          <Button onClick={handleOnClick} className={styles["submit-button"]} size="l">
+          <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
             Submit
           </Button>
         </div>

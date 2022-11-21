@@ -1,6 +1,6 @@
 import styles from "../../styles/modules/ProjectCreationModal.module.scss";
 import { useRef, useState } from "react";
-import useCloseFunction from "./OutsideAlerter";
+import useCloseFunction from "./utils/OutsideAlerter";
 import Image from "next/image";
 import Button from "../Button";
 import ToggleButton from "../ToggleButton/ToggleButton";

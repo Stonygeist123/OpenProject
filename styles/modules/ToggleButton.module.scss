@@ -1,4 +1,10 @@
 /* The switch - the box around the slider */
+$color-base: #0b1727;
+$color-unchecked:lighten($color-base, 30%);
+$color-checked: lighten($color-base, 60%);
+$color-slider: #ffffff;
+// $color-slider: darken($color-base, 30%);
+
 .switch {
     position: relative;
     display: inline-block;
@@ -22,7 +28,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
+    // background-color: #ccc;
+    background-color: $color-unchecked;
     -webkit-transition: 0.4s;
     transition: 0.4s;
     top: 15px;
@@ -35,17 +42,20 @@
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    // background-color: white;
+    background-color: $color-slider;
     -webkit-transition: 0.4s;
     transition: 0.4s;
 }
 
 input:checked + .slider {
-    background-color: #2196f3;
+    // background-color: #2196f3;
+    background-color: $color-checked;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196f3;
+    // box-shadow: 0 0 1px #2196f3;
+    box-shadow: 0 0 1px $color-checked;
 }
 
 input:checked + .slider:before {

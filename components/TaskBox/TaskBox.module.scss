@@ -1,0 +1,41 @@
+$task-height: 100px;
+$aim-box-height: 250px;
+$top-section-width: 600px;
+
+
+
+.task-box{
+    display:flex;
+    width:$top-section-width;
+    height: $task-height;
+    resize: none;
+    background-color: white;
+    color:black;
+    border-radius: 2px;
+    margin:auto;
+    text-align: left;
+    outline: 1px solid black;
+    padding: 10px 20px;
+
+ h1{
+    margin: 0;
+    line-height: $task-height;
+}
+p{
+    width:320px;
+    margin: 0;
+    margin-left: 40px;
+    margin-top: 20px;
+}
+}
+
+.start-button{
+    
+    margin: 0;
+    margin-left: 40px;
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 12px;
+}
