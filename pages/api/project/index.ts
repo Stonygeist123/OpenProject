@@ -16,7 +16,7 @@ export default withIronSessionApiRoute(
     }>
   ) => {
     if (req.query["name"] === undefined)
-      return res.json({
+      res.json({
         found: false,
         admin: false,
         message: "No name provided.",
