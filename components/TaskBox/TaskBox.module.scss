@@ -2,37 +2,38 @@ $task-height: 100px;
 $aim-box-height: 250px;
 $top-section-width: 600px;
 
-
-
-.task-box{
-    display:flex;
-    width:$top-section-width;
+.task-container {
+    display: flex;
+    width: $top-section-width;
     height: $task-height;
     resize: none;
     background-color: white;
-    color:black;
+    color: black;
     border-radius: 2px;
-    margin:auto;
+    margin: auto;
     text-align: left;
     outline: 1px solid black;
     padding: 10px 20px;
 
- h1{
-    margin: 0;
-    line-height: $task-height;
-}
-p{
-    width:320px;
-    margin: 0;
-    margin-left: 40px;
-    margin-top: 20px;
-}
+    .heading-container {
+        .heading {
+            font-size: 1.7rem;
+            line-height: $task-height - 20px;
+        }
+    }
+    .description-container {
+        width: 100%;
+        padding: 10px;
+    }
+    .task-description {
+        margin: 0;
+        text-align: center;
+        font-size: 1rem;
+    }
 }
 
-.start-button{
-    
+.start-button {
     margin: 0;
-    margin-left: 40px;
     position: relative;
     top: 50%;
     -ms-transform: translateY(-50%);

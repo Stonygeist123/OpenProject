@@ -46,12 +46,13 @@ export default withIronSessionApiRoute(
             message: "Access permitted.",
             project,
           });
-        res.json({
-          admin: false,
-          found: false,
-          message: "No project found.",
-          project: null,
-        });
+        else
+          res.json({
+            found: true,
+            admin: false,
+            message: "No project found.",
+            project: null,
+          });
       } else {
         if (project.isPrivate)
           res.json({

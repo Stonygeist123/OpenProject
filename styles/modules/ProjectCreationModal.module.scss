@@ -88,24 +88,24 @@ $width: 800px;
             background-color: $color-1;
         }
     }
-}
 
-/* The Close Button */
-.close {
-    color: $color-text;
-    font-size: 28px;
-    font-weight: bold;
-    position: relative;
-    z-index: 2;
-    bottom: 680px;
-    left: 95%;
-}
+    /* The Close Button */
+    .close {
+        color: $color-text;
+        font-size: 28px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        bottom: 40rem;
+        left: 95%;
+    }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 }
 
 .footer {
