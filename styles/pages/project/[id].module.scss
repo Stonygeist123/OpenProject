@@ -1,0 +1,55 @@
+@import "../../abstract/mixins";
+
+.project-page {
+    align-items: center;
+}
+
+.project-title {
+    text-align: center;
+    font-size: xx-large;
+    color: white;
+    text-decoration: underline;
+}
+
+.content-wrapper {
+    margin: auto;
+    width: 75%;
+}
+
+.project-content {
+    margin-top: 10rem;
+    justify-content: space-between;
+    @include flex-responsive;
+}
+
+.tasks-container {
+    position: relative;
+}
+
+.project-description {
+    position: relative;
+    text-align: left;
+    color: white;
+    font-size: x-large;
+    margin: auto;
+    width: 25em;
+
+    .project-description-text-wrapper {
+        background-color: rgb(27, 26, 26);
+        height: 15em;
+        border: 1px solid rgb(156, 156, 156);
+        border-radius: 15px;
+    }
+
+    .project-description-text {
+        position: relative;
+        left: 1em;
+        font-size: larger;
+        color: gray;
+    }
+}
+
+.project-description,
+.tasks-container {
+    display: inline-block;
+}
