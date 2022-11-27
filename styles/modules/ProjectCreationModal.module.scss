@@ -96,7 +96,6 @@ $width: 800px;
         font-weight: bold;
         position: relative;
         z-index: 2;
-        bottom: 40rem;
         left: 95%;
     }
 
@@ -128,4 +127,21 @@ $width: 800px;
         background-color: rgba(0, 221, 169, 0.74);
         color: black;
     }
+}
+
+.tag {
+    background-color: rgb(224, 224, 224);
+    color: black;
+    margin: 0px 3px;
+    padding: 0px 5px;
+    border-radius: 8px;
+    display: inline-block;
+    height: 2rem;
+    line-height: 2rem;
+    margin-bottom: 4px;
+}
+
+.tag-cross {
+    display: inline-block;
+    cursor: pointer;
 }

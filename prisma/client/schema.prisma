@@ -23,24 +23,25 @@ model User {
 model Community {
   name        String    @id @unique
   description String
-  subscribers User[]
   owner       String
+  subscribers User[]
   projects    Project[]
   created_at  DateTime  @default(now())
 }
 
 model Project {
-  id             Int        @id @unique @default(autoincrement())
-  name           String
-  description    String
-  owner          String
-  contributors   User[]
-  community      Community? @relation(fields: [community_name], references: [name])
-  tasks          Task[]
-  created_at     DateTime   @default(now())
-  isPrivate      Boolean
-  image          String
-  community_name String?
+  id            Int        @id @unique @default(autoincrement())
+  name          String
+  description   String
+  owner         String
+  contributors  User[]
+  tasks         Task[]
+  created_at    DateTime   @default(now())
+  isPrivate     Boolean
+  image         String
+  community     Community? @relation(fields: [communityName], references: [name])
+  communityName String?
+  tags          String     @default("")
 }
 
 model Task {

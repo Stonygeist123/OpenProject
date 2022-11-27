@@ -47,7 +47,8 @@ export type Project = {
   created_at: Date
   isPrivate: boolean
   image: string
-  community_name: string | null
+  communityName: string | null
+  tags: string
 }
 
 /**
@@ -2197,8 +2198,8 @@ export namespace Prisma {
   export type CommunitySelect = {
     name?: boolean
     description?: boolean
-    subscribers?: boolean | UserFindManyArgs
     owner?: boolean
+    subscribers?: boolean | UserFindManyArgs
     projects?: boolean | ProjectFindManyArgs
     created_at?: boolean
     _count?: boolean | CommunityCountOutputTypeArgs
@@ -2988,7 +2989,8 @@ export namespace Prisma {
     created_at: Date | null
     isPrivate: boolean | null
     image: string | null
-    community_name: string | null
+    communityName: string | null
+    tags: string | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -2999,7 +3001,8 @@ export namespace Prisma {
     created_at: Date | null
     isPrivate: boolean | null
     image: string | null
-    community_name: string | null
+    communityName: string | null
+    tags: string | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -3010,7 +3013,8 @@ export namespace Prisma {
     created_at: number
     isPrivate: number
     image: number
-    community_name: number
+    communityName: number
+    tags: number
     _all: number
   }
 
@@ -3031,7 +3035,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -3042,7 +3047,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -3053,7 +3059,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
     _all?: true
   }
 
@@ -3157,7 +3164,8 @@ export namespace Prisma {
     created_at: Date
     isPrivate: boolean
     image: string
-    community_name: string | null
+    communityName: string | null
+    tags: string
     _count: ProjectCountAggregateOutputType | null
     _avg: ProjectAvgAggregateOutputType | null
     _sum: ProjectSumAggregateOutputType | null
@@ -3185,20 +3193,21 @@ export namespace Prisma {
     description?: boolean
     owner?: boolean
     contributors?: boolean | UserFindManyArgs
-    community?: boolean | CommunityArgs
     tasks?: boolean | TaskFindManyArgs
     created_at?: boolean
     isPrivate?: boolean
     image?: boolean
-    community_name?: boolean
+    community?: boolean | CommunityArgs
+    communityName?: boolean
+    tags?: boolean
     _count?: boolean | ProjectCountOutputTypeArgs
   }
 
 
   export type ProjectInclude = {
     contributors?: boolean | UserFindManyArgs
-    community?: boolean | CommunityArgs
     tasks?: boolean | TaskFindManyArgs
+    community?: boolean | CommunityArgs
     _count?: boolean | ProjectCountOutputTypeArgs
   } 
 
@@ -3210,16 +3219,16 @@ export namespace Prisma {
     ? Project  & {
     [P in TrueKeys<S['include']>]:
         P extends 'contributors' ? Array < UserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'community' ? CommunityGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends 'tasks' ? Array < TaskGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
+        P extends 'community' ? CommunityGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
         P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
   } 
     : S extends { select: any } & (ProjectArgs | ProjectFindManyArgs)
       ? {
     [P in TrueKeys<S['select']>]:
         P extends 'contributors' ? Array < UserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'community' ? CommunityGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends 'tasks' ? Array < TaskGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
+        P extends 'community' ? CommunityGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
         P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Project ? Project[P] : never
   } 
       : Project
@@ -3596,9 +3605,9 @@ export namespace Prisma {
 
     contributors<T extends UserFindManyArgs= {}>(args?: Subset<T, UserFindManyArgs>): PrismaPromise<Array<UserGetPayload<T>>| Null>;
 
-    community<T extends CommunityArgs= {}>(args?: Subset<T, CommunityArgs>): Prisma__CommunityClient<CommunityGetPayload<T> | Null>;
-
     tasks<T extends TaskFindManyArgs= {}>(args?: Subset<T, TaskFindManyArgs>): PrismaPromise<Array<TaskGetPayload<T>>| Null>;
+
+    community<T extends CommunityArgs= {}>(args?: Subset<T, CommunityArgs>): Prisma__CommunityClient<CommunityGetPayload<T> | Null>;
 
     private get _document();
     /**
@@ -7583,7 +7592,8 @@ export namespace Prisma {
     created_at: 'created_at',
     isPrivate: 'isPrivate',
     image: 'image',
-    community_name: 'community_name'
+    communityName: 'communityName',
+    tags: 'tags'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -7723,8 +7733,8 @@ export namespace Prisma {
     NOT?: Enumerable<CommunityWhereInput>
     name?: StringFilter | string
     description?: StringFilter | string
-    subscribers?: UserListRelationFilter
     owner?: StringFilter | string
+    subscribers?: UserListRelationFilter
     projects?: ProjectListRelationFilter
     created_at?: DateTimeFilter | Date | string
   }
@@ -7732,8 +7742,8 @@ export namespace Prisma {
   export type CommunityOrderByWithRelationInput = {
     name?: SortOrder
     description?: SortOrder
-    subscribers?: UserOrderByRelationAggregateInput
     owner?: SortOrder
+    subscribers?: UserOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
     created_at?: SortOrder
   }
@@ -7771,12 +7781,13 @@ export namespace Prisma {
     description?: StringFilter | string
     owner?: StringFilter | string
     contributors?: UserListRelationFilter
-    community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
     tasks?: TaskListRelationFilter
     created_at?: DateTimeFilter | Date | string
     isPrivate?: BoolFilter | boolean
     image?: StringFilter | string
-    community_name?: StringNullableFilter | string | null
+    community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
+    communityName?: StringNullableFilter | string | null
+    tags?: StringFilter | string
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -7785,12 +7796,13 @@ export namespace Prisma {
     description?: SortOrder
     owner?: SortOrder
     contributors?: UserOrderByRelationAggregateInput
-    community?: CommunityOrderByWithRelationInput
     tasks?: TaskOrderByRelationAggregateInput
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    community?: CommunityOrderByWithRelationInput
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectWhereUniqueInput = {
@@ -7805,7 +7817,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _avg?: ProjectAvgOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
@@ -7824,7 +7837,8 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter | Date | string
     isPrivate?: BoolWithAggregatesFilter | boolean
     image?: StringWithAggregatesFilter | string
-    community_name?: StringNullableWithAggregatesFilter | string | null
+    communityName?: StringNullableWithAggregatesFilter | string | null
+    tags?: StringWithAggregatesFilter | string
   }
 
   export type TaskWhereInput = {
@@ -8076,8 +8090,8 @@ export namespace Prisma {
   export type CommunityCreateInput = {
     name: string
     description: string
-    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
     owner: string
+    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
     projects?: ProjectCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
@@ -8085,8 +8099,8 @@ export namespace Prisma {
   export type CommunityUncheckedCreateInput = {
     name: string
     description: string
-    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
     owner: string
+    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
@@ -8094,8 +8108,8 @@ export namespace Prisma {
   export type CommunityUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
     owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
     projects?: ProjectUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8103,8 +8117,8 @@ export namespace Prisma {
   export type CommunityUncheckedUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
     owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8135,11 +8149,12 @@ export namespace Prisma {
     description: string
     owner: string
     contributors?: UserCreateNestedManyWithoutProjectsInput
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     tasks?: TaskCreateNestedManyWithoutProjectInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -8152,7 +8167,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
   }
 
   export type ProjectUpdateInput = {
@@ -8160,11 +8176,12 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     contributors?: UserUpdateManyWithoutProjectsNestedInput
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     tasks?: TaskUpdateManyWithoutProjectNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -8177,7 +8194,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectCreateManyInput = {
@@ -8188,7 +8206,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -8198,6 +8217,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -8208,7 +8228,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateInput = {
@@ -8571,11 +8592,6 @@ export namespace Prisma {
     not?: NestedIntFilter | number
   }
 
-  export type CommunityRelationFilter = {
-    is?: CommunityWhereInput | null
-    isNot?: CommunityWhereInput | null
-  }
-
   export type TaskListRelationFilter = {
     every?: TaskWhereInput
     some?: TaskWhereInput
@@ -8585,6 +8601,11 @@ export namespace Prisma {
   export type BoolFilter = {
     equals?: boolean
     not?: NestedBoolFilter | boolean
+  }
+
+  export type CommunityRelationFilter = {
+    is?: CommunityWhereInput | null
+    isNot?: CommunityWhereInput | null
   }
 
   export type StringNullableFilter = {
@@ -8613,7 +8634,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectAvgOrderByAggregateInput = {
@@ -8628,7 +8650,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -8639,7 +8662,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectSumOrderByAggregateInput = {
@@ -9046,17 +9070,17 @@ export namespace Prisma {
     connect?: Enumerable<UserWhereUniqueInput>
   }
 
-  export type CommunityCreateNestedOneWithoutProjectsInput = {
-    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
-    connect?: CommunityWhereUniqueInput
-  }
-
   export type TaskCreateNestedManyWithoutProjectInput = {
     create?: XOR<Enumerable<TaskCreateWithoutProjectInput>, Enumerable<TaskUncheckedCreateWithoutProjectInput>>
     connectOrCreate?: Enumerable<TaskCreateOrConnectWithoutProjectInput>
     createMany?: TaskCreateManyProjectInputEnvelope
     connect?: Enumerable<TaskWhereUniqueInput>
+  }
+
+  export type CommunityCreateNestedOneWithoutProjectsInput = {
+    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
+    connect?: CommunityWhereUniqueInput
   }
 
   export type UserUncheckedCreateNestedManyWithoutProjectsInput = {
@@ -9085,16 +9109,6 @@ export namespace Prisma {
     deleteMany?: Enumerable<UserScalarWhereInput>
   }
 
-  export type CommunityUpdateOneWithoutProjectsNestedInput = {
-    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
-    upsert?: CommunityUpsertWithoutProjectsInput
-    disconnect?: boolean
-    delete?: boolean
-    connect?: CommunityWhereUniqueInput
-    update?: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
-  }
-
   export type TaskUpdateManyWithoutProjectNestedInput = {
     create?: XOR<Enumerable<TaskCreateWithoutProjectInput>, Enumerable<TaskUncheckedCreateWithoutProjectInput>>
     connectOrCreate?: Enumerable<TaskCreateOrConnectWithoutProjectInput>
@@ -9111,6 +9125,16 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type CommunityUpdateOneWithoutProjectsNestedInput = {
+    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
+    upsert?: CommunityUpsertWithoutProjectsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: CommunityWhereUniqueInput
+    update?: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -9376,11 +9400,12 @@ export namespace Prisma {
     name: string
     description: string
     owner: string
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     tasks?: TaskCreateNestedManyWithoutProjectInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
   }
 
   export type ProjectUncheckedCreateWithoutContributorsInput = {
@@ -9392,7 +9417,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
   }
 
   export type ProjectCreateOrConnectWithoutContributorsInput = {
@@ -9479,7 +9505,8 @@ export namespace Prisma {
     created_at?: DateTimeFilter | Date | string
     isPrivate?: BoolFilter | boolean
     image?: StringFilter | string
-    community_name?: StringNullableFilter | string | null
+    communityName?: StringNullableFilter | string | null
+    tags?: StringFilter | string
   }
 
   export type TaskSubmissionUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -9544,6 +9571,7 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
   }
 
   export type ProjectUncheckedCreateWithoutCommunityInput = {
@@ -9556,6 +9584,7 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
   }
 
   export type ProjectCreateOrConnectWithoutCommunityInput = {
@@ -9636,27 +9665,6 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
   }
 
-  export type CommunityCreateWithoutProjectsInput = {
-    name: string
-    description: string
-    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
-    owner: string
-    created_at?: Date | string
-  }
-
-  export type CommunityUncheckedCreateWithoutProjectsInput = {
-    name: string
-    description: string
-    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
-    owner: string
-    created_at?: Date | string
-  }
-
-  export type CommunityCreateOrConnectWithoutProjectsInput = {
-    where: CommunityWhereUniqueInput
-    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-  }
-
   export type TaskCreateWithoutProjectInput = {
     name: string
     description: string
@@ -9683,6 +9691,27 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CommunityCreateWithoutProjectsInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
+    created_at?: Date | string
+  }
+
+  export type CommunityUncheckedCreateWithoutProjectsInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
+    created_at?: Date | string
+  }
+
+  export type CommunityCreateOrConnectWithoutProjectsInput = {
+    where: CommunityWhereUniqueInput
+    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+  }
+
   export type UserUpsertWithWhereUniqueWithoutProjectsInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
@@ -9697,27 +9726,6 @@ export namespace Prisma {
   export type UserUpdateManyWithWhereWithoutProjectsInput = {
     where: UserScalarWhereInput
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutContributorsInput>
-  }
-
-  export type CommunityUpsertWithoutProjectsInput = {
-    update: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
-    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-  }
-
-  export type CommunityUpdateWithoutProjectsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
-    owner?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CommunityUncheckedUpdateWithoutProjectsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
-    owner?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskUpsertWithWhereUniqueWithoutProjectInput = {
@@ -9748,15 +9756,37 @@ export namespace Prisma {
     projectId?: IntFilter | number
   }
 
+  export type CommunityUpsertWithoutProjectsInput = {
+    update: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
+    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type CommunityUpdateWithoutProjectsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommunityUncheckedUpdateWithoutProjectsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProjectCreateWithoutTasksInput = {
     name: string
     description: string
     owner: string
     contributors?: UserCreateNestedManyWithoutProjectsInput
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
   }
 
   export type ProjectUncheckedCreateWithoutTasksInput = {
@@ -9768,7 +9798,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
   }
 
   export type ProjectCreateOrConnectWithoutTasksInput = {
@@ -9786,10 +9817,11 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     contributors?: UserUpdateManyWithoutProjectsNestedInput
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateWithoutTasksInput = {
@@ -9801,7 +9833,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserCreateWithoutTask_submissionsInput = {
@@ -9889,11 +9922,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     tasks?: TaskUpdateManyWithoutProjectNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateWithoutContributorsInput = {
@@ -9905,7 +9939,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateManyWithoutProjectsInput = {
@@ -9916,7 +9951,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskSubmissionUpdateWithoutAuthorInput = {
@@ -9951,6 +9987,7 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
   }
 
   export type UserUpdateWithoutCommunitiesInput = {
@@ -9990,6 +10027,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateWithoutCommunityInput = {
@@ -10002,6 +10040,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateManyProjectInput = {

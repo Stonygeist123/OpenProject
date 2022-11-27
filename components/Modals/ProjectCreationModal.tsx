@@ -11,11 +11,13 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
   const someRef = useRef(null);
   useCloseFunction(someRef, closeFunction);
   const [tags, setTags] = useState<Array<string | null>>([]);
+  const [tag, setTag] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [projectFound, setProjectFound] = useState(false);
   const [nameProvided, setNameProvided] = useState<Provided>(Provided.NotLoaded);
+  const [nameInput, setNameInput] = useState(false);
   const [logged, setLogged] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -50,8 +52,8 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
   }, [loading]);
 
   useEffect(() => {
-    if (!loading) setNameProvided(name.trim().length === 0 ? Provided.No : Provided.Yes);
-  }, [name, loading]);
+    if (!loading && nameInput) setNameProvided(name.trim().length === 0 ? Provided.No : Provided.Yes);
+  }, [name, loading, nameInput]);
 
   return (
     <div id={styles["myModal"]} className={styles["modal"]}>
@@ -61,8 +63,20 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new project! </h1>
+            <span className={styles["close"]} onClick={closeFunction}>
+              &times;
+            </span>
+
             <div className={styles["content-wrapper"]}>
-              <input className={styles["modal-input"]} value={name} onChange={e => setName(e.target.value)} placeholder="Enter a name..." />
+              <input
+                className={styles["modal-input"]}
+                value={name}
+                onChange={e => {
+                  setName(e.target.value);
+                  setNameInput(true);
+                }}
+                placeholder="Enter a name..."
+              />
               {projectFound ? (
                 <label style={{ color: "red" }}>Project &ldquo;{name}&rdquo; does already exist.</label>
               ) : nameProvided === Provided.No ? (
@@ -72,13 +86,18 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
                 <input
                   className={styles["modal-input"]}
                   placeholder="Enter categories/tags"
+                  onChange={e => {
+                    const value = e.target.value;
+                    setTag(value);
+                  }}
+                  value={tag}
                   onKeyDown={e => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      if (tags.includes(name) || name.trim() === "") return;
+                      if (tags.includes(tag) || tag.trim() === "") return;
 
-                      setTags(ts => [...ts, name.trim()]);
-                      setName("");
+                      setTag("");
+                      setTags(ts => [...ts, tag.trim() + " "]);
                     }
                   }}
                 />
@@ -121,10 +140,6 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
                 Submit
               </Button>
             </div>
-
-            <span className={styles["close"]} onClick={closeFunction}>
-              &times;
-            </span>
           </>
         ) : (
           <h1 className={styles["modal-title"]}> You need to be logged in! </h1>

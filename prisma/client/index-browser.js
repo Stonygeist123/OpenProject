@@ -114,7 +114,8 @@ exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   created_at: 'created_at',
   isPrivate: 'isPrivate',
   image: 'image',
-  community_name: 'community_name'
+  communityName: 'communityName',
+  tags: 'tags'
 });
 
 exports.Prisma.SortOrder = makeEnum({

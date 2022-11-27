@@ -41,6 +41,7 @@ model Project {
   image         String
   community     Community? @relation(fields: [communityName], references: [name])
   communityName String?
+  tags          String     @default("")
 }
 
 model Task {
