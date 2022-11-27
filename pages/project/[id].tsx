@@ -41,8 +41,24 @@ const ProjectPage = () => {
     <>
       <div className={styles["project-page"]}>
         <h1 className={styles["project-title"]}>{project.name}</h1>
-        <div className={styles["tasks-container"]}>
-          <TaskBox key={1} text={"small text"} />
+        <div className={styles["content-wrapper"]}>
+          <div className={styles["project-content"]}>
+            <div className={styles["project-description"]}>
+              <h3 className={styles["project-description-title"]}>Description</h3>
+              <p className={styles["project-description-text-wrapper"]}>
+                <code className={styles["project-description-text"]}>{project.description}</code>
+              </p>
+            </div>
+
+            <div className={`${styles["tasks-container"]} ${styles["m-l-5"]}`}>
+              {Array.from({ length: 3 }, (_, i) => (
+                <>
+                  <br />
+                  <TaskBox key={i} text={"small text"} />
+                </>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -50,5 +66,3 @@ const ProjectPage = () => {
 };
 
 export default ProjectPage;
-// lemme redirect to project page after creating a proj from modal
-// sure

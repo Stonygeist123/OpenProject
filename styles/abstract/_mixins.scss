@@ -41,3 +41,18 @@
         display: none;
     }
 }
+
+@mixin flex-responsive {
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: 1600px) {
+        flex-direction: column;
+    }
+}
+
+@mixin centerItemAbsolute {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

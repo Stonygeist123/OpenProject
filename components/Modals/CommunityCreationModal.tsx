@@ -1,7 +1,6 @@
 import styles from "../../styles/modules/CommunityCreationModal.module.scss";
 import { useRef, useState } from "react";
 import useCloseFunction from "./utils/OutsideAlerter";
-import Image from "next/image";
 import Button from "../Button";
 import fetchJson from "../../lib/fetchJson";
 
@@ -11,7 +10,7 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
+  const [tag, setTag] = useState("");
   const handleOnClick = async () => {
     if (name.trim().length == 0) console.log("No name provided");
     else {
@@ -37,13 +36,17 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
             <input
               className={styles["modal-input"]}
               placeholder="Enter categories/tags"
+              onChange={e => {
+                const value = e.target.value;
+                setTag(value);
+              }}
+              value={tag}
               onKeyDown={e => {
-                if (e.key === "Enter") {
+                if (e.key === "Tab") {
                   e.preventDefault();
-                  if (tags.includes(name) || name.trim() === "") return;
-
-                  setTags(ts => [...ts, name.trim()]);
-                  setName("");
+                  if (tags.includes(tag) || tag.trim() === "") return;
+                  setTag("");
+                  setTags(ts => [...ts, tag.trim()]);
                 }
               }}
             />
@@ -53,17 +56,20 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
                 : tags.map((t, i) => (
                     <>
                       <div className={styles["tag"]}>
-                        <code className={styles["tag-text"]}>{t}</code>
-                        <Image
-                          alt="tag"
-                          id={`tag-${i}`}
-                          className={styles["tag-cross"]}
-                          src="https://upload.wikimedia.org/wikipedia/commons/8/8e/OS_X-Logo.svg"
-                          onClick={() => {
-                            tags[i] = null;
-                            setTags(tags.filter(t => t !== null));
-                          }}
-                        />
+                        <code className={styles["tag-text"]}>
+                          {t}{" "}
+                          <p
+                            style={{ cursor: "pointer" }}
+                            id={`tag-${i}`}
+                            className={styles["tag-cross"]}
+                            onClick={() => {
+                              tags[i] = null;
+                              setTags(tags.filter(t => t !== null));
+                            }}
+                          >
+                            x
+                          </p>
+                        </code>
                       </div>
                     </>
                   ))}
