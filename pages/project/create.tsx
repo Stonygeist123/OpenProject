@@ -1,23 +1,41 @@
 import { useRouter } from "next/router";
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
+=======
+import React, { useEffect, useRef, useState } from "react";
+import Button from "../../components/Button";
+import useCloseFunction from "../../components/Modals/utils/OutsideAlerter";
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
 import ToggleButton from "../../components/ToggleButton/ToggleButton";
 import fetchJson from "../../lib/fetchJson";
 import { Provided } from "../../utils/utils";
 import styles from "../../styles/pages/project/create.module.scss";
 
+<<<<<<< HEAD
 const ProjectCreationPage = () => {
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [tag, setTag] = useState("");
+=======
+const ProjectCreationPage = ({ closeFunction }: { closeFunction: () => void }) => {
+  const someRef = useRef(null);
+  useCloseFunction(someRef, closeFunction);
+  const [tags, setTags] = useState<Array<string | null>>([]);
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [projectFound, setProjectFound] = useState(false);
   const [nameProvided, setNameProvided] = useState<Provided>(Provided.NotLoaded);
+<<<<<<< HEAD
   const [nameInput, setNameInput] = useState(false);
   const [logged, setLogged] = useState(false);
   const [loading, setLoading] = useState(true);
   const [unexpected, setUnexpected] = useState(false);
+=======
+  const [logged, setLogged] = useState(false);
+  const [loading, setLoading] = useState(true);
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
   const router = useRouter();
 
   const handleOnClick = async () => {
@@ -50,17 +68,26 @@ const ProjectCreationPage = () => {
   }, [loading]);
 
   useEffect(() => {
+<<<<<<< HEAD
     if (!loading && nameInput) setNameProvided(name.trim().length === 0 ? Provided.No : Provided.Yes);
   }, [name, loading, nameInput]);
 
   return (
     <div className={styles["page-content"]}>
+=======
+    if (!loading) setNameProvided(name.trim().length === 0 ? Provided.No : Provided.Yes);
+  }, [name, loading]);
+
+  return (
+    <div className={styles["page-content"]} ref={someRef}>
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
       {loading ? (
         <h1 className={styles["title"]}> Loading... </h1>
       ) : logged ? (
         <>
           <h1 className={styles["title"]}> Create a new project! </h1>
           <div className={styles["content-wrapper"]}>
+<<<<<<< HEAD
             <input
               className={styles["input"]}
               value={name}
@@ -70,6 +97,9 @@ const ProjectCreationPage = () => {
               }}
               placeholder="Enter a name..."
             />
+=======
+            <input className={styles["input"]} value={name} onChange={e => setName(e.target.value)} placeholder="Enter a name..." />
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
             {projectFound ? (
               <label style={{ color: "red" }}>Project &ldquo;{name}&rdquo; does already exist.</label>
             ) : nameProvided === Provided.No ? (
@@ -79,6 +109,7 @@ const ProjectCreationPage = () => {
               <input
                 className={styles["input"]}
                 placeholder="Enter categories/tags"
+<<<<<<< HEAD
                 onChange={e => {
                   const value = e.target.value;
                   setTag(value);
@@ -103,6 +134,18 @@ const ProjectCreationPage = () => {
                   Tag must match following pattern: <code>a-zA-Z1-9-_ </code>.
                 </label>
               ) : null}
+=======
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    if (tags.includes(name) || name.trim() === "") return;
+
+                    setTags(ts => [...ts, name.trim()]);
+                    setName("");
+                  }
+                }}
+              />
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
               <div className={styles["tags"]}>
                 {tags.length === 0
                   ? null
@@ -142,6 +185,13 @@ const ProjectCreationPage = () => {
               Submit
             </Button>
           </div>
+<<<<<<< HEAD
+=======
+
+          <span className={styles["close"]} onClick={closeFunction}>
+            &times;
+          </span>
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
         </>
       ) : (
         <h1 className={styles["title"]}> You need to be logged in! </h1>

@@ -13,6 +13,7 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [tag, setTag] = useState("");
+<<<<<<< HEAD
   const [communityFound, setCommunityFound] = useState(false);
   const [nameProvided, setNameProvided] = useState<Provided>(Provided.NotLoaded);
   const [nameInput, setNameInput] = useState(false);
@@ -20,6 +21,8 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
+=======
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
   const handleOnClick = async () => {
     if (nameProvided !== Provided.No) {
       setNameProvided(Provided.Yes);
@@ -56,6 +59,7 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
   return (
     <div id={styles["myModal"]} className={styles["modal"]}>
       <div className={styles["modal-content"]} ref={someRef}>
+<<<<<<< HEAD
         {loading ? (
           <h1 className={styles["modal-title"]}> Loading... </h1>
         ) : logged ? (
@@ -133,6 +137,52 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
               <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
                 Submit
               </Button>
+=======
+        <h1 className={styles["modal-title"]}> Create a new community! </h1>
+        <div className={styles["content-wrapper"]}>
+          <input className={styles["modal-input"]} value={name} onChange={e => setName(e.target.value)} placeholder="Enter a name..." />
+          <div className={styles["input-wrapper"]}>
+            <input
+              className={styles["modal-input"]}
+              placeholder="Enter categories/tags"
+              onChange={e => {
+                const value = e.target.value;
+                setTag(value);
+              }}
+              value={tag}
+              onKeyDown={e => {
+                if (e.key === "Tab") {
+                  e.preventDefault();
+                  if (tags.includes(tag) || tag.trim() === "") return;
+                  setTag("");
+                  setTags(ts => [...ts, tag.trim()]);
+                }
+              }}
+            />
+            <div className={styles["tags"]}>
+              {tags.length === 0
+                ? null
+                : tags.map((t, i) => (
+                    <>
+                      <div className={styles["tag"]}>
+                        <code className={styles["tag-text"]}>
+                          {t}{" "}
+                          <p
+                            style={{ cursor: "pointer" }}
+                            id={`tag-${i}`}
+                            className={styles["tag-cross"]}
+                            onClick={() => {
+                              tags[i] = null;
+                              setTags(tags.filter(t => t !== null));
+                            }}
+                          >
+                            x
+                          </p>
+                        </code>
+                      </div>
+                    </>
+                  ))}
+>>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
             </div>
 
             <span className={styles["close"]} onClick={() => closeFunction()}>
