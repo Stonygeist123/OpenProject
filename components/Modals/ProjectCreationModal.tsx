@@ -1,8 +1,8 @@
 import styles from "../../styles/modules/ProjectCreationModal.module.scss";
 import { useEffect, useRef, useState } from "react";
 import useCloseFunction from "./utils/OutsideAlerter";
-import Button from "../Button";
-import ToggleButton from "../ToggleButton/ToggleButton";
+import Button from "../common/Button";
+import ToggleButton from "../common/ToggleButton/ToggleButton";
 import fetchJson from "../../lib/fetchJson";
 import { useRouter } from "next/router";
 import { Provided } from "../../utils/utils";

@@ -11,10 +11,6 @@ a {
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -26,12 +22,15 @@ a {
   }
 }
 
+@import "base/base";
+
 @import "abstract/functions";
 @import "abstract/variables";
 @import "abstract/mixins";
 
-@import "base/base";
 @import "base/spacing-helpers"; // @import "vendors/bootstrap";
+
+// @import "vendors/bootstrap";
 
 // // @import "base/reset";
 // // @import "base/typography";
