@@ -79,7 +79,7 @@ model Tag {
 }
 
 model Message {
-  id            String     @id @unique
+  id            Int     @id @unique @default(autoincrement())
   content       String
   username      String
   project       Project?   @relation(fields: [projectId], references: [id])
