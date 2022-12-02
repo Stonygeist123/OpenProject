@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Button from "../../components/Button";
-import ToggleButton from "../../components/ToggleButton/ToggleButton";
-import fetchJson from "../../lib/fetchJson";
-import { Provided } from "../../utils/utils";
-import styles from "../../styles/pages/project/create.module.scss";
+import Button from "../../../components/common/Button/Button";
+import ToggleButton from "../../../components/common/ToggleButton/ToggleButton";
+import fetchJson from "../../../lib/fetchJson";
+import { Provided } from "../../../utils/utils";
+import styles from "../../../styles/pages/project/create.module.scss";
 
 const ProjectCreationPage = () => {
   const [tags, setTags] = useState<Array<string | null>>([]);
@@ -17,6 +17,7 @@ const ProjectCreationPage = () => {
   const [nameInput, setNameInput] = useState(false);
   const [logged, setLogged] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [unexpected, setUnexpected] = useState(false);
   const router = useRouter();
 
   const handleOnClick = async () => {
@@ -84,14 +85,24 @@ const ProjectCreationPage = () => {
                 }}
                 value={tag}
                 onKeyDown={e => {
+                  console.log(unexpected);
                   if (e.key === "Enter") {
+                    if ((tag + e.key).split("").some(s => parseInt(s) === NaN && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
+                      return setUnexpected(true);
+                    else setUnexpected(false);
+
                     e.preventDefault();
                     if (tags.includes(tag) || tag.trim() === "") return;
-                    if (tag.split("")) setTag("");
+                    setTag("");
                     setTags(ts => [...ts, tag.trim() + " "]);
                   }
                 }}
               />
+              {unexpected ? (
+                <label style={{ color: "red" }}>
+                  Tag must match following pattern: <code>a-zA-Z1-9-_ </code>.
+                </label>
+              ) : null}
               <div className={styles["tags"]}>
                 {tags.length === 0
                   ? null
@@ -121,15 +132,13 @@ const ProjectCreationPage = () => {
                 value={description}
                 onChange={e => setDescription(e.currentTarget.value)}
               ></textarea>
+              <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" />
             </div>
-            <br />
-            <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" />
-            <br />
-          </div>
-          <div className={styles["footer"]}>
-            <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
-              Submit
-            </Button>
+            <div className={styles["footer"]}>
+              <Button onClick={handleOnClick} size="xl">
+                Submit
+              </Button>
+            </div>
           </div>
         </>
       ) : (

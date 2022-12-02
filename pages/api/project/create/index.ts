@@ -1,9 +1,9 @@
-// pages/api/project/create.ts
+// pages/api/project/create/index.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";
-import prisma from "../../../lib/prisma";
-import { sessionOptions } from "../../../lib/session";
+import prisma from "../../../../lib/prisma";
+import { sessionOptions } from "../../../../lib/session";
 
 export default withIronSessionApiRoute(
   async (
@@ -17,7 +17,13 @@ export default withIronSessionApiRoute(
     res: NextApiResponse<{
       allowed: boolean;
       found: boolean;
-      project: Project | null;
+      project:
+        | (Project & {
+            contributors: User[];
+            community: Community | null;
+            tasks: Task[];
+          })
+        | null;
       message: string;
     }>
   ) => {

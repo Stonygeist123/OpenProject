@@ -1,5 +1,6 @@
 import CreateTaskBox from "../../../components/CreateTaskBox/CreateTaskBox";
 import styles from "../../../styles/pages/project/add-tasks.module.scss";
+
 const AddTasksPage = () => {
   return (
     <div className={styles["wrapper"]}>

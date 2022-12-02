@@ -106,6 +106,17 @@ exports.Prisma.JsonNullValueInput = makeEnum({
   JsonNull: Prisma.JsonNull
 });
 
+exports.Prisma.MessageScalarFieldEnum = makeEnum({
+  id: 'id',
+  content: 'content',
+  username: 'username',
+  replyID: 'replyID',
+  edited_at: 'edited_at',
+  created_at: 'created_at',
+  projectId: 'projectId',
+  communityName: 'communityName'
+});
+
 exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
@@ -176,7 +187,8 @@ exports.Prisma.ModelName = makeEnum({
   Task: 'Task',
   Submission: 'Submission',
   TaskSubmission: 'TaskSubmission',
-  Tag: 'Tag'
+  Tag: 'Tag',
+  Message: 'Message'
 });
 
 /**

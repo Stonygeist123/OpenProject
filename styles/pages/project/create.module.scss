@@ -5,23 +5,15 @@ $color-text-placeholder: darken($color-text, 20%);
 
 /* The Modal (background) */
 .page-content {
-<<<<<<< HEAD
-    display: block;
-=======
     display: block; /* Hidden by default */
-    position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
->>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
     left: 0;
     top: 0;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
-<<<<<<< HEAD
     background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
     color: white;
-}
-=======
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
@@ -42,21 +34,15 @@ $color-text-placeholder: darken($color-text, 20%);
 //     @media only screen and (max-width: 1000px) {
 //         width: 600px;
 //     }}
->>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
 
 .content-wrapper {
     width: 60%;
     margin: auto;
 }
-<<<<<<< HEAD
 
 .title {
     text-align: center;
     font-size: xx-large;
-=======
-.title {
-    text-align: center;
->>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878
 }
 
 .input {
@@ -146,7 +132,6 @@ $color-text-placeholder: darken($color-text, 20%);
         color: black;
     }
 }
-<<<<<<< HEAD
 
 .tag {
     background-color: rgb(224, 224, 224);
@@ -164,5 +149,3 @@ $color-text-placeholder: darken($color-text, 20%);
     display: inline-block;
     cursor: pointer;
 }
-=======
->>>>>>> 1b387b4d620ad6d4812eb2dc0f77692bfba70878

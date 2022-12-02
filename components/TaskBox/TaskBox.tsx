@@ -1,4 +1,4 @@
-import Button from "../Button";
+import Button from "../common/Button";
 import styles from "./TaskBox.module.scss";
 const TaskBox = ({ key, text }: { key: number; text?: string }) => {
   const placeHolderText =
