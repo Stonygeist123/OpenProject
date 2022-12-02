@@ -26,6 +26,7 @@ model Community {
   owner       String
   subscribers User[]
   projects    Project[]
+  messages    Message[]
   created_at  DateTime  @default(now())
 }
 
@@ -42,6 +43,7 @@ model Project {
   community     Community? @relation(fields: [communityName], references: [name])
   communityName String?
   tags          String     @default("")
+  messages      Message[]
 }
 
 model Task {
@@ -74,4 +76,17 @@ model TaskSubmission {
 
 model Tag {
   name String @id @unique
+}
+
+model Message {
+  id            String     @id @unique
+  content       String
+  username      String
+  project       Project?   @relation(fields: [projectId], references: [id])
+  community     Community? @relation(fields: [communityName], references: [name])
+  replyID       String?
+  edited_at     DateTime   @default(now())
+  created_at    DateTime   @default(now())
+  projectId     Int?
+  communityName String?
 }

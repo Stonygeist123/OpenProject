@@ -4,11 +4,11 @@
         "editor.formatOnSave": true
     },
     "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features",
+        "editor.defaultFormatter": "ms-vsliveshare.vsliveshare",
         "editor.formatOnSave": true
     },
     "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.defaultFormatter": "ms-vsliveshare.vsliveshare",
         "editor.formatOnSave": true
     },
     "[javascript]": {
@@ -17,7 +17,7 @@
     },
     "[scss]": {
         "editor.suggest.insertMode": "replace",
-        "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter",
+        "editor.defaultFormatter": "ms-vsliveshare.vsliveshare",
         "editor.formatOnSave": true
     }
 }
