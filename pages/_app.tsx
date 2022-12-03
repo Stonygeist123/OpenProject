@@ -1,6 +1,6 @@
 import "../styles/globals.scss";
 import type { AppProps } from "next/app";
-import NavBar from "../components/NavBar/NavBar";
+import NavBar from "../components/NavBar";
 import { SWRConfig } from "swr";
 import fetchJson from "../lib/fetchJson";
 

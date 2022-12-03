@@ -36,14 +36,13 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
         },
       });
 
-      console.log(data.message);
       if (data.allowed) router.push(`/project/${data.project!.id}`);
       else if (data.found) setCommunityFound(true);
     }
   };
 
   useEffect(() => {
-    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => {
+    fetchJson<{ user: UserSession | null }>("/api/user/account/get_session").then(data => {
       setLogged(data.user !== null);
       setLoading(false);
     });
@@ -61,6 +60,9 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new community! </h1>
+            <span className={styles["close"]} onClick={closeFunction}>
+              &times;
+            </span>
             <div className={styles["content-wrapper"]}>
               <input
                 className={styles["modal-input"]}
@@ -130,14 +132,8 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
               <br />
             </div>
             <div className={styles["footer"]}>
-              <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
-                Submit
-              </Button>
+              <Button isSubmit onClick={handleOnClick} className={styles["submit-button"]} />
             </div>
-
-            <span className={styles["close"]} onClick={() => closeFunction()}>
-              &times;
-            </span>
           </>
         ) : (
           <h1 className={styles["modal-title"]}> You need to be logged in! </h1>

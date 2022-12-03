@@ -74,3 +74,21 @@ $dark-fg: rgb(241, 239, 231);
         }
     }
 }
+
+.submit-btn {
+    margin-top: 20px;
+    background-color: rgb(4, 4, 73);
+    text-decoration: none;
+    border: none;
+    border-radius: 20px;
+    transition: 0.5s;
+    position: relative;
+    margin: auto;
+    cursor: pointer;
+    color: white;
+
+    &:hover {
+        background-color: rgba(0, 221, 169, 0.74);
+        color: black;
+    }
+}

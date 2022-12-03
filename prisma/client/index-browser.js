@@ -13,12 +13,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.6.1
- * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+ * Prisma Client JS version: 4.7.1
+ * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
  */
 Prisma.prismaVersion = {
-  client: "4.6.1",
-  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
+  client: "4.7.1",
+  engine: "272861e07ab64f234d3ffc4094e32bd61775599c"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -147,6 +147,7 @@ exports.Prisma.TagScalarFieldEnum = makeEnum({
 });
 
 exports.Prisma.TaskScalarFieldEnum = makeEnum({
+  id: 'id',
   name: 'name',
   description: 'description',
   prerequisites: 'prerequisites',

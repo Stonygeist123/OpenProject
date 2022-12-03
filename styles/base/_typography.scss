@@ -1,20 +1,3 @@
-html {
-    font-size: 62.5%;
-}
-
-body {
-    font-family: "Lato", sans-serif;
-    font-weight: 400;
-    line-height: 1.7;
-    color: #777;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    font-size: inherit;
-}
-
 .text-xxs {
     font-size: 1.2rem;
 }
@@ -33,4 +16,35 @@ body {
 
 .text-lg {
     font-size: 1.6rem;
+}
+.text-xl {
+    font-size: 1.7rem;
+}
+
+.text-2x {
+    font-size: 1.8rem;
+}
+
+.text-3x {
+    font-size: 1.9rem;
+}
+
+.text-4x {
+    font-size: 2rem;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.font-normal {
+    font-weight: normal;
+}
+
+.font-lighter {
+    font-weight: lighter;
+}
+
+.full-height {
+    height: 100%;
 }

@@ -32,6 +32,7 @@ export default withIronSessionApiRoute(
         const user = await prisma.user.findFirst({
           where: { token: req.session.user?.token as string },
         });
+
         if (user && (project.owner == user.name || project.contributors.some(u => u.name == user.name)))
           res.json({
             admin: true,

@@ -1,18 +1,16 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Button from "../../../components/common/Button";
-import ToggleButton from "../../../components/common/ToggleButton/ToggleButton";
 import fetchJson from "../../../lib/fetchJson";
 import { Provided } from "../../../utils/utils";
 import styles from "../../../styles/pages/project/create/index.module.scss";
 
-const ProjectCreationPage = () => {
+const CommunityCreationPage = () => {
   const [tags, setTags] = useState<Array<string | null>>([]);
   const [tag, setTag] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [projectFound, setProjectFound] = useState(false);
+  const [communityFound, setCommunityFound] = useState(false);
   const [nameProvided, setNameProvided] = useState<Provided>(Provided.NotLoaded);
   const [nameInput, setNameInput] = useState(false);
   const [logged, setLogged] = useState(false);
@@ -26,18 +24,18 @@ const ProjectCreationPage = () => {
       const data = await fetchJson<{
         allowed: boolean;
         found: boolean;
-        project: Project | null;
+        community: Community | null;
         message: string;
-      }>("/api/project/create", {
-        body: JSON.stringify({ name, description, isPrivate }),
+      }>("/api/community/create", {
+        body: JSON.stringify({ name, description }),
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (data.allowed) router.push(`/project/${data.project!.id}`);
-      else if (data.found) setProjectFound(true);
+      if (data.allowed) router.push(`/community/${data.community!.name}`);
+      else if (data.found) setCommunityFound(true);
     }
   };
 
@@ -69,7 +67,7 @@ const ProjectCreationPage = () => {
               }}
               placeholder="Enter a name..."
             />
-            {projectFound ? (
+            {communityFound ? (
               <label style={{ color: "red" }}>Project &ldquo;{name}&rdquo; does already exist.</label>
             ) : nameProvided === Provided.No ? (
               <label style={{ color: "red" }}>No name provided.</label>
@@ -130,13 +128,11 @@ const ProjectCreationPage = () => {
                 value={description}
                 onChange={e => setDescription(e.currentTarget.value)}
               ></textarea>
-              <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" className={styles["toggle-private-checkbox"]} />
             </div>
             <div className={styles["footer"]}>
-              <div className={`${styles["button-container"]}`}>
-                <Button isSubmit onClick={handleOnClick} />
-                <Button isSubmit text="Next" />
-              </div>
+              <Button className={styles["submit-button"]} onClick={handleOnClick} size="xl">
+                Submit
+              </Button>
             </div>
           </div>
         </>
@@ -147,4 +143,4 @@ const ProjectCreationPage = () => {
   );
 };
 
-export default ProjectCreationPage;
+export default CommunityCreationPage;

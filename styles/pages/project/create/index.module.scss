@@ -5,35 +5,15 @@ $color-text-placeholder: darken($color-text, 20%);
 
 /* The Modal (background) */
 .page-content {
-    display: block; /* Hidden by default */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    display: block;
+    width: 60%; /* Full width */
+    margin: auto;
     background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
     color: white;
-    overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0, 0, 0); /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-// .page-content {
-//     display: block; /* Hidden by default */
-//     position: fixed; /* Stay in place */
-//     z-index: 1; /* Sit on top */
-//     left: 0;
-//     top: 0;
-//     height: 100%; /* Full height */
-//     overflow: auto; /* Enable scroll if needed */
-//     color: $color-text;
-//     // display: flex;
-//     @media only screen and (max-width: 1200px) {
-//         width: 700px;
-//     }
-//     @media only screen and (max-width: 1000px) {
-//         width: 600px;
-//     }}
 
 .content-wrapper {
     width: 60%;
@@ -58,12 +38,15 @@ $color-text-placeholder: darken($color-text, 20%);
     background-color: $color-1;
     color: $color-text;
     padding: 2px 10px;
+
     &::placeholder {
         color: $color-text-placeholder;
     }
+
     &:hover {
         background-color: lighten($color-1, 5%);
     }
+
     &:focus {
         background-color: ($color-1);
     }
@@ -111,25 +94,16 @@ $color-text-placeholder: darken($color-text, 20%);
     cursor: pointer;
 }
 
-.footer {
-    display: flex;
+.toggle-private-checkbox {
+    margin-bottom: 2%;
 }
 
-.submit-button {
-    margin-top: 20px;
-    background-color: rgb(4, 4, 73);
-    text-decoration: none;
-    border: none;
-    border-radius: 20px;
-    transition: 0.5s;
+.footer {
+    display: flex;
     position: relative;
-    margin: auto;
-    cursor: pointer;
-    color: white;
-
-    &:hover {
-        background-color: rgba(0, 221, 169, 0.74);
-        color: black;
+    .button-container {
+        position: absolute;
+        right: 0;
     }
 }
 

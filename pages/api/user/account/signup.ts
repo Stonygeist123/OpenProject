@@ -1,8 +1,8 @@
-// pages/api/user/signup.ts
+// pages/api/user/account/signup.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
-import prisma from "../../../lib/prisma";
-import { sessionOptions } from "../../../lib/session";
+import prisma from "../../../../lib/prisma";
+import { sessionOptions } from "../../../../lib/session";
 import bcrypt from "bcrypt";
 import { NextApiRequest, NextApiResponse } from "next";
 

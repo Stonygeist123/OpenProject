@@ -33,10 +33,12 @@ $width: 800px;
             width: 600px;
         }
     }
+
     .content-wrapper {
         width: 60%;
         margin: auto;
     }
+
     .modal-title {
         text-align: center;
     }
@@ -54,12 +56,15 @@ $width: 800px;
         background-color: $color-1;
         color: $color-text;
         padding: 2px 10px;
+
         &::placeholder {
             color: $color-text-placeholder;
         }
+
         &:hover {
             background-color: lighten($color-1, 5%);
         }
+
         &:focus {
             background-color: ($color-1);
         }
@@ -96,7 +101,6 @@ $width: 800px;
         font-weight: bold;
         position: relative;
         z-index: 2;
-        bottom: 35rem;
         left: 95%;
     }
 

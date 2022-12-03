@@ -2,8 +2,8 @@
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";
-import prisma from "../../../../lib/prisma";
-import { sessionOptions } from "../../../../lib/session";
+import prisma from "../../../../../lib/prisma";
+import { sessionOptions } from "../../../../../lib/session";
 
 export default withIronSessionApiRoute(
   async (
@@ -48,6 +48,20 @@ export default withIronSessionApiRoute(
 
         const user = await prisma.user.findFirst({ where: { token: req.session.user.token } });
         if (user) {
+          const region_name = (
+            isProject
+              ? await prisma.project.findFirst({ where: { id: parseInt(region) } })
+              : await prisma.community.findFirst({ where: { name: region } })
+          )?.name;
+
+          if (region_name === null)
+            return res.json({
+              allowed: true,
+              found: false,
+              msg: null,
+              message: `Could not find ${isProject ? `project with id "${region_name}"` : `community with name "${region}"`}.`,
+            });
+
           const msg = await prisma.message.create({
             include: { project: true, community: true },
             data: {
@@ -61,7 +75,7 @@ export default withIronSessionApiRoute(
             allowed: true,
             found: false,
             msg,
-            message: `Successfully created project "${name}".`,
+            message: `Successfully created message in ${isProject ? "project" : "community"} "${region_name}".`,
           });
         } else
           res.json({

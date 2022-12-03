@@ -1,7 +1,7 @@
-// pages/api/user/logout.ts
+// pages/api/user/account/logout.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
-import { sessionOptions } from "../../../lib/session";
+import { sessionOptions } from "../../../../lib/session";
 
 export default withIronSessionApiRoute((req, res) => {
   if (req.session.user) {

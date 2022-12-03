@@ -1,4 +1,10 @@
-@import "../../abstract/mixins";
+@import "../../../abstract/mixins";
+@import "../../../abstract/variables";
+
+$color-1: lighten($color-base, 15%);
+$color-border: darken($color-base, 60%);
+$color-text: lighten($color-base, 90%);
+$color-text-placeholder: darken($color-text, 20%);
 
 .project-page {
     align-items: center;
@@ -24,6 +30,39 @@
 
 .tasks-container {
     position: relative;
+    top: 5.3em;
+    margin-left: 20em;
+
+    > .tasks {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        border: solid 5px;
+        border-image-repeat: none;
+        border-color: rgba($color-border, 0.6);
+        border-radius: 14px;
+        background-color: $color-1;
+        opacity: 1;
+        min-width: 60em;
+        min-height: 37.5em;
+        z-index: 1;
+    }
+
+    > h1 {
+        position: relative;
+        bottom: 50%;
+        z-index: 2;
+        opacity: 1;
+        color: white;
+        text-align: center;
+    }
+
+    > .create-task-button {
+        position: relative;
+        bottom: 25%;
+        left: 37.5%;
+        z-index: 2;
+    }
 }
 
 .project-description {

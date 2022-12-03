@@ -78,6 +78,7 @@ const Home = () => {
           }}
         />
       ) : null}
+
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
         <div className={styles["home-left-nav"]}>
           <button

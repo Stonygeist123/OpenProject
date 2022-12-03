@@ -1,11 +1,11 @@
 import styles from "../../styles/modules/ProjectCreationModal.module.scss";
 import { useEffect, useRef, useState } from "react";
 import useCloseFunction from "./utils/OutsideAlerter";
-import Button from "../common/Button";
 import ToggleButton from "../common/ToggleButton/ToggleButton";
 import fetchJson from "../../lib/fetchJson";
 import { useRouter } from "next/router";
 import { Provided } from "../../utils/utils";
+import Button from "../common/Button";
 
 const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const someRef = useRef(null);
@@ -45,7 +45,7 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
   };
 
   useEffect(() => {
-    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => {
+    fetchJson<{ user: UserSession | null }>("/api/user/account/get_session").then(data => {
       setLogged(data.user !== null);
       setLoading(false);
     });
@@ -136,9 +136,7 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
               <br />
             </div>
             <div className={styles["footer"]}>
-              <Button onClick={handleOnClick} className={styles["submit-button"]} size="xl">
-                Submit
-              </Button>
+              <Button isSubmit onClick={handleOnClick} className={styles["submit-button"]} size="xl" />
             </div>
           </>
         ) : (

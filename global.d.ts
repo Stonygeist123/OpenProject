@@ -48,6 +48,7 @@ type Project = {
  *
  */
 type Task = {
+  id: number;
   name: string;
   description: string;
   prerequisites: Prisma.JsonValue;

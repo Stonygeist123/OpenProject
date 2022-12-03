@@ -1,6 +1,6 @@
 import styles from "../../styles/modules/NavBar.module.scss";
 import Link from "next/link";
-import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "../SearchBar";
 
 export default function NavBar() {
   return (
@@ -17,7 +17,10 @@ export default function NavBar() {
             <SearchBar />
           </div>
           <div style={{ display: "inline-block" }}>
-            <Link href="/login"> login</Link>
+            <Link href="/user/login">Login</Link>
+          </div>
+          <div style={{ display: "inline-block" }}>
+            <Link href="/user/signup">Signup</Link>
           </div>
         </div>
       </nav>

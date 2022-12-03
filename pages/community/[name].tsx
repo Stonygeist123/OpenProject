@@ -18,10 +18,6 @@ const ProjectPage = () => {
     }>(`/api/community/${name}`).then(data => setProject(data.project));
   }, [router, name]);
 
-  useEffect(() => {
-    console.log(`Community:\n\t`, project);
-  }, [project]);
-
   return project === null ? (
     <p style={{ color: "white" }}>
       Could not find community with name <code style={{ fontWeight: "bolder" }}>{name}</code>

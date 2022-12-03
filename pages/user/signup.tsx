@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styles from "../styles/pages/signup.module.scss";
-import useUser from "../lib/useUser";
-import fetchJson, { FetchError } from "../lib/fetchJson";
+import styles from "../../styles/pages/signup.module.scss";
+import useUser from "../../lib/useUser";
+import fetchJson, { FetchError } from "../../lib/fetchJson";
 import { useRouter } from "next/router";
 
 const SignupPage = () => {
@@ -70,7 +70,7 @@ const SignupPage = () => {
     setDisableControls(true);
     e.preventDefault();
 
-    const data = (await fetchJson(`/api/user/signup`, {
+    const data = (await fetchJson(`/api/user/account/signup`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -91,13 +91,10 @@ const SignupPage = () => {
       const { user, allowed, found } = data;
       if (found) {
         setInvalidsignup(true);
-        console.log(`User "${name}" already exists.`);
       } else if (!allowed) {
         setInvalidsignup(true);
-        console.log("Signup prohibited.");
       } else {
-        console.log("User logged in:\n\t", user);
-        mutateUser(data.user, false);
+        mutateUser(user, false);
         await router.push("/home");
       }
 
@@ -109,11 +106,11 @@ const SignupPage = () => {
   };
 
   useEffect(() => {
-    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => setSession(data.user));
+    fetchJson<{ user: UserSession | null }>("/api/user/account/get_session").then(data => setSession(data.user));
   }, [session]);
 
   const logOut = async () => {
-    fetchJson("/api/user/logout");
+    fetchJson("/api/user/account/logout");
     await router.push("/");
   };
 

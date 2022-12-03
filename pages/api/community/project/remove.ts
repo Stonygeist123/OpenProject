@@ -1,16 +1,16 @@
-// pages/api/community/create.ts
+// pages/api/community/project/remove.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";
-import { sessionOptions } from "../../../lib/session";
-import prisma from "../../../lib/prisma";
+import { sessionOptions } from "../../../../lib/session";
+import prisma from "../../../../lib/prisma";
 
 export default withIronSessionApiRoute(
   async (
     req: NextApiRequest & {
       body: {
         name: string;
-        community_name: string;
+        communityName: string;
       };
     },
     res: NextApiResponse<{
@@ -20,7 +20,7 @@ export default withIronSessionApiRoute(
       project: Project | null;
     }>
   ) => {
-    let { name, community_name }: { name?: string; community_name?: string } = req.body;
+    let { name, communityName }: { name?: string; communityName?: string } = req.body;
     if (req.session.user === undefined)
       res.json({
         allowed: false,
@@ -46,7 +46,7 @@ export default withIronSessionApiRoute(
             project: null,
           });
 
-        if (community_name === undefined)
+        if (communityName === undefined)
           return res.json({
             allowed: false,
             found: false,
@@ -71,23 +71,23 @@ export default withIronSessionApiRoute(
               project: null,
             });
           else {
-            const community = await prisma.community.findFirst({ where: { name: community_name }, include: { subscribers: true } });
+            const community = await prisma.community.findFirst({ where: { name: communityName }, include: { subscribers: true } });
             if (community && community.subscribers.some(u => u.name !== user.name))
               return res.json({
                 allowed: false,
                 found: true,
-                message: `You do need permission to remove project "${name}" to community "${community_name}".`,
+                message: `You do need permission to remove project "${name}" to community "${communityName}".`,
                 project,
               });
             else {
               return res.json({
                 allowed: false,
                 found: true,
-                message: `Successfully removed project "${name}" from community "${community_name}".`,
+                message: `Successfully removed project "${name}" from community "${communityName}".`,
                 project: await prisma.project.update({
                   where: { id: project.id },
                   data: {
-                    community_name: null,
+                    communityName: null,
                   },
                 }),
               });

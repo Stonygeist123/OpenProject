@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styles from "../styles/pages/login.module.scss";
-import useUser from "../lib/useUser";
-import fetchJson, { FetchError } from "../lib/fetchJson";
+import styles from "../../styles/pages/login.module.scss";
+import useUser from "../../lib/useUser";
+import fetchJson, { FetchError } from "../../lib/fetchJson";
 import { useRouter } from "next/router";
 
 const LoginPage = () => {
@@ -56,7 +56,7 @@ const LoginPage = () => {
     setDisableControls(true);
     e.preventDefault();
 
-    const data = (await fetchJson(`/api/user/login`, {
+    const data = (await fetchJson(`/api/user/account/login`, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -92,11 +92,11 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    fetchJson<{ user: UserSession | null }>("/api/user/get_session").then(data => setSession(data.user));
+    fetchJson<{ user: UserSession | null }>("/api/user/account/get_session").then(data => setSession(data.user));
   }, [session]);
 
   const logOut = async () => {
-    fetchJson("/api/user/logout");
+    fetchJson("/api/user/account/logout");
     await router.push("/");
   };
 
