@@ -85,7 +85,7 @@ const ProjectCreationPage = () => {
                 value={tag}
                 onKeyDown={e => {
                   if (e.key === "Enter") {
-                    if ((tag + e.key).split("").some(s => parseInt(s) === NaN && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
+                    if ((tag + e.key).split("").some(s => isNaN(parseInt(s)) && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
                       return setUnexpected(true);
                     else setUnexpected(false);
 
@@ -130,12 +130,23 @@ const ProjectCreationPage = () => {
                 value={description}
                 onChange={e => setDescription(e.currentTarget.value)}
               ></textarea>
-              <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" className={styles["toggle-private-checkbox"]} />
+              <ToggleButton
+                setState={setIsPrivate}
+                value={isPrivate}
+                text="Set on private"
+                className={styles["toggle-private-checkbox"]}
+              />
             </div>
             <div className={styles["footer"]}>
               <div className={`${styles["button-container"]}`}>
-                <Button isSubmit onClick={handleOnClick} />
-                <Button isSubmit text="Next" />
+                <Button
+                  isSubmit
+                  onClick={handleOnClick}
+                />
+                <Button
+                  isSubmit
+                  text="Next"
+                />
               </div>
             </div>
           </div>

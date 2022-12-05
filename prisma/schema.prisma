@@ -22,7 +22,7 @@ model User {
 
 model Community {
   name        String    @id @unique
-  description String
+  description String    @db.LongText
   owner       String
   subscribers User[]
   projects    Project[]
@@ -33,7 +33,7 @@ model Community {
 model Project {
   id            Int        @id @unique @default(autoincrement())
   name          String
-  description   String
+  description   String     @db.LongText
   owner         String
   contributors  User[]
   tasks         Task[]
@@ -50,7 +50,7 @@ model Task {
   id            Int      @id @unique @default(autoincrement())
   project       Project  @relation(fields: [projectId], references: [id])
   name          String
-  description   String
+  description   String   @db.LongText
   prerequisites Json
   files         Json
   created_at    DateTime @default(now())
@@ -81,7 +81,7 @@ model Tag {
 
 model Message {
   id            Int        @id @unique @default(autoincrement())
-  content       String
+  content       String     @db.MediumText
   username      String
   project       Project?   @relation(fields: [projectId], references: [id])
   community     Community? @relation(fields: [communityName], references: [name])

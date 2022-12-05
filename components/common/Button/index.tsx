@@ -21,9 +21,19 @@ const sizes = {
 const getSize = (size: Size) => sizes[size];
 const Button = ({ dark = false, size = "m", text, className, isSubmit, onClick, ...props }: ButtonProps) =>
   isSubmit ? (
-    <Button className={`${styles["submit-btn"]} ${className}`} onClick={onClick} size="xl" text={text ?? "Submit"} {...props} />
+    <Button
+      className={`${styles["submit-btn"]} ${className}`}
+      onClick={onClick}
+      size={size ?? "xl"}
+      text={text ?? "Submit"}
+      {...props}
+    />
   ) : (
-    <button onClick={onClick} className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className}`} {...props}>
+    <button
+      onClick={onClick}
+      className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className}`}
+      {...props}
+    >
       {props.children ?? text ?? "button"}
     </button>
   );

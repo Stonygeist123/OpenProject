@@ -83,7 +83,7 @@ const CommunityCreationPage = () => {
                 value={tag}
                 onKeyDown={e => {
                   if (e.key === "Enter") {
-                    if ((tag + e.key).split("").some(s => parseInt(s) === NaN && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
+                    if ((tag + e.key).split("").some(s => isNaN(parseInt(s)) && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
                       return setUnexpected(true);
                     else setUnexpected(false);
 
@@ -130,7 +130,11 @@ const CommunityCreationPage = () => {
               ></textarea>
             </div>
             <div className={styles["footer"]}>
-              <Button className={styles["submit-button"]} onClick={handleOnClick} size="xl">
+              <Button
+                className={styles["submit-button"]}
+                onClick={handleOnClick}
+                size="xl"
+              >
                 Submit
               </Button>
             </div>

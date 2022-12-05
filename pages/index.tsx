@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/pages/index.module.scss";
 import CommunityCreationModal from "../components/Modals/CommunityCreationModal";
 import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
+import fetchJson from "../lib/fetchJson";
+import { useRouter } from "next/router";
 
 const ProjectPreview = ({ name, description }: { name: string; description: string }) => (
   <div className={styles["project-preview-container"]}>
     <div className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}>
-      <h1 className={styles["project-preview-title"]}>{name}</h1>
+      <h1 className={`text-5x ${styles["project-preview-title"]}`}>{name}</h1>
       <div className={styles["project-preview-pp"]}></div>
     </div>
-    <p className={styles["project-preview-description"]}>{description}</p>
+    <p className={`text-md ${styles["project-preview-description"]}`}>{description}</p>
   </div>
 );
 
 const SubmissionPreview = () => (
-  <div className={styles["submission-preview-container"]}>
-    <div className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["submission-preview-container-heading"]}`}>
+  <div className={styles["project-preview-container"]}>
+    <div className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["project-preview-container-heading"]}`}>
       <h1 className={styles["project-preview-title"]}>Submission Name</h1>
       <div className="project-preview-pp"></div>
     </div>
@@ -28,26 +30,30 @@ const SubmissionPreview = () => (
 
 const CommunityPreview = () => {
   return (
-    <div className={styles["community-preview"]}>
+    <div className={styles["project-preview-container"]}>
       <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
-        <h1 className={styles["community-preview-title"]}> Community Name </h1>
+        <h1 className={styles["project-preview-title"]}> Community Name </h1>
         <div className={styles["community-preview-pp"]}></div>
       </div>
       <p>
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
         voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
       </p>
-      <p>Member count: </p>
+      <p className="text-md font-bold">Member count: {0}</p>
     </div>
   );
 };
 
-const RenderMain = (props: any) =>
-  props.highlight === "projects" ? (
+const RenderMain = ({ highlight, projects }: { highlight: string; projects: Project[] }) =>
+  highlight === "projects" ? (
     <>
-      <ProjectPreview description="a" name="ba" />
-      <ProjectPreview description="a" name="b" />
-      <ProjectPreview description="x" name="dy" />
+      {projects.map((p, i) => (
+        <ProjectPreview
+          name={p.name}
+          description={p.description}
+          key={i}
+        />
+      ))}
     </>
   ) : (
     <>
@@ -58,11 +64,48 @@ const RenderMain = (props: any) =>
   );
 
 const Home = () => {
+  const router = useRouter();
   const [showCommunityModal, setShowCommunityModal] = useState(false);
   const [highlight, setHighlight] = useState("projects");
   const [showProjectModal, setShowProjectModal] = useState(false);
+  const [user, setUser] = useState<{
+    projects: Project[];
+    communities: Community[];
+    task_submissions: TaskSubmission[];
+    image: string;
+    name: string;
+    created_at: Date;
+  } | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  return (
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    fetchJson<{
+      message: string;
+      allowed: boolean;
+      found: boolean;
+      user: {
+        projects: Project[];
+        communities: Community[];
+        task_submissions: TaskSubmission[];
+        image: string;
+        name: string;
+        created_at: Date;
+      } | null;
+    }>("/api/user").then(data => {
+      setUser(data.user);
+      setLoading(false);
+    });
+  }, [router.isReady]);
+
+  useEffect(() => {
+    console.log(user?.projects);
+  }, [user]);
+
+  return loading ? (
+    <h1 className="text-xxl">Loading...</h1>
+  ) : (
     <>
       {showProjectModal ? (
         <ProjectCreationModal
@@ -124,7 +167,10 @@ const Home = () => {
               </strong>
             </div>
           </div>
-          <RenderMain highlight={highlight} />
+          <RenderMain
+            projects={user?.projects.sort((a, b) => b.created_at.getTime() - a.created_at.getTime()) ?? []}
+            highlight={highlight}
+          />
         </div>
 
         <div className={styles["home-right-nav"]}>

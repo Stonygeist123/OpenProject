@@ -25,7 +25,7 @@ export default withIronSessionApiRoute(
         name: string;
         description: string;
         projectId: number;
-        preqs: Array<{ title: string }>;
+        preqs: Array<{ title: string; description: string }>;
       };
     },
     res: NextApiResponse<{
@@ -37,6 +37,7 @@ export default withIronSessionApiRoute(
   ) => {
     let { name, description, projectId, preqs }: { name?: string; description?: string; projectId?: number; preqs?: Array<{ title: string }> } =
       req.body;
+
     if (!req.session.user)
       res.json({
         allowed: false,
@@ -109,7 +110,7 @@ export default withIronSessionApiRoute(
       res.json({
         allowed: true,
         found: false,
-        task: null,
+        task,
         message: `Successfully created task "${name}" in project "${project.name}" (ID = ${task.id}).`,
       });
     }

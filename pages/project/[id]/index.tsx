@@ -70,10 +70,16 @@ const ProjectPage = () => {
           <div className={`${styles["tasks-container"]} ${styles["m-l-5"]}`}>
             {tasks.length > 0 ? (
               <div className={styles["tasks"]}>
-                {tasks.slice(0, 3).map(t => (
-                  <div key={t.id} className={styles["task"]}>
+                {tasks.map(t => (
+                  <div
+                    key={t.id}
+                    className={styles["task"]}
+                  >
                     <br />
-                    <TaskBox key={t.id} title={t.name} text={"small text"} />
+                    <TaskBox
+                      key={t.id}
+                      task={t}
+                    />
                   </div>
                 ))}
               </div>
@@ -81,18 +87,30 @@ const ProjectPage = () => {
               <>
                 <div className={styles["tasks"]}></div>
                 <h1 className="font-bold text-4x">No tasks yet...</h1>
-                {tasks.length > 0 ? null : user !== null ? (
-                  <Button isSubmit className={styles["create-task-button"]} text="Create task" onClick={handleCreateTask} />
-                ) : null}
               </>
             )}
+
+            {user !== null ? (
+              <div className={styles["create-task-button-wrapper"]}>
+                <Button
+                  isSubmit
+                  size="m"
+                  className={styles["create-task-button"]}
+                  text="Create task"
+                  onClick={handleCreateTask}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
 
         <div className={`${styles["messages-container"]}`}>
           {messages && messages.length > 0 ? (
             messages.map((m, i) => (
-              <div className="message" key={i}>
+              <div
+                className="message"
+                key={i}
+              >
                 <p>{m.content}</p>
               </div>
             ))

@@ -24,7 +24,10 @@
 //       <Form>
 //         <h1 className={styles["title"]}> Create a new project! </h1>
 //         <div className={styles["content-wrapper"]}>
-//           <Field className={styles["input"]} placeholder="Enter a name..." />
+//           <Field
+//             className={styles["input"]}
+//             placeholder="Enter a name..."
+//           />
 //           {/* {values.projectFound ? (
 //             <label style={{ color: "red" }}>Project &ldquo;{name}&rdquo; does already exist.</label>
 //           ) : values.nameProvided === values.Provided.No ? (
@@ -41,7 +44,7 @@
 //               value={tag}
 //               onKeyDown={e => {
 //                 if (e.key === "Enter") {
-//                   if ((tag + e.key).split("").some(s => parseInt(s) === NaN && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
+//                   if ((tag + e.key).split("").some(s => isNaN(parseInt(s)) && !s.match(/[a-zA-Z]/i) && s !== "-" && s !== "_" && s !== " "))
 //                     return setUnexpected(true);
 //                   else setUnexpected(false);
 
@@ -81,11 +84,19 @@
 //               value={values.description}
 //               onChange={e => setDescription(e.currentTarget.value)}
 //             ></textarea>
-//             <ToggleButton setState={handlechange} value={values.isPrivate} text="Set on private" className={styles["toggle-private-checkbox"]} />
+//             <ToggleButton
+//               setState={handlechange}
+//               value={values.isPrivate}
+//               text="Set on private"
+//               className={styles["toggle-private-checkbox"]}
+//             />
 //           </div>
 //           <div className={styles["footer"]}>
 //             <div className={`${styles["button-container"]}`}>
-//               <Button isSubmit text="Next" />
+//               <Button
+//                 isSubmit
+//                 text="Next"
+//               />
 //             </div>
 //           </div>
 //         </div>
@@ -95,3 +106,7 @@
 // };
 
 // export default ProjectStarter;
+
+export default function x() {
+  return <p></p>;
+}
