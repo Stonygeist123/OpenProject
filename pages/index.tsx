@@ -3,15 +3,17 @@ import styles from "../styles/pages/index.module.scss";
 import CommunityCreationModal from "../components/Modals/CommunityCreationModal";
 import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
 import fetchJson from "../lib/fetchJson";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 
-const ProjectPreview = ({ name, description }: { name: string; description: string }) => (
-  <div className={styles["project-preview-container"]}>
+const ProjectPreview = ({ project, router }: { project: Project; router: NextRouter }) => (
+  <div
+    onClick={() => router.push(`/project/${project.id}`)}
+    className={styles["project-preview-container"]}
+  >
     <div className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}>
-      <h1 className={`text-5x ${styles["project-preview-title"]}`}>{name}</h1>
-      <div className={styles["project-preview-pp"]}></div>
+      <h1 className={`text-5x ${styles["project-preview-title"]}`}>{project.name}</h1>
     </div>
-    <p className={`text-md ${styles["project-preview-description"]}`}>{description}</p>
+    <p className={`text-md ${styles["project-preview-description"]}`}>{project.description}</p>
   </div>
 );
 
@@ -28,29 +30,27 @@ const SubmissionPreview = () => (
   </div>
 );
 
-const CommunityPreview = () => {
-  return (
-    <div className={styles["project-preview-container"]}>
-      <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
-        <h1 className={styles["project-preview-title"]}> Community Name </h1>
-        <div className={styles["community-preview-pp"]}></div>
-      </div>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
-        voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
-      </p>
-      <p className="text-md font-bold">Member count: {0}</p>
+const CommunityPreview = () => (
+  <div className={styles["project-preview-container"]}>
+    <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
+      <h1 className={styles["project-preview-title"]}> Community Name </h1>
+      <div className={styles["community-preview-pp"]}></div>
     </div>
-  );
-};
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
+      voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
+    </p>
+    <p className="text-md font-bold">Member count: {0}</p>
+  </div>
+);
 
-const RenderMain = ({ highlight, projects }: { highlight: string; projects: Project[] }) =>
+const RenderMain = ({ highlight, projects, router }: { highlight: string; projects: Project[]; router: NextRouter }) =>
   highlight === "projects" ? (
     <>
       {projects.map((p, i) => (
         <ProjectPreview
-          name={p.name}
-          description={p.description}
+          project={p}
+          router={router}
           key={i}
         />
       ))}
@@ -170,6 +170,7 @@ const Home = () => {
           <RenderMain
             projects={user?.projects.sort((a, b) => b.created_at.getTime() - a.created_at.getTime()) ?? []}
             highlight={highlight}
+            router={router}
           />
         </div>
 

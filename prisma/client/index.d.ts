@@ -105,12 +105,12 @@ export type Tag = {
 export type Message = {
   id: number
   content: string
-  username: string
   replyID: string | null
   edited_at: Date
   created_at: Date
   projectId: number | null
   communityName: string | null
+  username: string
 }
 
 
@@ -974,12 +974,14 @@ export namespace Prisma {
     communities: number
     projects: number
     task_submissions: number
+    Message: number
   }
 
   export type UserCountOutputTypeSelect = {
     communities?: boolean
     projects?: boolean
     task_submissions?: boolean
+    Message?: boolean
   }
 
   export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs> =
@@ -1287,6 +1289,7 @@ export namespace Prisma {
     password?: boolean
     token?: boolean
     task_submissions?: boolean | TaskSubmissionFindManyArgs
+    Message?: boolean | MessageFindManyArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -1295,6 +1298,7 @@ export namespace Prisma {
     communities?: boolean | CommunityFindManyArgs
     projects?: boolean | ProjectFindManyArgs
     task_submissions?: boolean | TaskSubmissionFindManyArgs
+    Message?: boolean | MessageFindManyArgs
     _count?: boolean | UserCountOutputTypeArgs
   } 
 
@@ -1308,6 +1312,7 @@ export namespace Prisma {
         P extends 'communities' ? Array < CommunityGetPayload<S['include'][P]>>  :
         P extends 'projects' ? Array < ProjectGetPayload<S['include'][P]>>  :
         P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['include'][P]>>  :
+        P extends 'Message' ? Array < MessageGetPayload<S['include'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (UserArgs | UserFindManyArgs)
@@ -1316,6 +1321,7 @@ export namespace Prisma {
         P extends 'communities' ? Array < CommunityGetPayload<S['select'][P]>>  :
         P extends 'projects' ? Array < ProjectGetPayload<S['select'][P]>>  :
         P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['select'][P]>>  :
+        P extends 'Message' ? Array < MessageGetPayload<S['select'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof User ? User[P] : never
   } 
       : User
@@ -1695,6 +1701,8 @@ export namespace Prisma {
     projects<T extends ProjectFindManyArgs= {}>(args?: Subset<T, ProjectFindManyArgs>): PrismaPromise<Array<ProjectGetPayload<T>>| Null>;
 
     task_submissions<T extends TaskSubmissionFindManyArgs= {}>(args?: Subset<T, TaskSubmissionFindManyArgs>): PrismaPromise<Array<TaskSubmissionGetPayload<T>>| Null>;
+
+    Message<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -8063,34 +8071,34 @@ export namespace Prisma {
   export type MessageMinAggregateOutputType = {
     id: number | null
     content: string | null
-    username: string | null
     replyID: string | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
     communityName: string | null
+    username: string | null
   }
 
   export type MessageMaxAggregateOutputType = {
     id: number | null
     content: string | null
-    username: string | null
     replyID: string | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
     communityName: string | null
+    username: string | null
   }
 
   export type MessageCountAggregateOutputType = {
     id: number
     content: number
-    username: number
     replyID: number
     edited_at: number
     created_at: number
     projectId: number
     communityName: number
+    username: number
     _all: number
   }
 
@@ -8108,34 +8116,34 @@ export namespace Prisma {
   export type MessageMinAggregateInputType = {
     id?: true
     content?: true
-    username?: true
     replyID?: true
     edited_at?: true
     created_at?: true
     projectId?: true
     communityName?: true
+    username?: true
   }
 
   export type MessageMaxAggregateInputType = {
     id?: true
     content?: true
-    username?: true
     replyID?: true
     edited_at?: true
     created_at?: true
     projectId?: true
     communityName?: true
+    username?: true
   }
 
   export type MessageCountAggregateInputType = {
     id?: true
     content?: true
-    username?: true
     replyID?: true
     edited_at?: true
     created_at?: true
     projectId?: true
     communityName?: true
+    username?: true
     _all?: true
   }
 
@@ -8234,12 +8242,12 @@ export namespace Prisma {
   export type MessageGroupByOutputType = {
     id: number
     content: string
-    username: string
     replyID: string | null
     edited_at: Date
     created_at: Date
     projectId: number | null
     communityName: string | null
+    username: string
     _count: MessageCountAggregateOutputType | null
     _avg: MessageAvgAggregateOutputType | null
     _sum: MessageSumAggregateOutputType | null
@@ -8264,7 +8272,7 @@ export namespace Prisma {
   export type MessageSelect = {
     id?: boolean
     content?: boolean
-    username?: boolean
+    author?: boolean | UserArgs
     project?: boolean | ProjectArgs
     community?: boolean | CommunityArgs
     replyID?: boolean
@@ -8272,10 +8280,12 @@ export namespace Prisma {
     created_at?: boolean
     projectId?: boolean
     communityName?: boolean
+    username?: boolean
   }
 
 
   export type MessageInclude = {
+    author?: boolean | UserArgs
     project?: boolean | ProjectArgs
     community?: boolean | CommunityArgs
   } 
@@ -8287,12 +8297,14 @@ export namespace Prisma {
     S extends { include: any } & (MessageArgs | MessageFindManyArgs)
     ? Message  & {
     [P in TruthyKeys<S['include']>]:
+        P extends 'author' ? UserGetPayload<S['include'][P]> :
         P extends 'project' ? ProjectGetPayload<S['include'][P]> | null :
         P extends 'community' ? CommunityGetPayload<S['include'][P]> | null :  never
   } 
     : S extends { select: any } & (MessageArgs | MessageFindManyArgs)
       ? {
     [P in TruthyKeys<S['select']>]:
+        P extends 'author' ? UserGetPayload<S['select'][P]> :
         P extends 'project' ? ProjectGetPayload<S['select'][P]> | null :
         P extends 'community' ? CommunityGetPayload<S['select'][P]> | null :  P extends keyof Message ? Message[P] : never
   } 
@@ -8667,6 +8679,8 @@ export namespace Prisma {
     private _requestPromise?;
     constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
     readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    author<T extends UserArgs= {}>(args?: Subset<T, UserArgs>): Prisma__UserClient<UserGetPayload<T> | Null>;
 
     project<T extends ProjectArgs= {}>(args?: Subset<T, ProjectArgs>): Prisma__ProjectClient<ProjectGetPayload<T> | Null>;
 
@@ -9129,12 +9143,12 @@ export namespace Prisma {
   export const MessageScalarFieldEnum: {
     id: 'id',
     content: 'content',
-    username: 'username',
     replyID: 'replyID',
     edited_at: 'edited_at',
     created_at: 'created_at',
     projectId: 'projectId',
-    communityName: 'communityName'
+    communityName: 'communityName',
+    username: 'username'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -9244,6 +9258,7 @@ export namespace Prisma {
     password?: StringFilter | string
     token?: StringFilter | string
     task_submissions?: TaskSubmissionListRelationFilter
+    Message?: MessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -9255,6 +9270,7 @@ export namespace Prisma {
     password?: SortOrder
     token?: SortOrder
     task_submissions?: TaskSubmissionOrderByRelationAggregateInput
+    Message?: MessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = {
@@ -9590,7 +9606,7 @@ export namespace Prisma {
     NOT?: Enumerable<MessageWhereInput>
     id?: IntFilter | number
     content?: StringFilter | string
-    username?: StringFilter | string
+    author?: XOR<UserRelationFilter, UserWhereInput>
     project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
     community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
     replyID?: StringNullableFilter | string | null
@@ -9598,12 +9614,13 @@ export namespace Prisma {
     created_at?: DateTimeFilter | Date | string
     projectId?: IntNullableFilter | number | null
     communityName?: StringNullableFilter | string | null
+    username?: StringFilter | string
   }
 
   export type MessageOrderByWithRelationInput = {
     id?: SortOrder
     content?: SortOrder
-    username?: SortOrder
+    author?: UserOrderByWithRelationInput
     project?: ProjectOrderByWithRelationInput
     community?: CommunityOrderByWithRelationInput
     replyID?: SortOrder
@@ -9611,6 +9628,7 @@ export namespace Prisma {
     created_at?: SortOrder
     projectId?: SortOrder
     communityName?: SortOrder
+    username?: SortOrder
   }
 
   export type MessageWhereUniqueInput = {
@@ -9620,12 +9638,12 @@ export namespace Prisma {
   export type MessageOrderByWithAggregationInput = {
     id?: SortOrder
     content?: SortOrder
-    username?: SortOrder
     replyID?: SortOrder
     edited_at?: SortOrder
     created_at?: SortOrder
     projectId?: SortOrder
     communityName?: SortOrder
+    username?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _avg?: MessageAvgOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
@@ -9639,12 +9657,12 @@ export namespace Prisma {
     NOT?: Enumerable<MessageScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     content?: StringWithAggregatesFilter | string
-    username?: StringWithAggregatesFilter | string
     replyID?: StringNullableWithAggregatesFilter | string | null
     edited_at?: DateTimeWithAggregatesFilter | Date | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     projectId?: IntNullableWithAggregatesFilter | number | null
     communityName?: StringNullableWithAggregatesFilter | string | null
+    username?: StringWithAggregatesFilter | string
   }
 
   export type UserCreateInput = {
@@ -9656,6 +9674,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -9667,6 +9686,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -9678,6 +9698,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -9689,6 +9710,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -10082,7 +10104,7 @@ export namespace Prisma {
 
   export type MessageCreateInput = {
     content: string
-    username: string
+    author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
     replyID?: string | null
@@ -10093,17 +10115,17 @@ export namespace Prisma {
   export type MessageUncheckedCreateInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
+    username: string
   }
 
   export type MessageUpdateInput = {
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10114,28 +10136,27 @@ export namespace Prisma {
   export type MessageUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageCreateManyInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
+    username: string
   }
 
   export type MessageUpdateManyMutationInput = {
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10144,12 +10165,12 @@ export namespace Prisma {
   export type MessageUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter = {
@@ -10195,6 +10216,12 @@ export namespace Prisma {
     none?: TaskSubmissionWhereInput
   }
 
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
   export type CommunityOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -10204,6 +10231,10 @@ export namespace Prisma {
   }
 
   export type TaskSubmissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10268,17 +10299,7 @@ export namespace Prisma {
     none?: UserWhereInput
   }
 
-  export type MessageListRelationFilter = {
-    every?: MessageWhereInput
-    some?: MessageWhereInput
-    none?: MessageWhereInput
-  }
-
   export type UserOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10599,12 +10620,12 @@ export namespace Prisma {
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    username?: SortOrder
     replyID?: SortOrder
     edited_at?: SortOrder
     created_at?: SortOrder
     projectId?: SortOrder
     communityName?: SortOrder
+    username?: SortOrder
   }
 
   export type MessageAvgOrderByAggregateInput = {
@@ -10615,23 +10636,23 @@ export namespace Prisma {
   export type MessageMaxOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    username?: SortOrder
     replyID?: SortOrder
     edited_at?: SortOrder
     created_at?: SortOrder
     projectId?: SortOrder
     communityName?: SortOrder
+    username?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
-    username?: SortOrder
     replyID?: SortOrder
     edited_at?: SortOrder
     created_at?: SortOrder
     projectId?: SortOrder
     communityName?: SortOrder
+    username?: SortOrder
   }
 
   export type MessageSumOrderByAggregateInput = {
@@ -10674,6 +10695,13 @@ export namespace Prisma {
     connect?: Enumerable<TaskSubmissionWhereUniqueInput>
   }
 
+  export type MessageCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
+  }
+
   export type CommunityUncheckedCreateNestedManyWithoutSubscribersInput = {
     create?: XOR<Enumerable<CommunityCreateWithoutSubscribersInput>, Enumerable<CommunityUncheckedCreateWithoutSubscribersInput>>
     connectOrCreate?: Enumerable<CommunityCreateOrConnectWithoutSubscribersInput>
@@ -10691,6 +10719,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<TaskSubmissionCreateOrConnectWithoutAuthorInput>
     createMany?: TaskSubmissionCreateManyAuthorInputEnvelope
     connect?: Enumerable<TaskSubmissionWhereUniqueInput>
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10741,6 +10776,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<TaskSubmissionScalarWhereInput>
   }
 
+  export type MessageUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type CommunityUncheckedUpdateManyWithoutSubscribersNestedInput = {
     create?: XOR<Enumerable<CommunityCreateWithoutSubscribersInput>, Enumerable<CommunityUncheckedCreateWithoutSubscribersInput>>
     connectOrCreate?: Enumerable<CommunityCreateOrConnectWithoutSubscribersInput>
@@ -10779,6 +10828,20 @@ export namespace Prisma {
     update?: Enumerable<TaskSubmissionUpdateWithWhereUniqueWithoutAuthorInput>
     updateMany?: Enumerable<TaskSubmissionUpdateManyWithWhereWithoutAuthorInput>
     deleteMany?: Enumerable<TaskSubmissionScalarWhereInput>
+  }
+
+  export type MessageUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
   }
 
   export type UserCreateNestedManyWithoutCommunitiesInput = {
@@ -11085,6 +11148,12 @@ export namespace Prisma {
     update?: XOR<UserUpdateWithoutTask_submissionsInput, UserUncheckedUpdateWithoutTask_submissionsInput>
   }
 
+  export type UserCreateNestedOneWithoutMessageInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type ProjectCreateNestedOneWithoutMessagesInput = {
     create?: XOR<ProjectCreateWithoutMessagesInput, ProjectUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutMessagesInput
@@ -11095,6 +11164,14 @@ export namespace Prisma {
     create?: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: CommunityCreateOrConnectWithoutMessagesInput
     connect?: CommunityWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMessageNestedInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    upsert?: UserUpsertWithoutMessageInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
   }
 
   export type ProjectUpdateOneWithoutMessagesNestedInput = {
@@ -11404,6 +11481,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MessageCreateWithoutAuthorInput = {
+    content: string
+    project?: ProjectCreateNestedOneWithoutMessagesInput
+    community?: CommunityCreateNestedOneWithoutMessagesInput
+    replyID?: string | null
+    edited_at?: Date | string
+    created_at?: Date | string
+  }
+
+  export type MessageUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    content: string
+    replyID?: string | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
+  }
+
+  export type MessageCreateOrConnectWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageCreateManyAuthorInputEnvelope = {
+    data: Enumerable<MessageCreateManyAuthorInput>
+    skipDuplicates?: boolean
+  }
+
   export type CommunityUpsertWithWhereUniqueWithoutSubscribersInput = {
     where: CommunityWhereUniqueInput
     update: XOR<CommunityUpdateWithoutSubscribersInput, CommunityUncheckedUpdateWithoutSubscribersInput>
@@ -11489,6 +11595,36 @@ export namespace Prisma {
     userName?: StringFilter | string
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutAuthorInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessageInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: Enumerable<MessageScalarWhereInput>
+    OR?: Enumerable<MessageScalarWhereInput>
+    NOT?: Enumerable<MessageScalarWhereInput>
+    id?: IntFilter | number
+    content?: StringFilter | string
+    replyID?: StringNullableFilter | string | null
+    edited_at?: DateTimeFilter | Date | string
+    created_at?: DateTimeFilter | Date | string
+    projectId?: IntNullableFilter | number | null
+    communityName?: StringNullableFilter | string | null
+    username?: StringFilter | string
+  }
+
   export type UserCreateWithoutCommunitiesInput = {
     name: string
     created_at?: Date | string
@@ -11497,6 +11633,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -11507,6 +11644,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -11553,7 +11691,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutCommunityInput = {
     content: string
-    username: string
+    author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     replyID?: string | null
     edited_at?: Date | string
@@ -11563,11 +11701,11 @@ export namespace Prisma {
   export type MessageUncheckedCreateWithoutCommunityInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
+    username: string
   }
 
   export type MessageCreateOrConnectWithoutCommunityInput = {
@@ -11639,20 +11777,6 @@ export namespace Prisma {
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessagesInput>
   }
 
-  export type MessageScalarWhereInput = {
-    AND?: Enumerable<MessageScalarWhereInput>
-    OR?: Enumerable<MessageScalarWhereInput>
-    NOT?: Enumerable<MessageScalarWhereInput>
-    id?: IntFilter | number
-    content?: StringFilter | string
-    username?: StringFilter | string
-    replyID?: StringNullableFilter | string | null
-    edited_at?: DateTimeFilter | Date | string
-    created_at?: DateTimeFilter | Date | string
-    projectId?: IntNullableFilter | number | null
-    communityName?: StringNullableFilter | string | null
-  }
-
   export type UserCreateWithoutProjectsInput = {
     name: string
     created_at?: Date | string
@@ -11661,6 +11785,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutProjectsInput = {
@@ -11671,6 +11796,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutProjectsInput = {
@@ -11730,7 +11856,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutProjectInput = {
     content: string
-    username: string
+    author: UserCreateNestedOneWithoutMessageInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
     replyID?: string | null
     edited_at?: Date | string
@@ -11740,11 +11866,11 @@ export namespace Prisma {
   export type MessageUncheckedCreateWithoutProjectInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
+    username: string
   }
 
   export type MessageCreateOrConnectWithoutProjectInput = {
@@ -11913,6 +12039,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutContributorsInput
     password: string
     token: string
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutTask_submissionsInput = {
@@ -11923,6 +12050,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutContributorsInput
     password: string
     token: string
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutTask_submissionsInput = {
@@ -11943,6 +12071,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTask_submissionsInput = {
@@ -11953,6 +12082,34 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserCreateWithoutMessageInput = {
+    name: string
+    created_at?: Date | string
+    image: string
+    communities?: CommunityCreateNestedManyWithoutSubscribersInput
+    projects?: ProjectCreateNestedManyWithoutContributorsInput
+    password: string
+    token: string
+    task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutMessageInput = {
+    name: string
+    created_at?: Date | string
+    image: string
+    communities?: CommunityUncheckedCreateNestedManyWithoutSubscribersInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutContributorsInput
+    password: string
+    token: string
+    task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutMessageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
   }
 
   export type ProjectCreateWithoutMessagesInput = {
@@ -12008,6 +12165,33 @@ export namespace Prisma {
   export type CommunityCreateOrConnectWithoutMessagesInput = {
     where: CommunityWhereUniqueInput
     create: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserUpsertWithoutMessageInput = {
+    update: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+  }
+
+  export type UserUpdateWithoutMessageInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: StringFieldUpdateOperationsInput | string
+    communities?: CommunityUpdateManyWithoutSubscribersNestedInput
+    projects?: ProjectUpdateManyWithoutContributorsNestedInput
+    password?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessageInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: StringFieldUpdateOperationsInput | string
+    communities?: CommunityUncheckedUpdateManyWithoutSubscribersNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutContributorsNestedInput
+    password?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type ProjectUpsertWithoutMessagesInput = {
@@ -12071,6 +12255,16 @@ export namespace Prisma {
     content: string
     images: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+  }
+
+  export type MessageCreateManyAuthorInput = {
+    id?: number
+    content: string
+    replyID?: string | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
   }
 
   export type CommunityUpdateWithoutSubscribersInput = {
@@ -12161,6 +12355,35 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MessageUpdateWithoutAuthorInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    project?: ProjectUpdateOneWithoutMessagesNestedInput
+    community?: CommunityUpdateOneWithoutMessagesNestedInput
+    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MessageUncheckedUpdateManyWithoutMessageInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type ProjectCreateManyCommunityInput = {
     id?: number
     name: string
@@ -12175,11 +12398,11 @@ export namespace Prisma {
   export type MessageCreateManyCommunityInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
+    username: string
   }
 
   export type UserUpdateWithoutCommunitiesInput = {
@@ -12190,6 +12413,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -12200,6 +12424,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutSubscribersInput = {
@@ -12239,7 +12464,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutCommunityInput = {
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12249,21 +12474,21 @@ export namespace Prisma {
   export type MessageUncheckedUpdateWithoutCommunityInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    username?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageUncheckedUpdateManyWithoutMessagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    username?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateManyProjectInput = {
@@ -12278,11 +12503,11 @@ export namespace Prisma {
   export type MessageCreateManyProjectInput = {
     id?: number
     content: string
-    username: string
     replyID?: string | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
+    username: string
   }
 
   export type UserUpdateWithoutProjectsInput = {
@@ -12293,6 +12518,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -12303,6 +12529,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutContributorsInput = {
@@ -12341,7 +12568,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutProjectInput = {
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12351,11 +12578,11 @@ export namespace Prisma {
   export type MessageUncheckedUpdateWithoutProjectInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    username?: StringFieldUpdateOperationsInput | string
     replyID?: NullableStringFieldUpdateOperationsInput | string | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
   }
 
 

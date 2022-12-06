@@ -62,9 +62,9 @@ const ProjectPage = () => {
         <div className={styles["project-content"]}>
           <div className={styles["project-description"]}>
             <h3 className={styles["project-description-title"]}>Description</h3>
-            <p className={styles["project-description-text-wrapper"]}>
-              <code className={styles["project-description-text"]}>{project.description}</code>
-            </p>
+            <div className={styles["project-description-text-wrapper"]}>
+              <p className={`text-2x ${styles["project-description-text"]}`}>{project.description}</p>
+            </div>
           </div>
 
           <div className={`${styles["tasks-container"]} ${styles["m-l-5"]}`}>

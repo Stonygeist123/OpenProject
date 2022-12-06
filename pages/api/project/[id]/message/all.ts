@@ -1,9 +1,9 @@
-// pages/api/project/[id]/get_messages.ts
+// pages/api/project/[id]/message/all.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiResponse } from "next/types";
-import prisma from "../../../../lib/prisma";
-import { sessionOptions } from "../../../../lib/session";
+import prisma from "../../../../../lib/prisma";
+import { sessionOptions } from "../../../../../lib/session";
 
 export default withIronSessionApiRoute(
   async (
@@ -11,10 +11,18 @@ export default withIronSessionApiRoute(
     res: NextApiResponse<{
       message: string;
       found: boolean;
-      admin: boolean;
+      allowed: boolean;
       messages: Message[] | null;
     }>
   ) => {
+    if (req.query["id"] === undefined)
+      return res.json({
+        found: true,
+        allowed: false,
+        message: "No id provided.",
+        messages: null,
+      });
+
     const project = await prisma.project.findFirst({
       where: { id: parseInt(req.query["id"] as string) },
       include: { messages: true, contributors: true },
@@ -22,8 +30,8 @@ export default withIronSessionApiRoute(
 
     if (project === null)
       res.json({
-        found: true,
-        admin: false,
+        found: false,
+        allowed: false,
         message: "No project found.",
         messages: null,
       });
@@ -36,14 +44,14 @@ export default withIronSessionApiRoute(
 
         if (user && (project.owner == user.name || project.contributors.some(u => u.name == user.name)))
           res.json({
-            admin: true,
+            allowed: true,
             found: true,
             message: "Full access permitted.",
             messages,
           });
         else if (!project.isPrivate)
           res.json({
-            admin: false,
+            allowed: false,
             found: true,
             message: "Access permitted.",
             messages,
@@ -51,21 +59,21 @@ export default withIronSessionApiRoute(
         else
           res.json({
             found: true,
-            admin: false,
+            allowed: false,
             message: "No project found.",
             messages: null,
           });
       } else {
         if (project.isPrivate)
           res.json({
-            admin: false,
+            allowed: false,
             found: false,
             message: "No project found.",
             messages: null,
           });
         else
           res.json({
-            admin: false,
+            allowed: false,
             found: true,
             message: "Access permitted.",
             messages,

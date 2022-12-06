@@ -5,6 +5,12 @@
     position: relative;
     left: 7rem;
     margin-top: 15rem;
+
+    &.dark {
+    }
+
+    &.light {
+    }
 }
 
 .home-button {
@@ -28,7 +34,6 @@
 
 .project-preview-container {
     @include style-centre-home-container;
-    font-size: 1.4rem;
 }
 
 .project-preview-container:hover {
@@ -108,15 +113,15 @@
     direction: ltr;
 }
 
-.project-preview-pp {
-    display: block;
-    width: 6rem;
-    height: 6rem;
-    border-radius: 3rem;
-    background-color: black;
+.project-preview-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
     position: relative;
-    top: -6rem;
-    left: 43rem;
+    margin-top: 1em;
 }
 
 .community-preview-title {

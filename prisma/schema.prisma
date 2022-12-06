@@ -18,6 +18,7 @@ model User {
   password         String
   token            String           @unique
   task_submissions TaskSubmission[]
+  Message          Message[]
 }
 
 model Community {
@@ -82,7 +83,7 @@ model Tag {
 model Message {
   id            Int        @id @unique @default(autoincrement())
   content       String     @db.MediumText
-  username      String
+  author        User       @relation(fields: [username], references: [name])
   project       Project?   @relation(fields: [projectId], references: [id])
   community     Community? @relation(fields: [communityName], references: [name])
   replyID       String?
@@ -90,4 +91,5 @@ model Message {
   created_at    DateTime   @default(now())
   projectId     Int?
   communityName String?
+  username      String
 }

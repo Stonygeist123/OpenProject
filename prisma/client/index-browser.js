@@ -109,12 +109,12 @@ exports.Prisma.JsonNullValueInput = makeEnum({
 exports.Prisma.MessageScalarFieldEnum = makeEnum({
   id: 'id',
   content: 'content',
-  username: 'username',
   replyID: 'replyID',
   edited_at: 'edited_at',
   created_at: 'created_at',
   projectId: 'projectId',
-  communityName: 'communityName'
+  communityName: 'communityName',
+  username: 'username'
 });
 
 exports.Prisma.ProjectScalarFieldEnum = makeEnum({

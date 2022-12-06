@@ -1,59 +1,9 @@
-.message-container{
-    background-color: white;
-    width: 600px;
-    height: 100px;
-    margin-top:1%;
-    padding: 5px;
-    outline: 1px solid black;
+.message-container {
+    background-color: #ddd;
+    display: block;
+    width: 100%;
 }
 
-
-.flex-container{
-    display:flex;
-    margin: 0;
-    padding: 0;
-}
-
-.user{
-    width:77px;
-    height:80px; 
-    align-items: center;
-    text-align: center;
-    margin: 10px 10px;
-}
-
-.user-profile-picture{
-    position: relative;
-    width:60px;
-    height:60px; 
-    border-radius: 30px;
-    margin:auto;
-    background-color: black;
-    margin-bottom: 5px;
-
-    
-}
-
-.username{
-    margin:0;
-    position: relative;
-    color:black;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.user-message{
-    margin: 0;
-    font-size: 13px;
-    color:black;
-    overflow: hidden;
-}
-
-.message-options{
-    font-size: 11px;
-
-}
-
-.reply-opt{
-    cursor: pointer;
+.message-content {
+    color: black;
 }

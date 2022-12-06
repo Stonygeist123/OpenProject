@@ -97,20 +97,29 @@ $color-text-placeholder: darken($color-text, 20%);
     color: white;
     font-size: x-large;
     margin: auto;
-    width: 25em;
+    width: 40em;
+    max-height: 20em;
+    white-space: nowrap;
 
-    .project-description-text-wrapper {
-        background-color: rgb(27, 26, 26);
-        height: 15em;
-        border: 1px solid rgb(156, 156, 156);
-        border-radius: 15px;
-    }
+    &-text {
+        &-wrapper {
+            background-color: rgb(27, 26, 26);
+            border: 1px solid rgb(156, 156, 156);
+            border-radius: 15px;
+            width: 20em;
+            height: 15em;
+        }
 
-    .project-description-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 9;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        max-width: 90%;
         position: relative;
         left: 1em;
-        font-size: larger;
-        color: gray;
+        line-height: 2em;
     }
 }
 
