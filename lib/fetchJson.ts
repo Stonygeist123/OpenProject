@@ -4,7 +4,6 @@ export default async function fetchJson<JSON = unknown>(input: RequestInfo, init
     headers: {
       "Content-Type": "application/json",
     },
-    mode: "cors", // no-cors, *cors, same-origin
   });
   const data = await response.json();
   if (response.ok) return data;

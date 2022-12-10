@@ -5,6 +5,7 @@ type Size = "xs" | "s" | "m" | "l";
 
 type ProfileIconProps = PropsWithChildren & {
   size?: Size;
+  className?: string;
 };
 
 const sizes = {
@@ -15,8 +16,8 @@ const sizes = {
 };
 const getSize = (size: Size) => sizes[size];
 
-const ProfileIcon = ({ children, size = "m" }: ProfileIconProps) => {
-  return <div className={`${styles["icon"]} ${styles[getSize(size)]}`}>{children}</div>;
+const ProfileIcon = ({ children, className, size = "m" }: ProfileIconProps) => {
+  return <div className={`${styles["icon"]} ${styles[getSize(size)]} ${className}`}>{children}</div>;
 };
 
 export default ProfileIcon;

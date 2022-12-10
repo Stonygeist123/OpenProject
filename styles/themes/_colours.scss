@@ -1,0 +1,15 @@
+$background-dark: #03001e;
+$background-purple: #7303c0;
+$background-pink: #ec38bc;
+$background-light: #fdeff9;
+
+$text-cyan: #00a2ff;
+// $text-cyan-light: #00a2ff;
+$text-cyan-light: lighten($text-cyan, 25%);
+$text-purple: #a51eff;
+// $text-purple-light: #a51eff;
+$text-purple-light: lighten($text-purple, 20%);
+
+$button-normal-moonlit-1: rgba(182, 200, 218, 1);
+$button-normal-moonlit-2: rgba(162, 171, 179, 1);
+$button-normal-moonlit-3: #b6aeae;

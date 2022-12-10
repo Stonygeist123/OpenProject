@@ -78,6 +78,8 @@ const Home = () => {
   } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [cards, setCards] = useState({ community: { hovered: false }, project: { hovered: false } });
+
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -125,23 +127,25 @@ const Home = () => {
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
         <div className={styles["home-left-nav"]}>
           <button
-            className={styles["home-button"]}
+            className={`button-moonlit-gradient ${styles["home-button"]} modal-card`}
             onClick={() => {
               setShowCommunityModal(true);
             }}
           >
-            <h1>Create a new community</h1>
-            <p>Find collaborators and work on something new</p>
+            <h1 className="text-heading-gradient modal-card-title with-hover">Create a new community</h1>
+            <br />
+            <p className="text-important-gradient modal-card-info">Find collaborators and work on something new</p>
           </button>
           <div>
             <button
-              className={styles["home-button"]}
+              className={`button-moonlit-gradient ${styles["home-button"]} modal-card`}
               onClick={() => {
                 setShowProjectModal(true);
               }}
             >
-              <h1>Create a new project</h1>
-              <p>Write down tasks and project requirements</p>
+              <h1 className="text-heading-gradient modal-card-title with-hover">Create a new project</h1>
+              <br />
+              <p className="text-important-gradient modal-card-info">Write down tasks and project requirements</p>
             </button>
           </div>
         </div>
@@ -157,7 +161,7 @@ const Home = () => {
                 Projects
               </strong>
             </div>
-            <div className={`${styles["home-heading"]} ${highlight === "submissions" ? styles["highlight"] : null} `}>
+            <div className={`${styles["home-heading"]} ${highlight === "submissions" ? styles["highlight"] : null}`}>
               <strong
                 onClick={() => {
                   setHighlight("submissions");

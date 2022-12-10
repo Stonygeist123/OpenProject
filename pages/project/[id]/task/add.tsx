@@ -28,8 +28,7 @@ const AddTasksPage = () => {
         Loading.
       </h1>
     );
-
-  if (typeof id !== "string" || isNaN(parseInt(id)))
+  else if (typeof id !== "string" || isNaN(parseInt(id)))
     return (
       <h1
         className="text-xxl"
@@ -38,26 +37,26 @@ const AddTasksPage = () => {
         Expected id to be a number.
       </h1>
     );
+  else
+    return project === null ? (
+      <h1
+        className="text-xxl"
+        style={{ color: "red", textAlign: "center", position: "relative", top: "40rem" }}
+      >
+        Project with id &ldquo;{id}&rdquo; not found.
+      </h1>
+    ) : (
+      <div className={styles["wrapper"]}>
+        <h1 className={styles["heading"]}>Heading</h1>
 
-  return project === null ? (
-    <h1
-      className="text-xxl"
-      style={{ color: "red", textAlign: "center", position: "relative", top: "40rem" }}
-    >
-      Project with id &ldquo;{id}&rdquo; not found.
-    </h1>
-  ) : (
-    <div className={styles["wrapper"]}>
-      <h1 className={styles["heading"]}>Heading</h1>
-
-      <div className={styles["container"]}>
-        <CreateTaskBox
-          projectId={parseInt(id)}
-          className={styles["task"]}
-        />
+        <div className={styles["container"]}>
+          <CreateTaskBox
+            projectId={parseInt(id)}
+            className={styles["task"]}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default AddTasksPage;

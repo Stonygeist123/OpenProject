@@ -24,7 +24,7 @@ const CreateTaskBox = ({ className, value, onChange, projectId }: CreateTaskBoxP
     if (!nameProvided) return setNameProvided(false);
     if (!descProvided) return setDescProvided(false);
 
-    const data = await fetchJson(`/api/project/${projectId}/create/task`, {
+    await fetchJson(`/api/project/${projectId}/task/create`, {
       method: "POST",
       body: JSON.stringify({
         name,

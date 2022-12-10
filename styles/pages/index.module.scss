@@ -5,14 +5,7 @@
     position: relative;
     left: 7rem;
     margin-top: 15rem;
-
-    &.dark {
-    }
-
-    &.light {
-    }
 }
-
 .home-button {
     background-color: #fee7e7;
     color: black;
@@ -34,10 +27,13 @@
 
 .project-preview-container {
     @include style-centre-home-container;
+    opacity: 1;
+    transition: 0.5s;
 }
 
 .project-preview-container:hover {
     cursor: pointer;
+    opacity: 0.3;
 }
 
 .home-nav {

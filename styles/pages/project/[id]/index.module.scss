@@ -80,7 +80,7 @@ $color-text-placeholder: darken($color-text, 20%);
         justify-self: center;
         z-index: 2;
 
-        &-wrapper {
+        @at-root &-wrapper {
             display: flex;
             border: solid 3px;
             border-left: none;
@@ -102,7 +102,7 @@ $color-text-placeholder: darken($color-text, 20%);
     white-space: nowrap;
 
     &-text {
-        &-wrapper {
+        @at-root &-wrapper {
             background-color: rgb(27, 26, 26);
             border: 1px solid rgb(156, 156, 156);
             border-radius: 15px;
@@ -111,15 +111,16 @@ $color-text-placeholder: darken($color-text, 20%);
         }
 
         display: -webkit-box;
-        -webkit-line-clamp: 9;
+        -webkit-line-clamp: 10;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: normal;
         max-width: 90%;
         position: relative;
-        left: 1em;
-        line-height: 2em;
+        top: 1em;
+        left: 1.5em;
+        line-height: 1.8em;
     }
 }
 
@@ -129,11 +130,55 @@ $color-text-placeholder: darken($color-text, 20%);
 }
 
 .messages-container {
-    background-color: gray;
-    position: relative;
-    top: 10em;
-    width: 100em;
-    height: 10em;
-    margin-bottom: 16em;
-    border-radius: 10px;
+    .message-send {
+        background: rgba(115, 3, 192, 0.5);
+        position: relative;
+        border-radius: 10px;
+        transition: background 0.5s;
+
+        &:hover {
+            background: rgba(115, 3, 192, 0.2);
+        }
+    }
+
+    .message-input {
+        @at-root &-wrapper {
+            z-index: 1;
+            display: inline-flex;
+            position: relative;
+            width: 100em;
+            height: 5em;
+            top: 10em;
+        }
+
+        overflow-x: hidden;
+        position: relative;
+        width: 95em;
+        height: 4em;
+        resize: none;
+        border-radius: 10px;
+        outline: none;
+        background: rgba(128, 128, 128, 0.5);
+        padding-left: 1em;
+        padding-top: 0.6em;
+    }
+
+    .messages {
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+        top: 10em;
+        width: 100%;
+        min-height: 20em;
+        margin-bottom: 16em;
+        border-radius: 10px;
+        background-color: rgba(0, 0, 0, 0.3);
+
+        .message {
+            position: relative;
+            left: 2em;
+            margin-top: 3em;
+            margin-bottom: 3em;
+        }
+    }
 }

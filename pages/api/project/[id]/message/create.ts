@@ -1,4 +1,4 @@
-// pages/api/project/create/message.ts
+// pages/api/project/message/create.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";

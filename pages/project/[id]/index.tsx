@@ -4,47 +4,74 @@ import fetchJson from "../../../lib/fetchJson";
 import styles from "../../../styles/pages/project/[id]/index.module.scss";
 import TaskBox from "../../../components/TaskBox/TaskBox";
 import Button from "../../../components/common/Button";
+import MessageBox from "../../../components/MessageBox/MessageBox";
+import sendArrowSvg from "../../../public/send_arrow.svg";
+import Image from "next/image";
 
 const ProjectPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [project, setProject] = useState<Project | null>(null);
   const [projectLoaded, setProjectLoaded] = useState(false);
-  const [messages, setMessages] = useState<Message[] | null>(null);
+  const [messages, setMessages] = useState<(Message & { author: User; community: Community | null; project: Project | null })[]>([]);
   const [tasks, setTasks] = useState<(Task & { project: Project })[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [messageInput, setMessageInput] = useState<string>("");
 
   useEffect(() => {
     if (!router.isReady) return;
+
     fetchJson<{
       message: string;
       found: boolean;
       admin: boolean;
       project: (Project & { tasks: (Task & { project: Project })[] }) | null;
-    }>(`/api/project/${id}`).then(data => {
+    }>(`/api/project/${id}`).then(async data => {
       setProject(data.project);
-      setProjectLoaded(true);
 
       if (data.project !== null) {
-        fetchJson<{
+        await fetchJson<{
           message: string;
           found: boolean;
           admin: boolean;
-          messages: Message[] | null;
-        }>(`/api/project/${id}/get_messages`).then(data => setMessages(data.messages));
+          messages: (Message & { author: User; community: Community | null; project: Project | null })[] | null;
+        }>(`/api/project/${id}/message/all`).then(data => setMessages(data.messages ?? []));
+
         setTasks(data.project.tasks);
       }
-    });
 
-    fetchJson<{
-      message: string;
-      allowed: boolean;
-      found: boolean;
-      user: User | null;
-    }>("/api/user").then(data => setUser(data.user));
+      fetchJson<{
+        message: string;
+        allowed: boolean;
+        found: boolean;
+        user: User | null;
+      }>("/api/user").then(data => {
+        setUser(data.user);
+        setProjectLoaded(true);
+      });
+    });
   }, [router.isReady, id]);
 
   const handleCreateTask = () => router.push(`/project/${id}/task/add`);
+  const handleSendMessage = async () => {
+    if (messageInput.trim() === "") return;
+
+    const { allowed, msg } = await fetchJson<{
+      allowed: boolean;
+      found: boolean;
+      msg: (Message & { author: User; community: Community | null; project: Project | null }) | null;
+      message: string;
+    }>(`/api/project/${id}/message/create`, {
+      method: "POST",
+      body: JSON.stringify({ content: messageInput.trim(), region: id!, isProject: true }),
+    });
+
+    if (allowed && msg) {
+      setMessages(m => [msg, ...m]);
+      setMessageInput("");
+    }
+  };
+
   return !projectLoaded ? (
     <h1 style={{ color: "white", textAlign: "center", top: "10em", position: "relative" }}>Loading...</h1>
   ) : project === null ? (
@@ -105,28 +132,49 @@ const ProjectPage = () => {
         </div>
 
         <div className={`${styles["messages-container"]}`}>
-          {messages && messages.length > 0 ? (
-            messages.map((m, i) => (
-              <div
-                className="message"
-                key={i}
-              >
-                <p>{m.content}</p>
-              </div>
-            ))
-          ) : (
-            <>
-              <textarea
-                className={styles["message-input"]}
-                onKeyDown={e => {
-                  if (e.key === "Enter") router.reload();
-                }}
+          <div className={styles["message-input-wrapper"]}>
+            <textarea
+              className={styles["message-input"]}
+              placeholder={"Send message..."}
+              value={messageInput}
+              onChange={e => setMessageInput(e.target.value)}
+              onKeyDown={async e => {
+                if (e.key === "Tab") await handleSendMessage();
+              }}
+            />
+            <Button
+              size="m"
+              onClick={handleSendMessage}
+              className={styles["message-send"]}
+            >
+              <Image
+                alt="sendMessage"
+                src={sendArrowSvg}
               />
-              <p style={{ color: "black", fontSize: "xx-large", fontWeight: "bolder", textAlign: "center", position: "relative" }}>
+            </Button>
+          </div>
+          <div className={styles["messages"]}>
+            {messages && messages.length > 0 ? (
+              messages
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                .map((m, i) => (
+                  <MessageBox
+                    className={styles["message"]}
+                    message={m}
+                    key={i}
+                    isFirst={i === 0}
+                    isLast={i + 1 === messages.length}
+                  />
+                ))
+            ) : (
+              <p
+                className="text-xl"
+                style={{ color: "black", fontWeight: "bolder", textAlign: "center", position: "relative" }}
+              >
                 No messages yet...
               </p>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
