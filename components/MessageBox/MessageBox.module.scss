@@ -1,13 +1,17 @@
 @import "../../styles/abstract/variables";
 
+$bg-colour: rgba(221, 221, 221, 0.9);
 .message-container {
     display: block;
     position: relative;
     width: 60em;
     height: 10em;
     // box-shadow: 0 0 8px 2px rgb(121, 121, 121);
-    background-color: rgba(221, 221, 221, 0.9);
+    background-color: $bg-colour;
     border: rgb(161, 161, 161) solid 1px;
+    &.inactive {
+        background-color: darken($bg-colour, 50%);
+    }
 
     &.first {
         border-top-left-radius: 15px;
