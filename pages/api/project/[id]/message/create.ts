@@ -10,8 +10,6 @@ export default withIronSessionApiRoute(
     req: NextApiRequest & {
       body: {
         content: string;
-        region: string;
-        isProject: boolean;
       };
     },
     res: NextApiResponse<{
@@ -21,7 +19,7 @@ export default withIronSessionApiRoute(
       message: string;
     }>
   ) => {
-    let { content, region, isProject }: { content?: string; region?: string; isProject?: boolean } = req.body;
+    let { content }: { content?: string; region?: string; isProject?: boolean } = req.body;
     if (!req.session.user)
       res.json({
         allowed: false,
@@ -38,7 +36,8 @@ export default withIronSessionApiRoute(
           message: "No content provided.",
         });
       else {
-        if (region === undefined || isProject === undefined)
+        const region = req.query["id"] as string | undefined;
+        if (region === undefined)
           return res.json({
             allowed: false,
             found: false,
@@ -48,18 +47,14 @@ export default withIronSessionApiRoute(
 
         const user = await prisma.user.findFirst({ where: { token: req.session.user.token } });
         if (user) {
-          const region_name = (
-            isProject
-              ? await prisma.project.findFirst({ where: { id: parseInt(region) } })
-              : await prisma.community.findFirst({ where: { name: region } })
-          )?.name;
+          const region_name = (await prisma.project.findFirst({ where: { id: parseInt(region) } }))?.name;
 
           if (region_name === null)
             return res.json({
-              allowed: true,
+              allowed: false,
               found: false,
               msg: null,
-              message: `Could not find ${isProject ? `project with id "${region_name}"` : `community with name "${region}"`}.`,
+              message: `Could not find project with id "${region}".`,
             });
 
           const msg = await prisma.message.create({
@@ -67,7 +62,7 @@ export default withIronSessionApiRoute(
             data: {
               content,
               username: req.session.user.username,
-              ...(isProject ? { projectId: parseInt(region) } : { communityName: region }),
+              projectId: parseInt(region),
             },
           });
 
@@ -75,7 +70,7 @@ export default withIronSessionApiRoute(
             allowed: true,
             found: false,
             msg,
-            message: `Successfully created message in ${isProject ? "project" : "community"} "${region_name}".`,
+            message: `Successfully created message in project "${region_name}".`,
           });
         } else
           res.json({
