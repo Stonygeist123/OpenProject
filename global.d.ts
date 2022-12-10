@@ -97,10 +97,10 @@ type Tag = {
 type Message = {
   id: number;
   content: string;
-  username: string;
-  replyID: string | null;
+  replyID: number | null;
   edited_at: Date;
   created_at: Date;
   projectId: number | null;
   communityName: string | null;
+  username: string;
 };
