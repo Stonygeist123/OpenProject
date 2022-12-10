@@ -10,6 +10,7 @@ export default withIronSessionApiRoute(
     req: NextApiRequest & {
       body: {
         content: string;
+        replyID?: number;
       };
     },
     res: NextApiResponse<{
@@ -19,7 +20,7 @@ export default withIronSessionApiRoute(
       message: string;
     }>
   ) => {
-    let { content }: { content?: string; region?: string; isProject?: boolean } = req.body;
+    let { content, replyID }: { content?: string; replyID?: number } = req.body;
     if (!req.session.user)
       res.json({
         allowed: false,
@@ -36,8 +37,8 @@ export default withIronSessionApiRoute(
           message: "No content provided.",
         });
       else {
-        const region = req.query["id"] as string | undefined;
-        if (region === undefined)
+        const idS = req.query["id"] as string | undefined;
+        if (idS === undefined)
           return res.json({
             allowed: false,
             found: false,
@@ -45,40 +46,75 @@ export default withIronSessionApiRoute(
             message: "Expected region and isProject in body.",
           });
 
+        const id = parseInt(idS);
         const user = await prisma.user.findFirst({ where: { token: req.session.user.token } });
         if (user) {
-          const region_name = (await prisma.project.findFirst({ where: { id: parseInt(region) } }))?.name;
+          const region_name = (await prisma.project.findFirst({ where: { id } }))?.name;
 
           if (region_name === null)
             return res.json({
               allowed: false,
               found: false,
               msg: null,
-              message: `Could not find project with id "${region}".`,
+              message: `Could not find project with id "${id}".`,
             });
 
-          const msg = await prisma.message.create({
-            include: { project: true, community: true },
-            data: {
-              content,
-              username: req.session.user.username,
-              projectId: parseInt(region),
-            },
-          });
+          if (replyID) {
+            console.log(replyID);
+            const reply = await prisma.message.findFirst({
+              select: { projectId: true },
+              where: { id: replyID },
+            });
 
-          res.json({
-            allowed: true,
-            found: false,
-            msg,
-            message: `Successfully created message in project "${region_name}".`,
-          });
-        } else
-          res.json({
-            allowed: false,
-            found: false,
-            msg: null,
-            message: "User needs to be logged in.",
-          });
+            if (reply === null || reply === null)
+              return res.json({
+                allowed: false,
+                found: false,
+                msg: null,
+                message: `Could not find message with id "${replyID}" to reply to.`,
+              });
+
+            if (!reply.projectId || reply.projectId !== id)
+              return res.json({
+                allowed: false,
+                found: false,
+                msg: null,
+                message: `The project ids of the replied message and the reply have to match - got "${id}" and "${reply.projectId ?? "none"}"`,
+              });
+
+            const msg = await prisma.message.create({
+              include: { project: true, community: true },
+              data: {
+                content,
+                username: req.session.user.username,
+                projectId: id,
+              },
+            });
+
+            res.json({
+              allowed: true,
+              found: false,
+              msg,
+              message: `Successfully created message in project "${region_name}" (replyID = ${replyID}).`,
+            });
+          } else {
+            const msg = await prisma.message.create({
+              include: { project: true, community: true },
+              data: {
+                content,
+                username: req.session.user.username,
+                projectId: id,
+              },
+            });
+
+            res.json({
+              allowed: true,
+              found: false,
+              msg,
+              message: `Successfully created message in project "${region_name}".`,
+            });
+          }
+        }
       }
     }
   },
