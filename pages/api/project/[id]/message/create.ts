@@ -16,7 +16,12 @@ export default withIronSessionApiRoute(
     res: NextApiResponse<{
       allowed: boolean;
       found: boolean;
-      msg: Message | null;
+      msg:
+        | (Message & {
+            project: Project | null;
+            community: Community | null;
+          })
+        | null;
       message: string;
     }>
   ) => {
@@ -88,6 +93,7 @@ export default withIronSessionApiRoute(
                 content,
                 username: req.session.user.username,
                 projectId: id,
+                replyID,
               },
             });
 

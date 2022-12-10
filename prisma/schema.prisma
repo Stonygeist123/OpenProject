@@ -86,7 +86,7 @@ model Message {
   author        User       @relation(fields: [username], references: [name])
   project       Project?   @relation(fields: [projectId], references: [id])
   community     Community? @relation(fields: [communityName], references: [name])
-  replyID       String?
+  replyID       Int?
   edited_at     DateTime   @default(now())
   created_at    DateTime   @default(now())
   projectId     Int?

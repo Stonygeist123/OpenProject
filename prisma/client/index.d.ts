@@ -105,7 +105,7 @@ export type Tag = {
 export type Message = {
   id: number
   content: string
-  replyID: string | null
+  replyID: number | null
   edited_at: Date
   created_at: Date
   projectId: number | null
@@ -8060,18 +8060,20 @@ export namespace Prisma {
 
   export type MessageAvgAggregateOutputType = {
     id: number | null
+    replyID: number | null
     projectId: number | null
   }
 
   export type MessageSumAggregateOutputType = {
     id: number | null
+    replyID: number | null
     projectId: number | null
   }
 
   export type MessageMinAggregateOutputType = {
     id: number | null
     content: string | null
-    replyID: string | null
+    replyID: number | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
@@ -8082,7 +8084,7 @@ export namespace Prisma {
   export type MessageMaxAggregateOutputType = {
     id: number | null
     content: string | null
-    replyID: string | null
+    replyID: number | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
@@ -8105,11 +8107,13 @@ export namespace Prisma {
 
   export type MessageAvgAggregateInputType = {
     id?: true
+    replyID?: true
     projectId?: true
   }
 
   export type MessageSumAggregateInputType = {
     id?: true
+    replyID?: true
     projectId?: true
   }
 
@@ -8242,7 +8246,7 @@ export namespace Prisma {
   export type MessageGroupByOutputType = {
     id: number
     content: string
-    replyID: string | null
+    replyID: number | null
     edited_at: Date
     created_at: Date
     projectId: number | null
@@ -9609,7 +9613,7 @@ export namespace Prisma {
     author?: XOR<UserRelationFilter, UserWhereInput>
     project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
     community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
-    replyID?: StringNullableFilter | string | null
+    replyID?: IntNullableFilter | number | null
     edited_at?: DateTimeFilter | Date | string
     created_at?: DateTimeFilter | Date | string
     projectId?: IntNullableFilter | number | null
@@ -9657,7 +9661,7 @@ export namespace Prisma {
     NOT?: Enumerable<MessageScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     content?: StringWithAggregatesFilter | string
-    replyID?: StringNullableWithAggregatesFilter | string | null
+    replyID?: IntNullableWithAggregatesFilter | number | null
     edited_at?: DateTimeWithAggregatesFilter | Date | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     projectId?: IntNullableWithAggregatesFilter | number | null
@@ -10107,7 +10111,7 @@ export namespace Prisma {
     author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
   }
@@ -10115,7 +10119,7 @@ export namespace Prisma {
   export type MessageUncheckedCreateInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -10128,7 +10132,7 @@ export namespace Prisma {
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10136,7 +10140,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10147,7 +10151,7 @@ export namespace Prisma {
   export type MessageCreateManyInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -10157,7 +10161,7 @@ export namespace Prisma {
 
   export type MessageUpdateManyMutationInput = {
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10165,7 +10169,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10630,6 +10634,7 @@ export namespace Prisma {
 
   export type MessageAvgOrderByAggregateInput = {
     id?: SortOrder
+    replyID?: SortOrder
     projectId?: SortOrder
   }
 
@@ -10657,6 +10662,7 @@ export namespace Prisma {
 
   export type MessageSumOrderByAggregateInput = {
     id?: SortOrder
+    replyID?: SortOrder
     projectId?: SortOrder
   }
 
@@ -11485,7 +11491,7 @@ export namespace Prisma {
     content: string
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
   }
@@ -11493,7 +11499,7 @@ export namespace Prisma {
   export type MessageUncheckedCreateWithoutAuthorInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -11617,7 +11623,7 @@ export namespace Prisma {
     NOT?: Enumerable<MessageScalarWhereInput>
     id?: IntFilter | number
     content?: StringFilter | string
-    replyID?: StringNullableFilter | string | null
+    replyID?: IntNullableFilter | number | null
     edited_at?: DateTimeFilter | Date | string
     created_at?: DateTimeFilter | Date | string
     projectId?: IntNullableFilter | number | null
@@ -11693,7 +11699,7 @@ export namespace Prisma {
     content: string
     author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
   }
@@ -11701,7 +11707,7 @@ export namespace Prisma {
   export type MessageUncheckedCreateWithoutCommunityInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -11858,7 +11864,7 @@ export namespace Prisma {
     content: string
     author: UserCreateNestedOneWithoutMessageInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
   }
@@ -11866,7 +11872,7 @@ export namespace Prisma {
   export type MessageUncheckedCreateWithoutProjectInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
@@ -12260,7 +12266,7 @@ export namespace Prisma {
   export type MessageCreateManyAuthorInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -12359,7 +12365,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12367,7 +12373,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateWithoutAuthorInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12377,7 +12383,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateManyWithoutMessageInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12398,7 +12404,7 @@ export namespace Prisma {
   export type MessageCreateManyCommunityInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
@@ -12466,7 +12472,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12474,7 +12480,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateWithoutCommunityInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12484,7 +12490,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateManyWithoutMessagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12503,7 +12509,7 @@ export namespace Prisma {
   export type MessageCreateManyProjectInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
@@ -12570,7 +12576,7 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12578,7 +12584,7 @@ export namespace Prisma {
   export type MessageUncheckedUpdateWithoutProjectInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
