@@ -16,11 +16,6 @@ const ProjectStarter = () => {
   // const [name, setName] = useState("");
   // const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    console.log(name);
-    console.log(tag);
-  }, [name, tag]);
-
   return (
     <>
       <h1 className={styles["title"]}> Create a new project! </h1>

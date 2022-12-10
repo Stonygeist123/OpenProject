@@ -50,9 +50,6 @@ const LoginPage = () => {
   };
 
   const handleOnClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (name.trim() === "") return console.log("No username provided.");
-    if (password.trim() === "") return console.log("No password provided.");
-
     setDisableControls(true);
     e.preventDefault();
 
@@ -129,7 +126,11 @@ const LoginPage = () => {
         </div>
         <div className={styles["button-div"]}>
           <h3 className={`${styles["invalid-msg"]} ${invalidLogin ? null : styles["hidden"]}`}>Invalid username or password</h3>
-          <button className={styles["login-button"]} onClick={handleOnClick} disabled={disableControls || !validation.name || !validation.password}>
+          <button
+            className={styles["login-button"]}
+            onClick={handleOnClick}
+            disabled={disableControls || !validation.name || !validation.password}
+          >
             Login
           </button>
         </div>
@@ -138,7 +139,10 @@ const LoginPage = () => {
   ) : (
     <>
       <h1>You are already logged in</h1>
-      <button className={styles["logout-button"]} onClick={logOut}>
+      <button
+        className={styles["logout-button"]}
+        onClick={logOut}
+      >
         Logout?
       </button>
     </>

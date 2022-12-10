@@ -38,7 +38,6 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
         },
       });
 
-      console.log(data.message);
       if (data.allowed) router.push(`/project/${data.project!.id}`);
       else if (data.found) setProjectFound(true);
     }
@@ -56,14 +55,23 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
   }, [name, loading, nameInput]);
 
   return (
-    <div id={styles["myModal"]} className={styles["modal"]}>
-      <div className={styles["modal-content"]} ref={someRef}>
+    <div
+      id={styles["myModal"]}
+      className={styles["modal"]}
+    >
+      <div
+        className={styles["modal-content"]}
+        ref={someRef}
+      >
         {loading ? (
           <h1 className={styles["modal-title"]}> Loading... </h1>
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new project! </h1>
-            <span className={styles["close"]} onClick={closeFunction}>
+            <span
+              className={styles["close"]}
+              onClick={closeFunction}
+            >
               &times;
             </span>
 
@@ -132,11 +140,20 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
                 ></textarea>
               </div>
               <br />
-              <ToggleButton setState={setIsPrivate} value={isPrivate} text="Set on private" />
+              <ToggleButton
+                setState={setIsPrivate}
+                value={isPrivate}
+                text="Set on private"
+              />
               <br />
             </div>
             <div className={styles["footer"]}>
-              <Button isSubmit onClick={handleOnClick} className={styles["submit-button"]} size="xl" />
+              <Button
+                isSubmit
+                onClick={handleOnClick}
+                className={styles["submit-button"]}
+                size="xl"
+              />
             </div>
           </>
         ) : (

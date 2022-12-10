@@ -65,7 +65,6 @@ export default withIronSessionApiRoute(
             });
 
           if (replyID) {
-            console.log(replyID);
             const reply = await prisma.message.findFirst({
               select: { projectId: true },
               where: { id: replyID },

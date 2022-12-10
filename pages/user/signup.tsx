@@ -63,10 +63,6 @@ const SignupPage = () => {
   };
 
   const handleOnClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (name.trim() === "") return console.log("No username provided.");
-    if (password.trim() === "") return console.log("No password provided.");
-    if (confirmedPassword.trim() === "") return console.log("Password confirmation is required.");
-
     setDisableControls(true);
     e.preventDefault();
 
@@ -168,7 +164,10 @@ const SignupPage = () => {
   ) : (
     <>
       <h1>You are already logged in</h1>
-      <button className={styles["logout-button"]} onClick={logOut}>
+      <button
+        className={styles["logout-button"]}
+        onClick={logOut}
+      >
         Logout?
       </button>
     </>
