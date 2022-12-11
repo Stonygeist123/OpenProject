@@ -1,9 +1,56 @@
 import DiscussionThread from "../DiscussionThread";
 import styles from "./index.module.scss";
+import arrowSvg from "../../public/arrow.svg";
+import Image from "next/image";
+import fetchJson from "../../lib/fetchJson";
+import { useState } from "react";
+import Button from "../common/Button";
 
-const Discussion = ({ threads }: { threads: Thread<true>[] }) => {
+const Discussion = ({ threads, id }: { threads: Thread<true>[]; id: number }) => {
+  const [messageInput, setMessageInput] = useState<string>("");
+  const handleSendMessage = async () => {
+    if (messageInput.trim() === "") return;
+
+    const { allowed, threads: ts } = await fetchJson<{
+      message: string;
+      found: boolean;
+      allowed: boolean;
+      threads: Thread<true>[];
+    }>(`/api/project/${id}/message/threads`, {
+      method: "POST",
+      body: JSON.stringify({ content: messageInput.trim(), region: id!, isProject: true }),
+    });
+
+    if (allowed && ts.length > 0) {
+      threads = ts;
+      setMessageInput("");
+    }
+  };
+
   return (
-    <div className={`flex flex-row ${styles["discussion"]}`}>
+    <div className={`${styles["discussion"]}`}>
+      <div className={styles["message-input-wrapper"]}>
+        <textarea
+          className={styles["message-input"]}
+          placeholder={"Send message..."}
+          value={messageInput}
+          onChange={e => setMessageInput(e.target.value)}
+          onKeyDown={async e => {
+            if (e.key === "Tab") await handleSendMessage();
+          }}
+        />
+        <Button
+          size="m"
+          onClick={handleSendMessage}
+          className={styles["message-send"]}
+        >
+          <Image
+            alt="sendMessage"
+            src={arrowSvg}
+          />
+        </Button>
+      </div>
+
       <div className={styles["threads"]}>
         {threads
           .slice(20)

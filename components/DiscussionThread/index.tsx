@@ -33,26 +33,29 @@ const DiscussionThread = ({
         isFirst={isFirst}
         isLast={isLast}
       />
-      {subOpened &&
-        thread.replies
-          .sort(
-            (a, b) =>
-              (Object.hasOwn(a, "top") ? new Date((a as Thread<true>).top.created_at) : new Date((a as Msg).created_at)).getTime() -
-              (Object.hasOwn(b, "top") ? new Date((b as Thread<true>).top.created_at) : new Date((b as Msg).created_at)).getTime()
-          )
-          .map((r, i, arr) => (
-            <DiscussionThread
-              key={i}
-              thread={
-                Object.hasOwn(r, "top")
-                  ? { top: (r as Thread<true>).top, replies: (r as Thread<true>).replies }
-                  : { top: r as Omit<Msg, "community">, replies: [] }
-              }
-              sub
-              isFirst={i === 0}
-              isLast={i + 1 === arr.length}
-            />
-          ))}
+
+      <div className={styles["messages"]}>
+        {subOpened &&
+          thread.replies
+            .sort(
+              (a, b) =>
+                (Object.hasOwn(a, "top") ? new Date((a as Thread<true>).top.created_at) : new Date((a as Msg).created_at)).getTime() -
+                (Object.hasOwn(b, "top") ? new Date((b as Thread<true>).top.created_at) : new Date((b as Msg).created_at)).getTime()
+            )
+            .map((r, i, arr) => (
+              <DiscussionThread
+                key={i}
+                thread={
+                  Object.hasOwn(r, "top")
+                    ? { top: (r as Thread<true>).top, replies: (r as Thread<true>).replies }
+                    : { top: r as Omit<Msg, "community">, replies: [] }
+                }
+                sub
+                isFirst={i === 0}
+                isLast={i + 1 === arr.length}
+              />
+            ))}
+      </div>
     </div>
   );
 };

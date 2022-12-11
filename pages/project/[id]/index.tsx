@@ -4,9 +4,6 @@ import fetchJson from "../../../lib/fetchJson";
 import styles from "../../../styles/pages/project/[id]/index.module.scss";
 import TaskBox from "../../../components/TaskBox/TaskBox";
 import Button from "../../../components/common/Button";
-// import MessageBox from "../../../components/MessageBox/MessageBox";
-// import sendArrowSvg from "../../../public/send_arrow.svg";
-// import Image from "next/image";
 import Discussion from "../../../components/Discussion";
 
 const ProjectPage = () => {
@@ -17,7 +14,6 @@ const ProjectPage = () => {
   const [threads, setThreads] = useState<Thread<true>[]>([]);
   const [tasks, setTasks] = useState<(Task & { project: Project })[]>([]);
   const [user, setUser] = useState<User | null>(null);
-  const [messageInput, _] = useState<string>("");
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -52,29 +48,9 @@ const ProjectPage = () => {
         setProjectLoaded(true);
       });
     });
-  }, [router.isReady, id, messageInput]);
+  }, [router.isReady, id]);
 
   const handleCreateTask = () => router.push(`/project/${id}/task/add`);
-  /*
-  const handleSendMessage = async () => {
-    if (messageInput.trim() === "") return;
-
-    const { allowed, threads: ts } = await fetchJson<{
-      message: string;
-      found: boolean;
-      allowed: boolean;
-      threads: Thread<true>[];
-    }>(`/api/project/${id}/message/threads`, {
-      method: "POST",
-      body: JSON.stringify({ content: messageInput.trim(), region: id!, isProject: true }),
-    });
-
-    if (allowed && ts.length > 0) {
-      setThreads(ts);
-      setMessageInput("");
-    }
-  };
-  */
 
   return !projectLoaded ? (
     <h1 style={{ color: "white", textAlign: "center", top: "10em", position: "relative" }}>Loading...</h1>
@@ -135,52 +111,10 @@ const ProjectPage = () => {
           </div>
         </div>
 
-        <div className={`${styles["messages-container"]}`}>
-          <Discussion threads={threads} />
-          {/* <div className={styles["message-input-wrapper"]}>
-            <textarea
-              className={styles["message-input"]}
-              placeholder={"Send message..."}
-              value={messageInput}
-              onChange={e => setMessageInput(e.target.value)}
-              onKeyDown={async e => {
-                if (e.key === "Tab") await handleSendMessage();
-              }}
-            />
-            <Button
-              size="m"
-              onClick={handleSendMessage}
-              className={styles["message-send"]}
-            >
-              <Image
-                alt="sendMessage"
-                src={sendArrowSvg}
-              />
-            </Button>
-          </div>
-          <div className={styles["messages"]}>
-            {messages && messages.length > 0 ? (
-              messages
-                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                .map((m, i) => (
-                  <MessageBox
-                    className={styles["message"]}
-                    message={m}
-                    key={i}
-                    isFirst={i === 0}
-                    isLast={i + 1 === messages.length}
-                  />
-                ))
-            ) : (
-              <p
-                className="text-xl"
-                style={{ color: "black", fontWeight: "bolder", textAlign: "center", position: "relative" }}
-              >
-                No messages yet...
-              </p>
-            )}
-          </div> */}
-        </div>
+        <Discussion
+          threads={threads}
+          id={parseInt(id as string)}
+        />
       </div>
     </div>
   );
