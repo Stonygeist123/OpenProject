@@ -11,6 +11,7 @@ const MessageBox = ({
   className,
   toggleSubthread,
   subs = false,
+  setReply,
 }: {
   key: number;
   message: Msg;
@@ -20,6 +21,7 @@ const MessageBox = ({
   router?: NextRouter;
   toggleSubthread?: React.Dispatch<React.SetStateAction<boolean>>;
   subs?: boolean;
+  setReply?: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
 }) => {
   const formatDate = (d: Date) => {
     const y = new Date();
@@ -31,22 +33,36 @@ const MessageBox = ({
   };
 
   return (
-    <div
-      className={`${styles["message-container"]} ${isFirst ? styles["first"] : null} ${isLast ? styles["last"] : null} ${className}`}
-      key={key}
-    >
-      <div className="flex flex-row">
-        <ProfileIcon
-          className={styles["message-profile-icon"]}
-          size="m"
-        />
-        <div className={styles["message-wrapper"]}>
-          <div className={styles["message-content-wrapper"]}>
-            <p className={`text-sm ${styles["message-content"]}`}>{message?.content}</p>
+    <>
+      <div
+        className={`${styles["message-container"]} ${isFirst ? styles["first"] : null} ${
+          isLast ? styles["last"] : null
+        } ${className} flex flex-col px-1`}
+        key={key}
+      >
+        <div className=" flex flex-row overflow-hidden justify-center content-center ">
+          <div className="flex items-center">
+            <ProfileIcon
+              className={styles[""]}
+              size="m"
+            />
           </div>
-          <div className={`${styles["message-footer"]}`}>
+
+          <div className={`${styles["message-wrapper"]} `}>
+            <div className={styles["message-content-wrapper"]}>
+              <p className={`text-sm ${styles["message-content"]}`}>{message?.content}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex-grow"></div>
+        <div className={`${styles["message-footer"]} flex flex-row pl-1 mt-1`}>
+          <div>
             <p className={`font-bold text-3xs ${styles["message-footer-author"]}`}>
-              {/* ToDo: Redirect to user profile when clicking on author's name */}
+              {/**
+               *
+               * ToDo: Redirect to user profile when clicking on author's name
+               *
+               **/}
               Author: <span style={{ color: "black", cursor: "pointer" }}>{message?.username}</span>,{" "}
               <span className="text-3xs">{formatDate(new Date(message.created_at))}</span>
             </p>
@@ -60,10 +76,18 @@ const MessageBox = ({
               />
             ) : null}
           </div>
+          <div className="flex-grow"></div>
+          <div className={` mr-5`}>
+            <span
+              className={`${styles["reply-button"]}`}
+              onClick={() => setReply?.(message.id)}
+            >
+              reply
+            </span>
+          </div>
         </div>
       </div>
-      <div className={`${styles["message-footer"]}`}></div>
-    </div>
+    </>
   );
 };
 

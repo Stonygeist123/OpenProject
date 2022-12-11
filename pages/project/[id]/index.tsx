@@ -14,6 +14,29 @@ const ProjectPage = () => {
   const [threads, setThreads] = useState<Thread<true>[]>([]);
   const [tasks, setTasks] = useState<(Task & { project: Project })[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [loadDiscussion, setLoadDiscussion] = useState(true);
+  const [replyID, setReplyID] = useState<number | undefined>();
+  const [messageInput, setMessageInput] = useState<string>("");
+
+  const handleMessageSent = async () => {
+    await fetchJson(`/api/project/${id}/message/create`, { method: "POST", body: JSON.stringify({ content: messageInput, replyID }) });
+    setLoadDiscussion(true);
+  };
+
+  useEffect(() => {
+    if (!loadDiscussion) return;
+
+    fetchJson<{
+      message: string;
+      found: boolean;
+      allowed: boolean;
+      threads: Thread<true>[];
+    }>(`/api/project/${id}/message/threads`).then(({ threads: ts }) => {
+      setThreads(ts);
+      console.log(ts);
+      setLoadDiscussion(v => !v);
+    });
+  }, [loadDiscussion]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -27,15 +50,14 @@ const ProjectPage = () => {
       setProject(data.project);
 
       if (data.project !== null) {
-        const { threads: ts } = await fetchJson<{
+        setTasks(data.project.tasks);
+
+        await fetchJson<{
           message: string;
           found: boolean;
           allowed: boolean;
           threads: Thread<true>[];
         }>(`/api/project/${id}/message/threads`);
-        setThreads(ts);
-        console.log(ts);
-        setTasks(data.project.tasks);
       }
 
       fetchJson<{
@@ -111,10 +133,25 @@ const ProjectPage = () => {
           </div>
         </div>
 
-        <Discussion
-          threads={threads}
-          id={parseInt(id as string)}
-        />
+        {loadDiscussion ? (
+          <Discussion
+            threads={threads}
+            messageInput={messageInput}
+            setMessageInput={setMessageInput}
+            setReload={setLoadDiscussion}
+            setReplyID={setReplyID}
+            onMessageSent={handleMessageSent}
+          />
+        ) : (
+          <Discussion
+            threads={threads}
+            messageInput={messageInput}
+            setMessageInput={setMessageInput}
+            setReload={setLoadDiscussion}
+            setReplyID={setReplyID}
+            onMessageSent={handleMessageSent}
+          />
+        )}
       </div>
     </div>
   );

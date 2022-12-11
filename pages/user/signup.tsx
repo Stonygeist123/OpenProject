@@ -91,7 +91,7 @@ const SignupPage = () => {
         setInvalidsignup(true);
       } else {
         mutateUser(user, false);
-        await router.push("/home");
+        await router.push("/");
       }
 
       setDisableControls(false);

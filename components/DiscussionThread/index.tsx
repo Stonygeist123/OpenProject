@@ -8,6 +8,7 @@ const DiscussionThread = ({
   className,
   isFirst = false,
   isLast = false,
+  setReply,
 }: {
   changeThread?: () => {};
   thread: Thread<true>;
@@ -15,6 +16,7 @@ const DiscussionThread = ({
   className?: string;
   isFirst?: boolean;
   isLast?: boolean;
+  setReply?: React.Dispatch<React.SetStateAction<number | undefined>> | undefined;
 }) => {
   const [subOpened, setSubOpened] = useState(false);
 
@@ -32,6 +34,7 @@ const DiscussionThread = ({
         subs={thread.replies.length > 0}
         isFirst={isFirst}
         isLast={isLast}
+        setReply={setReply}
       />
 
       <div className={styles["messages"]}>
@@ -53,6 +56,7 @@ const DiscussionThread = ({
                 sub
                 isFirst={i === 0}
                 isLast={i + 1 === arr.length}
+                setReply={setReply}
               />
             ))}
       </div>

@@ -9,6 +9,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   isSubmit?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   image?: File;
+  transparent?: boolean;
 };
 
 const sizes = {
@@ -20,7 +21,7 @@ const sizes = {
 };
 
 const getSize = (size: Size) => sizes[size];
-const Button = ({ dark = false, size = "m", text, className, isSubmit, onClick, image, ...props }: ButtonProps) =>
+const Button = ({ dark = false, size = "m", text, className, isSubmit, onClick, image, transparent, ...props }: ButtonProps) =>
   isSubmit ? (
     <Button
       className={`${styles["submit-btn"]} ${className}`}
@@ -32,7 +33,7 @@ const Button = ({ dark = false, size = "m", text, className, isSubmit, onClick, 
   ) : (
     <button
       onClick={onClick}
-      className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className}`}
+      className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className} ${transparent ? "bg-transparent" : ""}`}
       {...props}
     >
       {props.children ?? text ?? "button"}

@@ -13,23 +13,38 @@ const Template: ComponentStory<typeof Button> = args => {
     <div>
       <div style={{ display: "inline-block" }}>
         <p style={{ display: "block" }}>small</p>
-        <Button {...args} size="s" />
+        <Button
+          {...args}
+          size="s"
+        />
       </div>
       <div style={{ display: "inline-block", marginLeft: "30px" }}>
         <p style={{ display: "block" }}>medium</p>
-        <Button {...args} size="m" />
+        <Button
+          {...args}
+          size="m"
+        />
       </div>
       <div style={{ display: "inline-block", marginLeft: "30px" }}>
         <p style={{ display: "block" }}>large</p>
-        <Button {...args} size="l" />
+        <Button
+          {...args}
+          size="l"
+        />
       </div>
       <div style={{ display: "inline-block", marginLeft: "30px" }}>
         <p style={{ display: "block" }}>XL</p>
-        <Button {...args} size="xl" />
+        <Button
+          {...args}
+          size="xl"
+        />
       </div>
       <div style={{ display: "inline-block", marginLeft: "30px" }}>
         <p style={{ display: "block" }}>XXL</p>
-        <Button {...args} size="xxl" />
+        <Button
+          {...args}
+          size="xxl"
+        />
       </div>
     </div>
   );
@@ -40,6 +55,10 @@ export const Default = Template.bind({});
 export const Dark = Template.bind({});
 Dark.args = {
   dark: true,
+};
+export const Transparent = Template.bind({});
+Transparent.args = {
+  transparent: true,
 };
 
 // export const LoggedOut = Template.bind({});

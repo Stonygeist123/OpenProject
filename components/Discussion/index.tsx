@@ -2,30 +2,30 @@ import DiscussionThread from "../DiscussionThread";
 import styles from "./index.module.scss";
 import arrowSvg from "../../public/arrow.svg";
 import Image from "next/image";
-import fetchJson from "../../lib/fetchJson";
-import { useState } from "react";
+import { useEffect } from "react";
 import Button from "../common/Button";
+import { useRouter } from "next/router";
 
-const Discussion = ({ threads, id }: { threads: Thread<true>[]; id: number }) => {
-  const [messageInput, setMessageInput] = useState<string>("");
-  const handleSendMessage = async () => {
-    if (messageInput.trim() === "") return;
+const Discussion = ({
+  threads,
+  messageInput,
+  setMessageInput,
+  setReload,
+  setReplyID,
+  onMessageSent,
+}: {
+  threads: Thread<true>[];
+  messageInput: string;
+  setMessageInput: React.Dispatch<React.SetStateAction<string>>;
+  setReload?: React.Dispatch<React.SetStateAction<boolean>>;
+  setReplyID?: React.Dispatch<React.SetStateAction<number | undefined>>;
+  onMessageSent?: () => unknown;
+}) => {
+  const router = useRouter();
 
-    const { allowed, threads: ts } = await fetchJson<{
-      message: string;
-      found: boolean;
-      allowed: boolean;
-      threads: Thread<true>[];
-    }>(`/api/project/${id}/message/threads`, {
-      method: "POST",
-      body: JSON.stringify({ content: messageInput.trim(), region: id!, isProject: true }),
-    });
-
-    if (allowed && ts.length > 0) {
-      threads = ts;
-      setMessageInput("");
-    }
-  };
+  useEffect(() => {
+    if (router.isReady) setReload?.(false);
+  }, [router.isReady]);
 
   return (
     <div className={`${styles["discussion"]}`}>
@@ -36,12 +36,12 @@ const Discussion = ({ threads, id }: { threads: Thread<true>[]; id: number }) =>
           value={messageInput}
           onChange={e => setMessageInput(e.target.value)}
           onKeyDown={async e => {
-            if (e.key === "Tab") await handleSendMessage();
+            if (e.key === "Tab") onMessageSent?.();
           }}
         />
         <Button
           size="m"
-          onClick={handleSendMessage}
+          onClick={onMessageSent}
           className={styles["message-send"]}
         >
           <Image
@@ -53,7 +53,6 @@ const Discussion = ({ threads, id }: { threads: Thread<true>[]; id: number }) =>
 
       <div className={styles["threads"]}>
         {threads
-          .slice(20)
           .sort((a, b) => new Date(b.top.created_at).getTime() - new Date(a.top.created_at).getTime())
           .map((thread, i, arr) => (
             <DiscussionThread
@@ -62,6 +61,7 @@ const Discussion = ({ threads, id }: { threads: Thread<true>[]; id: number }) =>
               sub={false}
               isFirst={i === 0}
               isLast={i + 1 === arr.length}
+              setReply={setReplyID}
             />
           ))}
       </div>

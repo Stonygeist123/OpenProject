@@ -5,7 +5,7 @@ $bg-colour: rgba(221, 221, 221, 0.9);
     display: block;
     position: relative;
     width: 60em;
-    height: 10em;
+    height: 11rem;
     background-color: $bg-colour;
     border: rgb(161, 161, 161) solid 1px;
 
@@ -25,17 +25,13 @@ $bg-colour: rgba(221, 221, 221, 0.9);
 
     .message-profile-icon {
         position: relative;
-        top: 1.5em;
-        left: 1.5em;
         background-color: black;
     }
 
     .message-wrapper {
         position: relative;
-        left: 3em;
+        margin-left: 3em;
         max-width: 83%;
-        height: 95%;
-
         .message-content {
             overflow-x: hidden;
             overflow-wrap: break-word;
@@ -43,8 +39,9 @@ $bg-colour: rgba(221, 221, 221, 0.9);
             position: relative;
             color: black;
             width: 35em;
-            max-height: 4.5em;
             padding-right: 1em;
+            height: 7rem;
+            margin-top: 1rem;
 
             &::-webkit-scrollbar {
                 width: 3px;
@@ -64,22 +61,24 @@ $bg-colour: rgba(221, 221, 221, 0.9);
 
             @at-root &-wrapper {
                 position: relative;
-                top: 1em;
                 display: flex;
                 flex-direction: column;
-                min-height: 7.5em;
             }
         }
 
         .message-footer {
+            display: flex;
+            position: absolute;
+            & .reply-button {
+                background-color: transparent;
+                border: none;
+                cursor: pointer;
+            }
             &-author {
-                margin-top: 1em;
-                position: relative;
                 color: gray;
             }
 
             &-reply {
-                position: relative;
                 left: 35em;
             }
         }
