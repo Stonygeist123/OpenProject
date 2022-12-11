@@ -17,6 +17,7 @@ html {
 
     &::-webkit-scrollbar {
         width: 5px;
+        height: 3px;
     }
 
     &::-webkit-scrollbar-track {
@@ -35,8 +36,9 @@ html {
 body {
     box-sizing: border-box;
     color: white;
-    background-image: $background-gradient;
+    background: $background-gradient no-repeat center fixed;
     min-height: 100vh;
+    min-width: 100vw;
 }
 
 a {

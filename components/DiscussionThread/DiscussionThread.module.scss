@@ -1,0 +1,49 @@
+.button {
+    padding: 0;
+    text-align: left;
+    display: block;
+}
+
+.dim {
+    filter: grayscale(80%);
+    filter: blur(1px);
+    transform: scale(0.9);
+}
+
+.context-button-content {
+    writing-mode: vertical-lr;
+}
+
+.context-button {
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    outline: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    &:hover {
+        color: rgb(27, 240, 255);
+        margin-right: 3px;
+    }
+}
+
+.thread {
+    flex: 1;
+    height: 10em;
+
+    .switch {
+        position: relative;
+        bottom: 5em;
+    }
+}
+
+.subthread {
+    position: relative;
+    left: 10em;
+    top: 10em;
+
+    .switch {
+        position: relative;
+        bottom: 0;
+    }
+}

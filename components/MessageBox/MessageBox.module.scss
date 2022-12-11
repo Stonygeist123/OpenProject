@@ -6,9 +6,9 @@ $bg-colour: rgba(221, 221, 221, 0.9);
     position: relative;
     width: 60em;
     height: 10em;
-    // box-shadow: 0 0 8px 2px rgb(121, 121, 121);
     background-color: $bg-colour;
     border: rgb(161, 161, 161) solid 1px;
+
     &.inactive {
         background-color: darken($bg-colour, 50%);
     }
@@ -71,10 +71,17 @@ $bg-colour: rgba(221, 221, 221, 0.9);
             }
         }
 
-        > .message-footer {
-            margin-top: 1em;
-            position: relative;
-            color: gray;
+        .message-footer {
+            &-author {
+                margin-top: 1em;
+                position: relative;
+                color: gray;
+            }
+
+            &-reply {
+                position: relative;
+                left: 35em;
+            }
         }
     }
 }

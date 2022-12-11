@@ -2,7 +2,7 @@ import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import messages from "./messages.json";
 
-import DiscussionThread from "../";
+import DiscussionThread from "..";
 
 export default {
   title: "Main/DiscussionThread",
@@ -12,14 +12,17 @@ export default {
 const Template: ComponentStory<any> = (args: {}) => {
   return (
     <>
-      <DiscussionThread {...args} />
+      <DiscussionThread
+        msgs={[]}
+        {...args}
+      />
     </>
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  messages: messages,
+  msgs: messages,
 };
 
 // export const LoggedOut = Template.bind({});

@@ -4,19 +4,20 @@ import fetchJson from "../../../lib/fetchJson";
 import styles from "../../../styles/pages/project/[id]/index.module.scss";
 import TaskBox from "../../../components/TaskBox/TaskBox";
 import Button from "../../../components/common/Button";
-import MessageBox from "../../../components/MessageBox/MessageBox";
-import sendArrowSvg from "../../../public/send_arrow.svg";
-import Image from "next/image";
+// import MessageBox from "../../../components/MessageBox/MessageBox";
+// import sendArrowSvg from "../../../public/send_arrow.svg";
+// import Image from "next/image";
+import Discussion from "../../../components/Discussion";
 
 const ProjectPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [project, setProject] = useState<Project | null>(null);
   const [projectLoaded, setProjectLoaded] = useState(false);
-  const [messages, setMessages] = useState<(Message & { author: User; community: Community | null; project: Project | null })[]>([]);
+  const [threads, setThreads] = useState<Thread<true>[]>([]);
   const [tasks, setTasks] = useState<(Task & { project: Project })[]>([]);
   const [user, setUser] = useState<User | null>(null);
-  const [messageInput, setMessageInput] = useState<string>("");
+  const [messageInput, _] = useState<string>("");
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -30,13 +31,14 @@ const ProjectPage = () => {
       setProject(data.project);
 
       if (data.project !== null) {
-        await fetchJson<{
+        const { threads: ts } = await fetchJson<{
           message: string;
           found: boolean;
-          admin: boolean;
-          messages: (Message & { author: User; community: Community | null; project: Project | null })[] | null;
-        }>(`/api/project/${id}/message/all`).then(data => setMessages(data.messages ?? []));
-
+          allowed: boolean;
+          threads: Thread<true>[];
+        }>(`/api/project/${id}/message/threads`);
+        setThreads(ts);
+        console.log(ts);
         setTasks(data.project.tasks);
       }
 
@@ -50,27 +52,29 @@ const ProjectPage = () => {
         setProjectLoaded(true);
       });
     });
-  }, [router.isReady, id]);
+  }, [router.isReady, id, messageInput]);
 
   const handleCreateTask = () => router.push(`/project/${id}/task/add`);
+  /*
   const handleSendMessage = async () => {
     if (messageInput.trim() === "") return;
 
-    const { allowed, msg } = await fetchJson<{
-      allowed: boolean;
-      found: boolean;
-      msg: (Message & { author: User; community: Community | null; project: Project | null }) | null;
+    const { allowed, threads: ts } = await fetchJson<{
       message: string;
-    }>(`/api/project/${id}/message/create`, {
+      found: boolean;
+      allowed: boolean;
+      threads: Thread<true>[];
+    }>(`/api/project/${id}/message/threads`, {
       method: "POST",
       body: JSON.stringify({ content: messageInput.trim(), region: id!, isProject: true }),
     });
 
-    if (allowed && msg) {
-      setMessages(m => [msg, ...m]);
+    if (allowed && ts.length > 0) {
+      setThreads(ts);
       setMessageInput("");
     }
   };
+  */
 
   return !projectLoaded ? (
     <h1 style={{ color: "white", textAlign: "center", top: "10em", position: "relative" }}>Loading...</h1>
@@ -132,7 +136,8 @@ const ProjectPage = () => {
         </div>
 
         <div className={`${styles["messages-container"]}`}>
-          <div className={styles["message-input-wrapper"]}>
+          <Discussion threads={threads} />
+          {/* <div className={styles["message-input-wrapper"]}>
             <textarea
               className={styles["message-input"]}
               placeholder={"Send message..."}
@@ -174,7 +179,7 @@ const ProjectPage = () => {
                 No messages yet...
               </p>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -104,3 +104,19 @@ type Message = {
   communityName: string | null;
   username: string;
 };
+
+/**
+ * Message type for api responses
+ */
+type Msg = Message & {
+  author: User;
+  community: Community | null;
+  project: Project | null;
+};
+
+/**
+ * Thread type
+ */
+type Thread<T extends true | false> = T extends true
+  ? { top: Omit<Msg, "community">; replies: (Omit<Msg, "community"> | Thread<T>)[] }
+  : { top: Omit<Msg, "project">; replies: (Omit<Msg, "project"> | Thread<T>)[] };
