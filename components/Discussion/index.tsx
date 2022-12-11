@@ -8,11 +8,13 @@ const Discussion = ({ threads }: { threads: Thread<true>[] }) => {
         {threads
           .slice(20)
           .sort((a, b) => new Date(b.top.created_at).getTime() - new Date(a.top.created_at).getTime())
-          .map(thread => (
+          .map((thread, i, arr) => (
             <DiscussionThread
               key={thread.top.id}
               thread={thread}
               sub={false}
+              isFirst={i === 0}
+              isLast={i + 1 === arr.length}
             />
           ))}
       </div>

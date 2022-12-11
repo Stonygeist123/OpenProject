@@ -32,7 +32,7 @@ const MessageBox = ({
 
   return (
     <div
-      className={`${styles["message-container"]} ${isFirst ? styles["first"] : isLast ? styles["last"] : null} ${className}`}
+      className={`${styles["message-container"]} ${isFirst ? styles["first"] : null} ${isLast ? styles["last"] : null} ${className}`}
       key={key}
     >
       <div className="flex flex-row">

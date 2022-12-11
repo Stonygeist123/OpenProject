@@ -6,11 +6,15 @@ const DiscussionThread = ({
   thread,
   sub = false,
   className,
+  isFirst = false,
+  isLast = false,
 }: {
   changeThread?: () => {};
   thread: Thread<true>;
   sub?: boolean;
   className?: string;
+  isFirst?: boolean;
+  isLast?: boolean;
 }) => {
   const [subOpened, setSubOpened] = useState(false);
 
@@ -26,6 +30,8 @@ const DiscussionThread = ({
         message={{ ...thread.top, community: null }}
         toggleSubthread={setSubOpened}
         subs={thread.replies.length > 0}
+        isFirst={isFirst}
+        isLast={isLast}
       />
       {subOpened &&
         thread.replies
@@ -34,7 +40,7 @@ const DiscussionThread = ({
               (Object.hasOwn(a, "top") ? new Date((a as Thread<true>).top.created_at) : new Date((a as Msg).created_at)).getTime() -
               (Object.hasOwn(b, "top") ? new Date((b as Thread<true>).top.created_at) : new Date((b as Msg).created_at)).getTime()
           )
-          .map((r, i) => (
+          .map((r, i, arr) => (
             <DiscussionThread
               key={i}
               thread={
@@ -43,6 +49,8 @@ const DiscussionThread = ({
                   : { top: r as Omit<Msg, "community">, replies: [] }
               }
               sub
+              isFirst={i === 0}
+              isLast={i + 1 === arr.length}
             />
           ))}
     </div>
