@@ -92,4 +92,5 @@ model Message {
   projectId     Int?
   communityName String?
   username      String
+  hasReplies    Boolean
 }

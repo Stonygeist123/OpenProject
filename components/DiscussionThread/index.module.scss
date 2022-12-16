@@ -21,18 +21,30 @@
     border: none;
     font-size: 1.4rem;
     cursor: pointer;
-    &:hover {
+
+    &:not(.switched) {
+        &:hover {
+            color: rgb(27, 240, 255);
+            margin-right: 1.5em;
+        }
+    }
+
+    &.switched {
         color: rgb(27, 240, 255);
-        margin-right: 3px;
+        margin-right: 1.5em;
     }
 }
 
 .thread {
     flex: 1;
     height: 10em;
+    width: 65em;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
 
-    .switch {
+    &.no-switch {
         position: relative;
+        left: 1.7em;
     }
 }
 
@@ -40,12 +52,13 @@
     position: relative;
     left: 10em;
     top: 10em;
-
-    .switch {
-        position: relative;
-        bottom: 0;
-    }
 }
 
-.messages {
+.switch {
+    position: relative;
+    right: 0.2em;
+}
+
+.message-container {
+    display: inline-block;
 }

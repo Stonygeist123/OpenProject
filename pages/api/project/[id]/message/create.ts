@@ -93,8 +93,11 @@ export default withIronSessionApiRoute(
                 username: req.session.user.username,
                 projectId: id,
                 replyID,
+                hasReplies: false,
               },
             });
+
+            await prisma.message.update({ where: { id: replyID }, data: { hasReplies: true } });
 
             res.json({
               allowed: true,
@@ -109,6 +112,7 @@ export default withIronSessionApiRoute(
                 content,
                 username: req.session.user.username,
                 projectId: id,
+                hasReplies: false,
               },
             });
 

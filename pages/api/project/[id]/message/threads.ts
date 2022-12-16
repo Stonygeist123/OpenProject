@@ -1,19 +1,18 @@
 // pages/api/project/[id]/message/threads.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
-import { NextApiResponse } from "next/types";
-import fetchJson from "../../../../../lib/fetchJson";
+import { NextApiRequest, NextApiResponse } from "next/types";
 import prisma from "../../../../../lib/prisma";
 import { sessionOptions } from "../../../../../lib/session";
 
 export default withIronSessionApiRoute(
   async (
-    req,
+    req: NextApiRequest & { body: { topID?: number } },
     res: NextApiResponse<{
       message: string;
       found: boolean;
       allowed: boolean;
-      threads: Thread<true>[];
+      thread: Thread<true> | null;
     }>
   ) => {
     if (req.query["id"] === undefined)
@@ -21,7 +20,7 @@ export default withIronSessionApiRoute(
         found: true,
         allowed: false,
         message: "No id provided.",
-        threads: [],
+        thread: null,
       });
 
     const project = await prisma.project.findFirst({
@@ -34,31 +33,17 @@ export default withIronSessionApiRoute(
         found: false,
         allowed: false,
         message: "No project found.",
-        threads: [],
+        thread: null,
       });
     else {
-      const messages = await prisma.message.findMany({ where: { projectId: project.id, replyID: null }, include: { author: true, project: true } });
-      const getThreads = async (msg: Omit<Msg, "community">): Promise<Thread<true>> => {
-        let thread: Thread<true>;
-        const { messages: msgs } = await fetchJson<{
-          message: string;
-          found: boolean;
-          allowed: boolean;
-          messages: Omit<Msg, "community">[];
-        }>(`/api/message/${msg.id}/replies`);
+      const messages = req.body["topID"]
+        ? await prisma.message.findMany({ where: { projectId: project.id, replyID: req.body["topID"] }, include: { author: true, project: true } })
+        : await prisma.message.findMany({ where: { projectId: project.id, replyID: null }, include: { author: true, project: true } });
 
-        const replies: Thread<true>[] = [];
-        for (const r of msgs) replies.push(await getThreads(r));
-        thread = {
-          top: msg,
-          replies,
-        };
-
-        return thread;
-      };
-
-      const threads: Thread<true>[] = [];
-      for (const msg of messages) threads.push(await getThreads(msg));
+      const topMsg = req.body["topID"]
+        ? await prisma.message.findFirst({ where: { projectId: project.id, replyID: req.body["topID"] }, include: { author: true, project: true } })
+        : null;
+      const thread: Thread<true> = { top: topMsg, replies: messages };
 
       if (req.session.user) {
         const user = await prisma.user.findFirst({
@@ -70,21 +55,21 @@ export default withIronSessionApiRoute(
             allowed: true,
             found: true,
             message: "Full access permitted.",
-            threads,
+            thread,
           });
         else if (!project.isPrivate)
           res.json({
             allowed: false,
             found: true,
             message: "Access permitted.",
-            threads,
+            thread,
           });
         else
           res.json({
             found: true,
             allowed: false,
             message: "No project found.",
-            threads: [],
+            thread: null,
           });
       } else {
         if (project.isPrivate)
@@ -92,14 +77,14 @@ export default withIronSessionApiRoute(
             allowed: false,
             found: false,
             message: "No project found.",
-            threads: [],
+            thread: null,
           });
         else
           res.json({
             allowed: false,
             found: true,
             message: "Access permitted.",
-            threads,
+            thread,
           });
       }
     }

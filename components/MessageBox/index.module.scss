@@ -1,13 +1,26 @@
 @import "../../styles/abstract/variables";
 
-$bg-colour: rgba(221, 221, 221, 0.9);
+$bg-colour: rgba(80, 80, 80, 0.74);
 .message-container {
+    z-index: 1;
     display: block;
     position: relative;
     width: 60em;
-    height: 11rem;
+    height: 12rem;
     background-color: $bg-colour;
-    border: rgb(161, 161, 161) solid 1px;
+
+    .profile {
+        position: relative;
+        margin-top: 1em;
+    }
+
+    .author-name {
+        text-align: center;
+        margin-top: 0.5em;
+        color: rgb(0, 0, 0);
+        cursor: pointer;
+        font-weight: lighter;
+    }
 
     &.inactive {
         background-color: darken($bg-colour, 50%);
@@ -37,7 +50,7 @@ $bg-colour: rgba(221, 221, 221, 0.9);
             overflow-wrap: break-word;
             white-space: pre-line;
             position: relative;
-            color: black;
+            color: rgb(255, 255, 255);
             width: 35em;
             padding-right: 1em;
             height: 7rem;
@@ -65,22 +78,62 @@ $bg-colour: rgba(221, 221, 221, 0.9);
                 flex-direction: column;
             }
         }
+    }
 
-        .message-footer {
-            display: flex;
-            position: absolute;
-            & .reply-button {
+    .message-footer {
+        display: flex;
+        position: relative;
+        top: 1em;
+
+        .reply-button-wrapper {
+            > .reply-button {
                 background-color: transparent;
+                outline: none;
                 border: none;
                 cursor: pointer;
-            }
-            &-author {
-                color: gray;
-            }
+                position: relative;
+                bottom: 0.1em;
+                right: 1em;
+                background-color: transparent;
+                border-top-left-radius: 10px;
+                color: rgb(255, 255, 255);
 
-            &-reply {
-                left: 35em;
+                > .arrow {
+                    position: relative;
+                    top: 0.2em;
+                    left: 1em;
+                    width: 1em;
+                    height: 1em;
+                }
             }
         }
+
+        &-date {
+            font-weight: lighter;
+        }
+    }
+}
+
+.reply-container {
+    margin-top: 20px;
+    padding: 1rem 1rem;
+    font-weight: 600;
+    background-color: transparent;
+    .reply-text-area-wrapper {
+        background-color: rgba(255, 255, 255, 0.692);
+        padding: 1rem;
+    }
+    .reply-text-area {
+        background-color: rgba(255, 255, 255, 0.692);
+        width: 100%;
+        height: 10rem;
+        border-radius: 3px;
+        resize: none;
+        outline: none;
+        border: none;
+    }
+
+    .send-reply-button {
+        float: right;
     }
 }

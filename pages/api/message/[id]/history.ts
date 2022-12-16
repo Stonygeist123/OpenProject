@@ -5,9 +5,7 @@ import { NextApiResponse } from "next/types";
 import prisma from "../../../../lib/prisma";
 import { sessionOptions } from "../../../../lib/session";
 
-const getHistory = async (
-  msg: Message & { author: User; community: Community | null; project: Project | null }
-): Promise<(Message & { author: User; community: Community | null; project: Project | null })[]> => {
+const getHistory = async (msg: Msg): Promise<Msg[]> => {
   if (msg.replyID === null) return [msg];
   const reply = await prisma.message.findFirst({
     where: { id: msg.replyID },
@@ -25,7 +23,7 @@ export default withIronSessionApiRoute(
       message: string;
       found: boolean;
       allowed: boolean;
-      history: (Message & { author: User; community: Community | null; project: Project | null })[];
+      history: Msg[];
     }>
   ) => {
     if (req.query["id"] === undefined)

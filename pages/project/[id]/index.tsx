@@ -11,32 +11,20 @@ const ProjectPage = () => {
   const { id } = router.query;
   const [project, setProject] = useState<Project | null>(null);
   const [projectLoaded, setProjectLoaded] = useState(false);
-  const [threads, setThreads] = useState<Thread<true>[]>([]);
+  const [topLevel, setTopLevel] = useState<Omit<Msg, "community">[]>([]);
   const [tasks, setTasks] = useState<(Task & { project: Project })[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [loadDiscussion, setLoadDiscussion] = useState(true);
-  const [replyID, setReplyID] = useState<number | undefined>();
   const [messageInput, setMessageInput] = useState<string>("");
 
   const handleMessageSent = async () => {
-    await fetchJson(`/api/project/${id}/message/create`, { method: "POST", body: JSON.stringify({ content: messageInput, replyID }) });
+    if (user === null) return;
+    if (messageInput.trim() === "") return;
+
+    await fetchJson(`/api/project/${id}/message/create`, { method: "POST", body: JSON.stringify({ content: messageInput, replyID: null }) });
+    setMessageInput("");
     setLoadDiscussion(true);
   };
-
-  useEffect(() => {
-    if (!loadDiscussion) return;
-
-    fetchJson<{
-      message: string;
-      found: boolean;
-      allowed: boolean;
-      threads: Thread<true>[];
-    }>(`/api/project/${id}/message/threads`).then(({ threads: ts }) => {
-      setThreads(ts);
-      console.log(ts);
-      setLoadDiscussion(v => !v);
-    });
-  }, [loadDiscussion]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -71,6 +59,20 @@ const ProjectPage = () => {
       });
     });
   }, [router.isReady, id]);
+
+  useEffect(() => {
+    if (!router.isReady || !loadDiscussion) return;
+
+    fetchJson<{
+      message: string;
+      found: boolean;
+      allowed: boolean;
+      messages: Omit<Msg, "community">[];
+    }>(`/api/project/${id}/message/top_level`).then(({ messages: msgs }) => {
+      setTopLevel(msgs);
+      setLoadDiscussion(v => !v);
+    });
+  }, [id, loadDiscussion, router.isReady]);
 
   const handleCreateTask = () => router.push(`/project/${id}/task/add`);
 
@@ -135,20 +137,20 @@ const ProjectPage = () => {
 
         {loadDiscussion ? (
           <Discussion
-            threads={threads}
+            topLevel={topLevel}
+            user={user}
             messageInput={messageInput}
             setMessageInput={setMessageInput}
             setReload={setLoadDiscussion}
-            setReplyID={setReplyID}
             onMessageSent={handleMessageSent}
           />
         ) : (
           <Discussion
-            threads={threads}
+            topLevel={topLevel}
+            user={user}
             messageInput={messageInput}
             setMessageInput={setMessageInput}
             setReload={setLoadDiscussion}
-            setReplyID={setReplyID}
             onMessageSent={handleMessageSent}
           />
         )}

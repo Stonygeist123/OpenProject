@@ -29,14 +29,16 @@ const Button = ({ dark = false, size = "m", text, className, isSubmit, onClick, 
       size={size ?? "xl"}
       text={text ?? "Submit"}
       {...props}
-    />
+    >
+      {props.children ?? text ?? "Button"}
+    </Button>
   ) : (
     <button
       onClick={onClick}
-      className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${className} ${transparent ? "bg-transparent" : ""}`}
+      className={`${styles["btn"]} ${dark ? styles["dark"] : null} ${getSize(size)} ${transparent ? "bg-transparent" : ""} ${className}`}
       {...props}
     >
-      {props.children ?? text ?? "button"}
+      {props.children ?? text ?? "Button"}
     </button>
   );
 

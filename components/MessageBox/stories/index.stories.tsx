@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 import messages from "./messages.json";
-import MessageBox from "../MessageBox";
+import MessageBox from "..";
 
 export default {
   title: "Main/MessageBox",

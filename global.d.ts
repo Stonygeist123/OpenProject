@@ -103,6 +103,7 @@ type Message = {
   projectId: number | null;
   communityName: string | null;
   username: string;
+  hasReplies: boolean;
 };
 
 /**
@@ -118,5 +119,5 @@ type Msg = Message & {
  * Thread type
  */
 type Thread<T extends true | false> = T extends true
-  ? { top: Omit<Msg, "community">; replies: (Omit<Msg, "community"> | Thread<T>)[] }
-  : { top: Omit<Msg, "project">; replies: (Omit<Msg, "project"> | Thread<T>)[] };
+  ? { top: Omit<Msg, "community"> | null; replies: Omit<Msg, "community">[] }
+  : { top: Omit<Msg, "project"> | null; replies: Omit<Msg, "project">[] };
