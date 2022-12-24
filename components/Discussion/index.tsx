@@ -15,28 +15,31 @@ const Discussion = ({
   setReload,
   onMessageSent,
   projectID,
+  activeThreadID,
+  setActiveThreadID,
 }: {
   user: User | null;
   topLevel: Omit<Msg, "community">[];
   messageInput: string;
   setMessageInput: React.Dispatch<React.SetStateAction<string>>;
   setReload: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveThreadID: React.Dispatch<React.SetStateAction<number | null>>;
   onMessageSent?: () => unknown;
   projectID: number;
+  activeThreadID: number | null;
 }) => {
   const router = useRouter();
-  const [subthreadID, setSubthreadID] = useState<number | null>(null);
   const [replies, setReplies] = useState<Thread<true> | null>(null);
 
   useEffect(() => {
     fetchJson<{ message: string; found: boolean; allowed: boolean; thread: Thread<true> | null }>(`/api/project/${projectID}/message/threads`, {
       method: "POST",
-      body: JSON.stringify({ topID: subthreadID }),
+      body: JSON.stringify({ topID: activeThreadID }),
     }).then(data => {
       setReplies(data.thread);
       console.log(data.thread?.replies.map(r => ({ ...r, community: null })) ?? []);
     });
-  }, [subthreadID]);
+  }, [activeThreadID]);
 
   useEffect(() => {
     if (router.isReady) setReload(false);
@@ -72,23 +75,24 @@ const Discussion = ({
         <DiscussionThread
           msgs={topLevel.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())}
           sub={false}
-          setSubthreadID={setSubthreadID}
+          setActiveID={setActiveThreadID}
           setReload={setReload}
-          subthreadID={subthreadID}
+          projectID={projectID}
         />
 
-        {subthreadID !== null ? (
+        {activeThreadID !== null ? (
           <DiscussionThread
-            key={subthreadID}
+            key={activeThreadID}
             msgs={
               replies?.replies
                 .map(r => ({ ...r, community: null }))
                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) ?? []
             }
             sub
-            setSubthreadID={setSubthreadID}
+            setActiveID={setActiveThreadID}
             setReload={setReload}
-            subthreadID={subthreadID}
+            activeID={activeThreadID}
+            projectID={projectID}
           />
         ) : null}
       </div>

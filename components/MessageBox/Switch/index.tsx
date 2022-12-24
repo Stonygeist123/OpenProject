@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./index.module.scss";
 
 const Switch = ({
@@ -7,7 +7,7 @@ const Switch = ({
   activeId,
   hasReplies,
 }: {
-  handleSwitchClick: () => void;
+  handleSwitchClick: (e: React.SyntheticEvent) => void;
   id: number;
   activeId: number;
   hasReplies: boolean;

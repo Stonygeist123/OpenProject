@@ -22,7 +22,7 @@ const SignupPage = () => {
     redirectIfFound: true,
   });
 
-  const [invalidsignup, setInvalidsignup] = useState(false);
+  const [invalidsignup, setInvalidsignup] = useState<{ found?: boolean; allowed?: boolean }>({});
   const router = useRouter();
 
   const inputValidator = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,9 +86,9 @@ const SignupPage = () => {
     try {
       const { user, allowed, found } = data;
       if (found) {
-        setInvalidsignup(true);
+        setInvalidsignup({ found: true });
       } else if (!allowed) {
-        setInvalidsignup(true);
+        setInvalidsignup({ allowed: false });
       } else {
         mutateUser(user, false);
         await router.push("/");
@@ -150,7 +150,9 @@ const SignupPage = () => {
           ></input>
         </div>
         <div className={styles["button-div"]}>
-          <h3 className={`${styles["invalid-msg"]} ${invalidsignup ? null : styles["hidden"]}`}>Invalid username or password</h3>
+          <h3 className={`${styles["invalid-msg"]} ${!invalidsignup.allowed || invalidsignup.found ? null : styles["hidden"]}`}>
+            {invalidsignup.allowed === false ? "Invalid username or password" : invalidsignup.found ? "User already exists." : ""}
+          </h3>
           <button
             className={styles["signup-button"]}
             onClick={handleOnClick}

@@ -28,11 +28,11 @@ exports.Prisma = Prisma
 
 /**
  * Prisma Client JS version: 4.7.1
- * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+ * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
  */
 Prisma.prismaVersion = {
   client: "4.7.1",
-  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
+  engine: "272861e07ab64f234d3ffc4094e32bd61775599c"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -212,7 +212,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\Yunus\\OneDrive\\Dokumente\\openproject\\prisma\\client",
+      "value": "C:\\Users\\moon\\main\\OpenProject\\prisma\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -233,7 +233,7 @@ const config = {
   },
   "relativePath": "..",
   "clientVersion": "4.7.1",
-  "engineVersion": "694eea289a8462c80264df36757e4fdc129b1b32",
+  "engineVersion": "272861e07ab64f234d3ffc4094e32bd61775599c",
   "datasourceNames": [
     "db"
   ],
