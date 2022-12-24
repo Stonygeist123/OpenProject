@@ -2,6 +2,7 @@
     position: relative;
     top: 15em;
     height: 70em;
+    z-index: 1;
 
     .message-input-wrapper {
         z-index: 1;
@@ -42,6 +43,8 @@
     }
 
     .threads {
+        display: flex;
+        flex-direction: row;
         overflow-x: hidden;
         overflow-y: auto;
         position: relative;
@@ -51,11 +54,6 @@
         border-radius: 10px;
         background-color: rgba(47, 47, 47, 0.74);
         display: flex;
-        flex-direction: column;
-
-        .message {
-            position: relative;
-            left: 2em;
-        }
+        z-index: 2;
     }
 }

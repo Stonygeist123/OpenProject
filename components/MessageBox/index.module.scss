@@ -1,13 +1,17 @@
 @import "../../styles/abstract/variables";
 
 $bg-colour: rgba(80, 80, 80, 0.74);
+
+.message-box-wrapper {
+    width: 60rem;
+}
 .message-container {
     z-index: 1;
     display: block;
     position: relative;
-    width: 60em;
     height: 12rem;
     background-color: $bg-colour;
+    margin-bottom: 2em;
 
     .profile {
         position: relative;
@@ -53,7 +57,8 @@ $bg-colour: rgba(80, 80, 80, 0.74);
             color: rgb(255, 255, 255);
             width: 35em;
             padding-right: 1em;
-            height: 7rem;
+            font-size: 1.4rem;
+            height: 7.5rem;
             margin-top: 1rem;
 
             &::-webkit-scrollbar {
@@ -83,20 +88,18 @@ $bg-colour: rgba(80, 80, 80, 0.74);
     .message-footer {
         display: flex;
         position: relative;
-        top: 1em;
+        // margin-top: 1.2rem;
 
         .reply-button-wrapper {
-            > .reply-button {
+            .reply-button {
                 background-color: transparent;
                 outline: none;
                 border: none;
                 cursor: pointer;
-                position: relative;
-                bottom: 0.1em;
-                right: 1em;
                 background-color: transparent;
-                border-top-left-radius: 10px;
                 color: rgb(255, 255, 255);
+                font-size: 1.4rem;
+                padding: 0;
 
                 > .arrow {
                     position: relative;
@@ -115,22 +118,44 @@ $bg-colour: rgba(80, 80, 80, 0.74);
 }
 
 .reply-container {
-    margin-top: 20px;
     padding: 1rem 1rem;
     font-weight: 600;
     background-color: transparent;
+
     .reply-text-area-wrapper {
-        background-color: rgba(255, 255, 255, 0.692);
-        padding: 1rem;
+        background-color: rgba(62, 62, 62, 0.3);
+        padding-bottom: 0.6rem;
+        padding-top: 0.6rem;
+        border-radius: 3px;
     }
+
     .reply-text-area {
-        background-color: rgba(255, 255, 255, 0.692);
+        padding-left: 1em;
+        padding-right: 1em;
+        background-color: transparent;
         width: 100%;
         height: 10rem;
-        border-radius: 3px;
         resize: none;
         outline: none;
         border: none;
+        overflow-y: auto;
+        color: white;
+
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $overflow-track-color;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #05608d;
+        }
     }
 
     .send-reply-button {

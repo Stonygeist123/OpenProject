@@ -153,6 +153,7 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
                 onClick={handleOnClick}
                 className={styles["submit-button"]}
                 size="xl"
+                text="Create"
               />
             </div>
           </>

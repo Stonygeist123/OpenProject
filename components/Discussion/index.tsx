@@ -14,6 +14,7 @@ const Discussion = ({
   setMessageInput,
   setReload,
   onMessageSent,
+  projectID,
 }: {
   user: User | null;
   topLevel: Omit<Msg, "community">[];
@@ -21,15 +22,20 @@ const Discussion = ({
   setMessageInput: React.Dispatch<React.SetStateAction<string>>;
   setReload: React.Dispatch<React.SetStateAction<boolean>>;
   onMessageSent?: () => unknown;
+  projectID: number;
 }) => {
   const router = useRouter();
   const [subthreadID, setSubthreadID] = useState<number | null>(null);
   const [replies, setReplies] = useState<Thread<true> | null>(null);
 
   useEffect(() => {
-    fetchJson<{ message: string; found: boolean; allowed: boolean; thread: Thread<true> | null }>(`/api/message/${subthreadID}/threads`).then(data =>
-      setReplies(data.thread)
-    );
+    fetchJson<{ message: string; found: boolean; allowed: boolean; thread: Thread<true> | null }>(`/api/project/${projectID}/message/threads`, {
+      method: "POST",
+      body: JSON.stringify({ topID: subthreadID }),
+    }).then(data => {
+      setReplies(data.thread);
+      console.log(data.thread?.replies.map(r => ({ ...r, community: null })) ?? []);
+    });
   }, [subthreadID]);
 
   useEffect(() => {
@@ -68,15 +74,21 @@ const Discussion = ({
           sub={false}
           setSubthreadID={setSubthreadID}
           setReload={setReload}
+          subthreadID={subthreadID}
         />
 
-        {subthreadID ? (
+        {subthreadID !== null ? (
           <DiscussionThread
             key={subthreadID}
-            msgs={replies?.replies.map(r => ({ ...r, community: null })) ?? []}
+            msgs={
+              replies?.replies
+                .map(r => ({ ...r, community: null }))
+                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) ?? []
+            }
             sub
             setSubthreadID={setSubthreadID}
             setReload={setReload}
+            subthreadID={subthreadID}
           />
         ) : null}
       </div>
