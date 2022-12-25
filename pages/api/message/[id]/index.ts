@@ -1,9 +1,9 @@
-// pages/api/message/[id].ts
+// pages/api/message/[id]/index.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiResponse } from "next/types";
-import prisma from "../../../lib/prisma";
-import { sessionOptions } from "../../../lib/session";
+import prisma from "../../../../lib/prisma";
+import { sessionOptions } from "../../../../lib/session";
 
 export default withIronSessionApiRoute(
   async (

@@ -105,12 +105,13 @@ export type Tag = {
 export type Message = {
   id: number
   content: string
-  replyID: string | null
+  replyID: number | null
   edited_at: Date
   created_at: Date
   projectId: number | null
   communityName: string | null
   username: string
+  hasReplies: boolean
 }
 
 
@@ -8060,34 +8061,38 @@ export namespace Prisma {
 
   export type MessageAvgAggregateOutputType = {
     id: number | null
+    replyID: number | null
     projectId: number | null
   }
 
   export type MessageSumAggregateOutputType = {
     id: number | null
+    replyID: number | null
     projectId: number | null
   }
 
   export type MessageMinAggregateOutputType = {
     id: number | null
     content: string | null
-    replyID: string | null
+    replyID: number | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
     communityName: string | null
     username: string | null
+    hasReplies: boolean | null
   }
 
   export type MessageMaxAggregateOutputType = {
     id: number | null
     content: string | null
-    replyID: string | null
+    replyID: number | null
     edited_at: Date | null
     created_at: Date | null
     projectId: number | null
     communityName: string | null
     username: string | null
+    hasReplies: boolean | null
   }
 
   export type MessageCountAggregateOutputType = {
@@ -8099,17 +8104,20 @@ export namespace Prisma {
     projectId: number
     communityName: number
     username: number
+    hasReplies: number
     _all: number
   }
 
 
   export type MessageAvgAggregateInputType = {
     id?: true
+    replyID?: true
     projectId?: true
   }
 
   export type MessageSumAggregateInputType = {
     id?: true
+    replyID?: true
     projectId?: true
   }
 
@@ -8122,6 +8130,7 @@ export namespace Prisma {
     projectId?: true
     communityName?: true
     username?: true
+    hasReplies?: true
   }
 
   export type MessageMaxAggregateInputType = {
@@ -8133,6 +8142,7 @@ export namespace Prisma {
     projectId?: true
     communityName?: true
     username?: true
+    hasReplies?: true
   }
 
   export type MessageCountAggregateInputType = {
@@ -8144,6 +8154,7 @@ export namespace Prisma {
     projectId?: true
     communityName?: true
     username?: true
+    hasReplies?: true
     _all?: true
   }
 
@@ -8242,12 +8253,13 @@ export namespace Prisma {
   export type MessageGroupByOutputType = {
     id: number
     content: string
-    replyID: string | null
+    replyID: number | null
     edited_at: Date
     created_at: Date
     projectId: number | null
     communityName: string | null
     username: string
+    hasReplies: boolean
     _count: MessageCountAggregateOutputType | null
     _avg: MessageAvgAggregateOutputType | null
     _sum: MessageSumAggregateOutputType | null
@@ -8281,6 +8293,7 @@ export namespace Prisma {
     projectId?: boolean
     communityName?: boolean
     username?: boolean
+    hasReplies?: boolean
   }
 
 
@@ -9148,7 +9161,8 @@ export namespace Prisma {
     created_at: 'created_at',
     projectId: 'projectId',
     communityName: 'communityName',
-    username: 'username'
+    username: 'username',
+    hasReplies: 'hasReplies'
   };
 
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
@@ -9609,12 +9623,13 @@ export namespace Prisma {
     author?: XOR<UserRelationFilter, UserWhereInput>
     project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
     community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
-    replyID?: StringNullableFilter | string | null
+    replyID?: IntNullableFilter | number | null
     edited_at?: DateTimeFilter | Date | string
     created_at?: DateTimeFilter | Date | string
     projectId?: IntNullableFilter | number | null
     communityName?: StringNullableFilter | string | null
     username?: StringFilter | string
+    hasReplies?: BoolFilter | boolean
   }
 
   export type MessageOrderByWithRelationInput = {
@@ -9629,6 +9644,7 @@ export namespace Prisma {
     projectId?: SortOrder
     communityName?: SortOrder
     username?: SortOrder
+    hasReplies?: SortOrder
   }
 
   export type MessageWhereUniqueInput = {
@@ -9644,6 +9660,7 @@ export namespace Prisma {
     projectId?: SortOrder
     communityName?: SortOrder
     username?: SortOrder
+    hasReplies?: SortOrder
     _count?: MessageCountOrderByAggregateInput
     _avg?: MessageAvgOrderByAggregateInput
     _max?: MessageMaxOrderByAggregateInput
@@ -9657,12 +9674,13 @@ export namespace Prisma {
     NOT?: Enumerable<MessageScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
     content?: StringWithAggregatesFilter | string
-    replyID?: StringNullableWithAggregatesFilter | string | null
+    replyID?: IntNullableWithAggregatesFilter | number | null
     edited_at?: DateTimeWithAggregatesFilter | Date | string
     created_at?: DateTimeWithAggregatesFilter | Date | string
     projectId?: IntNullableWithAggregatesFilter | number | null
     communityName?: StringNullableWithAggregatesFilter | string | null
     username?: StringWithAggregatesFilter | string
+    hasReplies?: BoolWithAggregatesFilter | boolean
   }
 
   export type UserCreateInput = {
@@ -10107,20 +10125,22 @@ export namespace Prisma {
     author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
+    hasReplies: boolean
   }
 
   export type MessageUncheckedCreateInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
     username: string
+    hasReplies: boolean
   }
 
   export type MessageUpdateInput = {
@@ -10128,49 +10148,54 @@ export namespace Prisma {
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageCreateManyInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
     username: string
+    hasReplies: boolean
   }
 
   export type MessageUpdateManyMutationInput = {
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type StringFilter = {
@@ -10626,10 +10651,12 @@ export namespace Prisma {
     projectId?: SortOrder
     communityName?: SortOrder
     username?: SortOrder
+    hasReplies?: SortOrder
   }
 
   export type MessageAvgOrderByAggregateInput = {
     id?: SortOrder
+    replyID?: SortOrder
     projectId?: SortOrder
   }
 
@@ -10642,6 +10669,7 @@ export namespace Prisma {
     projectId?: SortOrder
     communityName?: SortOrder
     username?: SortOrder
+    hasReplies?: SortOrder
   }
 
   export type MessageMinOrderByAggregateInput = {
@@ -10653,10 +10681,12 @@ export namespace Prisma {
     projectId?: SortOrder
     communityName?: SortOrder
     username?: SortOrder
+    hasReplies?: SortOrder
   }
 
   export type MessageSumOrderByAggregateInput = {
     id?: SortOrder
+    replyID?: SortOrder
     projectId?: SortOrder
   }
 
@@ -11485,19 +11515,21 @@ export namespace Prisma {
     content: string
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
+    hasReplies: boolean
   }
 
   export type MessageUncheckedCreateWithoutAuthorInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
+    hasReplies: boolean
   }
 
   export type MessageCreateOrConnectWithoutAuthorInput = {
@@ -11617,12 +11649,13 @@ export namespace Prisma {
     NOT?: Enumerable<MessageScalarWhereInput>
     id?: IntFilter | number
     content?: StringFilter | string
-    replyID?: StringNullableFilter | string | null
+    replyID?: IntNullableFilter | number | null
     edited_at?: DateTimeFilter | Date | string
     created_at?: DateTimeFilter | Date | string
     projectId?: IntNullableFilter | number | null
     communityName?: StringNullableFilter | string | null
     username?: StringFilter | string
+    hasReplies?: BoolFilter | boolean
   }
 
   export type UserCreateWithoutCommunitiesInput = {
@@ -11693,19 +11726,21 @@ export namespace Prisma {
     content: string
     author: UserCreateNestedOneWithoutMessageInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
+    hasReplies: boolean
   }
 
   export type MessageUncheckedCreateWithoutCommunityInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     username: string
+    hasReplies: boolean
   }
 
   export type MessageCreateOrConnectWithoutCommunityInput = {
@@ -11858,19 +11893,21 @@ export namespace Prisma {
     content: string
     author: UserCreateNestedOneWithoutMessageInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
+    hasReplies: boolean
   }
 
   export type MessageUncheckedCreateWithoutProjectInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
     username: string
+    hasReplies: boolean
   }
 
   export type MessageCreateOrConnectWithoutProjectInput = {
@@ -12260,11 +12297,12 @@ export namespace Prisma {
   export type MessageCreateManyAuthorInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     communityName?: string | null
+    hasReplies: boolean
   }
 
   export type CommunityUpdateWithoutSubscribersInput = {
@@ -12359,29 +12397,32 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateWithoutAuthorInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateManyWithoutMessageInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProjectCreateManyCommunityInput = {
@@ -12398,11 +12439,12 @@ export namespace Prisma {
   export type MessageCreateManyCommunityInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     projectId?: number | null
     username: string
+    hasReplies: boolean
   }
 
   export type UserUpdateWithoutCommunitiesInput = {
@@ -12466,29 +12508,32 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateWithoutCommunityInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateManyWithoutMessagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     projectId?: NullableIntFieldUpdateOperationsInput | number | null
     username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type TaskCreateManyProjectInput = {
@@ -12503,11 +12548,12 @@ export namespace Prisma {
   export type MessageCreateManyProjectInput = {
     id?: number
     content: string
-    replyID?: string | null
+    replyID?: number | null
     edited_at?: Date | string
     created_at?: Date | string
     communityName?: string | null
     username: string
+    hasReplies: boolean
   }
 
   export type UserUpdateWithoutProjectsInput = {
@@ -12570,19 +12616,21 @@ export namespace Prisma {
     content?: StringFieldUpdateOperationsInput | string
     author?: UserUpdateOneRequiredWithoutMessageNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MessageUncheckedUpdateWithoutProjectInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableStringFieldUpdateOperationsInput | string | null
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     communityName?: NullableStringFieldUpdateOperationsInput | string | null
     username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
 

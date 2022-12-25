@@ -1,5 +1,5 @@
 export default async function fetchJson<JSON = unknown>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-  const response = await fetch(input, {
+  const response = await fetch("http://localhost:8080" + input, {
     ...init,
     headers: {
       "Content-Type": "application/json",

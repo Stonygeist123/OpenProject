@@ -1,0 +1,59 @@
+.discussion {
+    position: relative;
+    top: 15em;
+    height: 70em;
+    z-index: 1;
+
+    .message-input-wrapper {
+        z-index: 1;
+        display: inline-flex;
+        position: relative;
+        margin-bottom: 0.2em;
+        width: 100em;
+        height: 5em;
+
+        .message-send {
+            background: rgb(0, 0, 0);
+            border-radius: 10px;
+            transition: background 0.5s;
+
+            &:hover {
+                background: rgba(115, 3, 192, 0.2);
+            }
+        }
+
+        .message-input {
+            overflow-x: hidden;
+            width: 95em;
+            height: 4em;
+            resize: none;
+            border-radius: 10px;
+            outline: none;
+            background: rgba(128, 128, 128, 0.5);
+            padding-left: 1em;
+            padding-top: 0.6em;
+            border: solid 1px black;
+
+            &.error {
+                &::placeholder {
+                    color: red;
+                }
+            }
+        }
+    }
+
+    .threads {
+        display: flex;
+        flex-direction: row;
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 3em;
+        border-radius: 10px;
+        background-color: rgba(47, 47, 47, 0.74);
+        display: flex;
+        z-index: 2;
+    }
+}

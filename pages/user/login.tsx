@@ -50,9 +50,6 @@ const LoginPage = () => {
   };
 
   const handleOnClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (name.trim() === "") return console.log("No username provided.");
-    if (password.trim() === "") return console.log("No password provided.");
-
     setDisableControls(true);
     e.preventDefault();
 

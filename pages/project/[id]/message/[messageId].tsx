@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import fetchJson from "../../../lib/fetchJson";
+import fetchJson from "../../../../lib/fetchJson";
 import styles from "../../../styles/pages/project/[id]/index.module.scss";
-import TaskBox from "../../../components/TaskBox/TaskBox";
-import Button from "../../../components/common/Button";
-import Discussion from "../../../components/Discussion";
+import TaskBox from "../../../../components/TaskBox/TaskBox";
+import Button from "../../../../components/common/Button";
+import Discussion from "../../../../components/Discussion";
 
+// hi, can you help with moving from /project/id to /project/id/message/id depending on which message teh user clicks switch on?
 const ProjectPage = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -97,6 +98,7 @@ const ProjectPage = () => {
               <p className={`text-2x ${styles["project-description-text"]}`}>{project.description}</p>
             </div>
           </div>
+          <h1>This page has a message id of: {JSON.stringify(router.query)}</h1>
 
           <div className={`${styles["tasks-container"]} ${styles["m-l-5"]}`}>
             {tasks.length > 0 ? (

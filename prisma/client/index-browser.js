@@ -114,7 +114,8 @@ exports.Prisma.MessageScalarFieldEnum = makeEnum({
   created_at: 'created_at',
   projectId: 'projectId',
   communityName: 'communityName',
-  username: 'username'
+  username: 'username',
+  hasReplies: 'hasReplies'
 });
 
 exports.Prisma.ProjectScalarFieldEnum = makeEnum({

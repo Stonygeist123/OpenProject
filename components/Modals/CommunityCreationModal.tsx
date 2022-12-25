@@ -53,14 +53,23 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
   }, [name, loading, nameInput]);
 
   return (
-    <div id={styles["myModal"]} className={styles["modal"]}>
-      <div className={styles["modal-content"]} ref={someRef}>
+    <div
+      id={styles["myModal"]}
+      className={styles["modal"]}
+    >
+      <div
+        className={styles["modal-content"]}
+        ref={someRef}
+      >
         {loading ? (
           <h1 className={styles["modal-title"]}> Loading... </h1>
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new community! </h1>
-            <span className={styles["close"]} onClick={closeFunction}>
+            <span
+              className={styles["close"]}
+              onClick={closeFunction}
+            >
               &times;
             </span>
             <div className={styles["content-wrapper"]}>
@@ -132,7 +141,12 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
               <br />
             </div>
             <div className={styles["footer"]}>
-              <Button isSubmit onClick={handleOnClick} className={styles["submit-button"]} />
+              <Button
+                isSubmit
+                onClick={handleOnClick}
+                className={styles["submit-button"]}
+                text="Create"
+              />
             </div>
           </>
         ) : (

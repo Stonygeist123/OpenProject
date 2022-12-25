@@ -97,10 +97,27 @@ type Tag = {
 type Message = {
   id: number;
   content: string;
-  username: string;
-  replyID: string | null;
+  replyID: number | null;
   edited_at: Date;
   created_at: Date;
   projectId: number | null;
   communityName: string | null;
+  username: string;
+  hasReplies: boolean;
 };
+
+/**
+ * Message type for api responses
+ */
+type Msg = Message & {
+  author: User;
+  community: Community | null;
+  project: Project | null;
+};
+
+/**
+ * Thread type
+ */
+type Thread<T extends true | false> = T extends true
+  ? { top: Omit<Msg, "community"> | null; replies: Omit<Msg, "community">[] }
+  : { top: Omit<Msg, "project"> | null; replies: Omit<Msg, "project">[] };

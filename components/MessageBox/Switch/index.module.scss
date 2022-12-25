@@ -1,0 +1,30 @@
+.switch {
+    position: relative;
+    margin-right: 0.5rem;
+    width: 2rem;
+
+    .context-button {
+        background-color: transparent;
+        color: rgb(255, 255, 255);
+        outline: none;
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+
+        &:not(.switched) {
+            &:hover {
+                color: rgb(27, 240, 255);
+                padding-right: 0.2rem;
+            }
+        }
+
+        &.switched {
+            color: rgb(27, 240, 255);
+            margin-right: 1.5em;
+        }
+    }
+}
+
+.context-button-content {
+    writing-mode: vertical-lr;
+}

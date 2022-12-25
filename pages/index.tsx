@@ -101,10 +101,6 @@ const Home = () => {
     });
   }, [router.isReady]);
 
-  useEffect(() => {
-    console.log(user?.projects);
-  }, [user]);
-
   return loading ? (
     <h1 className="text-xxl">Loading...</h1>
   ) : (
