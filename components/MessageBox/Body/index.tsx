@@ -1,12 +1,17 @@
+import { useState } from "react";
 import ProfileIcon from "../../common/ProfileIcon/ProfileIcon";
+import ProfileCard from "../../ProfileCard";
 import styles from "./index.module.scss";
 
 const Body = ({ message }: { message: Msg }) => {
+  const [profile, setProfile] = useState(false);
+
   return (
     <>
       <div className="flex flex-row overflow-hidden justify-center content-center ">
         <div className="flex flex-col items-center">
-          <div>
+          {profile ? <ProfileCard user={message.author} /> : null}
+          <div onClick={() => setProfile(v => !v)}>
             <ProfileIcon
               className={styles["profile"]}
               size="m"

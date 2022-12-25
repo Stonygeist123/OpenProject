@@ -15,6 +15,16 @@ module.exports = {
     if (options.isServer) conf.externals.push("encoding");
     return conf;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;
