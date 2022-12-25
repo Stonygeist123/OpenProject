@@ -1,6 +1,6 @@
 import styles from "./index.module.scss";
 import { NextRouter, useRouter } from "next/router";
-import { useState } from "react";
+import React, { useState } from "react";
 import fetchJson from "../../lib/fetchJson";
 import Body from "./Body";
 import Footer from "./Footer";
@@ -53,10 +53,13 @@ const MessageBox = ({
           <Switch
             id={message.id}
             activeId={activeID}
-            handleSwitchClick={() => {
+            handleSwitchClick={(e: React.SyntheticEvent) => {
               setActiveID(v => (v === message.id ? null : message.id));
               console.log(router.query);
-              // router.push("/message/" + message.id);
+              router.push({ pathname: `/project/${projectID}/message/${message.id}` }, undefined, {
+                scroll: false,
+              });
+              e.preventDefault();
             }}
             hasReplies={hasReplies}
           />

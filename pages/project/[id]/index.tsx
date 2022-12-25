@@ -16,6 +16,7 @@ const ProjectPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loadDiscussion, setLoadDiscussion] = useState(true);
   const [messageInput, setMessageInput] = useState<string>("");
+  const [activeThreadID, setActiveThreadID] = useState<number | null>(null);
 
   const handleMessageSent = async () => {
     if (user === null) return;
@@ -144,6 +145,8 @@ const ProjectPage = () => {
             setReload={setLoadDiscussion}
             onMessageSent={handleMessageSent}
             projectID={parseInt(id as string)}
+            setActiveThreadID={setActiveThreadID}
+            activeThreadID={activeThreadID}
           />
         ) : (
           <Discussion
@@ -154,6 +157,8 @@ const ProjectPage = () => {
             setReload={setLoadDiscussion}
             onMessageSent={handleMessageSent}
             projectID={parseInt(id as string)}
+            setActiveThreadID={setActiveThreadID}
+            activeThreadID={activeThreadID}
           />
         )}
       </div>

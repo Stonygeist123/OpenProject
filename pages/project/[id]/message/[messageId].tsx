@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import fetchJson from "../../../../lib/fetchJson";
-import styles from "../../../styles/pages/project/[id]/index.module.scss";
+import styles from "../../../../styles/pages/project/[id]/index.module.scss";
 import TaskBox from "../../../../components/TaskBox/TaskBox";
 import Button from "../../../../components/common/Button";
 import Discussion from "../../../../components/Discussion";
 
-// hi, can you help with moving from /project/id to /project/id/message/id depending on which message teh user clicks switch on?
 const ProjectPage = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -17,6 +16,7 @@ const ProjectPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loadDiscussion, setLoadDiscussion] = useState(true);
   const [messageInput, setMessageInput] = useState<string>("");
+  const [activeThreadId, setActiveThreadID] = useState<number | null>(null);
 
   const handleMessageSent = async () => {
     if (user === null) return;
@@ -98,7 +98,6 @@ const ProjectPage = () => {
               <p className={`text-2x ${styles["project-description-text"]}`}>{project.description}</p>
             </div>
           </div>
-          <h1>This page has a message id of: {JSON.stringify(router.query)}</h1>
 
           <div className={`${styles["tasks-container"]} ${styles["m-l-5"]}`}>
             {tasks.length > 0 ? (
@@ -109,6 +108,8 @@ const ProjectPage = () => {
                     className={styles["task"]}
                   >
                     <br />
+                    {/* easy. just pass setAtiveThreadId to discussion, yeah and also activeThreadId so it can display the correct one */}
+                    {/* already done */}
                     <TaskBox
                       key={t.id}
                       task={t}
@@ -146,6 +147,8 @@ const ProjectPage = () => {
             setReload={setLoadDiscussion}
             onMessageSent={handleMessageSent}
             projectID={parseInt(id as string)}
+            activeThreadID={activeThreadId}
+            setActiveThreadID={setActiveThreadID}
           />
         ) : (
           <Discussion
@@ -156,6 +159,8 @@ const ProjectPage = () => {
             setReload={setLoadDiscussion}
             onMessageSent={handleMessageSent}
             projectID={parseInt(id as string)}
+            activeThreadID={activeThreadId}
+            setActiveThreadID={setActiveThreadID}
           />
         )}
       </div>
