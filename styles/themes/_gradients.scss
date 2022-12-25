@@ -1,6 +1,6 @@
 @import "colours";
 
-$background-gradient: linear-gradient(217deg, $background-dark, darken($background-purple, 15%));
+$background-gradient: linear-gradient(217deg, $background-dark, darken(#111111, 15%));
 
 $text-heading-gradient: linear-gradient(45deg, $text-cyan, $text-purple);
 $text-important-gradient: linear-gradient(45deg, lighten(black, 5%), $text-purple);

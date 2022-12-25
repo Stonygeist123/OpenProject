@@ -32,11 +32,11 @@ export default withIronSessionApiRoute(
   ) => {
     if (req.query["username"] === undefined) {
       if (req.session.user) {
-        const { username: name }: { username: string } = req.session.user;
-        req.query["username"] = name;
+        const { username } = req.session.user!;
+        req.query["username"] = username;
 
         const user = await prisma.user.findFirst({
-          where: { name },
+          where: { name: username },
           select: {
             communities: true,
             task_submissions: true,
@@ -56,7 +56,7 @@ export default withIronSessionApiRoute(
           });
 
         const projects = await prisma.project.findMany({
-          where: { OR: [{ owner: name }, { contributors: { some: { name: name } } }] },
+          where: { OR: [{ owner: username }, { contributors: { some: { name: username } } }] },
           include: { contributors: true, community: true, messages: true, tasks: true },
         });
 
@@ -95,7 +95,7 @@ export default withIronSessionApiRoute(
           include: { contributors: true, community: true, messages: true, tasks: true },
         });
 
-        if (req.session.user && user && bcrypt.compareSync(req.query["password"] as string, user.password))
+        if (req.session.user && user && req.query["password"] && bcrypt.compareSync(req.query["password"] as string, user.password))
           return res.json({
             allowed: true,
             found: true,

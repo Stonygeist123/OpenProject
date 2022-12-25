@@ -35,8 +35,8 @@ $color-text-placeholder: darken($color-text, 20%);
     min-height: 45em;
     background-color: $color-1;
     border: solid 5px;
-    border-color: rgba($color-border, 0.6);
-    border-radius: 14px;
+    border-color: rgba($color-border, 0.2);
+    border-radius: 15px;
 
     > .tasks {
         overflow-y: scroll;
@@ -104,7 +104,7 @@ $color-text-placeholder: darken($color-text, 20%);
     &-text {
         @at-root &-wrapper {
             background-color: rgb(27, 26, 26);
-            border: 1px solid rgb(156, 156, 156);
+            border: 1px solid rgba(156, 156, 156, 0.5);
             border-radius: 15px;
             width: 20em;
             height: 15em;
