@@ -56,8 +56,8 @@ const MessageBox = ({
             handleSwitchClick={(e: React.SyntheticEvent) => {
               setActiveID(v => (v === message.id ? null : message.id));
               console.log(router.query);
-              router.push({ pathname: `/project/[id]/message/[messageId]`, query: { id: projectID, messageId: activeID } }, undefined, {
-                shallow: true,
+              router.push({ pathname: `/project/${projectID}/message/${message.id}` }, undefined, {
+                scroll: false,
               });
               e.preventDefault();
             }}
