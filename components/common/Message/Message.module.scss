@@ -1,0 +1,23 @@
+.message{
+    background-color: rgb(202, 202, 202);
+    padding: 10px;
+    border-radius: 4px;
+
+    &-header{
+        .username{
+
+            a{
+                color: black;
+                text-decoration: none;
+                font-weight: 600;
+            }
+        }
+
+    }
+    &-body{
+        height: 30rem;
+        padding: 0;
+        margin: 0
+    }
+}
+

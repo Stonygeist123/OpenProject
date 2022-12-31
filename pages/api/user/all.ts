@@ -5,7 +5,7 @@ import prisma from "../../../lib/prisma";
 import { sessionOptions } from "../../../lib/session";
 import { exclude } from "../../../utils/utils";
 
-export default withIronSessionApiRoute(async (_, res) => {
+export default withIronSessionApiRoute(async (req, res) => {
   const users = await prisma.user.findMany({
     include: { communities: true, projects: true, task_submissions: true },
   });
@@ -13,7 +13,7 @@ export default withIronSessionApiRoute(async (_, res) => {
   const res_users = [];
   for (const user of users) {
     const u = exclude<typeof users[0], "token">(user);
-    u.projects = u.projects.filter(p => !p.isPrivate);
+    u.projects = u.projects.filter(p => !p.isPrivate || user.token == req.session.user?.token);
     res_users.push(u);
   }
 

@@ -13,12 +13,12 @@ const Prisma = {}
 exports.Prisma = Prisma
 
 /**
- * Prisma Client JS version: 4.6.1
- * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+ * Prisma Client JS version: 4.7.1
+ * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
  */
 Prisma.prismaVersion = {
-  client: "4.6.1",
-  engine: "694eea289a8462c80264df36757e4fdc129b1b32"
+  client: "4.7.1",
+  engine: "272861e07ab64f234d3ffc4094e32bd61775599c"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -106,6 +106,18 @@ exports.Prisma.JsonNullValueInput = makeEnum({
   JsonNull: Prisma.JsonNull
 });
 
+exports.Prisma.MessageScalarFieldEnum = makeEnum({
+  id: 'id',
+  content: 'content',
+  replyID: 'replyID',
+  edited_at: 'edited_at',
+  created_at: 'created_at',
+  projectId: 'projectId',
+  communityName: 'communityName',
+  username: 'username',
+  hasReplies: 'hasReplies'
+});
+
 exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   id: 'id',
   name: 'name',
@@ -114,7 +126,8 @@ exports.Prisma.ProjectScalarFieldEnum = makeEnum({
   created_at: 'created_at',
   isPrivate: 'isPrivate',
   image: 'image',
-  community_name: 'community_name'
+  communityName: 'communityName',
+  tags: 'tags'
 });
 
 exports.Prisma.SortOrder = makeEnum({
@@ -135,6 +148,7 @@ exports.Prisma.TagScalarFieldEnum = makeEnum({
 });
 
 exports.Prisma.TaskScalarFieldEnum = makeEnum({
+  id: 'id',
   name: 'name',
   description: 'description',
   prerequisites: 'prerequisites',
@@ -175,7 +189,8 @@ exports.Prisma.ModelName = makeEnum({
   Task: 'Task',
   Submission: 'Submission',
   TaskSubmission: 'TaskSubmission',
-  Tag: 'Tag'
+  Tag: 'Tag',
+  Message: 'Message'
 });
 
 /**

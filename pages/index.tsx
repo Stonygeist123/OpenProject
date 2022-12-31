@@ -1,21 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/pages/index.module.scss";
 import CommunityCreationModal from "../components/Modals/CommunityCreationModal";
 import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
+import fetchJson from "../lib/fetchJson";
+import { NextRouter, useRouter } from "next/router";
 
-const ProjectPreview = ({ name, description }: { name: string; description: string }) => (
-  <div className={styles["project-preview-container"]}>
+const ProjectPreview = ({ project, router }: { project: Project; router: NextRouter }) => (
+  <div
+    onClick={() => router.push(`/project/${project.id}`)}
+    className={styles["project-preview-container"]}
+  >
     <div className={`${styles["flex-container relative-container"]} ${styles["home-project-heading-container"]}`}>
-      <h1 className={styles["project-preview-title"]}>{name}</h1>
-      <div className={styles["project-preview-pp"]}></div>
+      <h1 className={`text-5x ${styles["project-preview-title"]}`}>{project.name}</h1>
     </div>
-    <p className={styles["project-preview-description"]}>{description}</p>
+    <p className={`text-md ${styles["project-preview-description"]}`}>{project.description}</p>
   </div>
 );
 
 const SubmissionPreview = () => (
-  <div className={styles["submission-preview-container"]}>
-    <div className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["submission-preview-container-heading"]}`}>
+  <div className={styles["project-preview-container"]}>
+    <div className={`${styles["flex-container"]} ${styles["relative-container"]} ${styles["project-preview-container-heading"]}`}>
       <h1 className={styles["project-preview-title"]}>Submission Name</h1>
       <div className="project-preview-pp"></div>
     </div>
@@ -26,28 +30,30 @@ const SubmissionPreview = () => (
   </div>
 );
 
-const CommunityPreview = () => {
-  return (
-    <div className={styles["community-preview"]}>
-      <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
-        <h1 className={styles["community-preview-title"]}> Community Name </h1>
-        <div className={styles["community-preview-pp"]}></div>
-      </div>
-      <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
-        voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
-      </p>
-      <p>Member count: </p>
+const CommunityPreview = () => (
+  <div className={styles["project-preview-container"]}>
+    <div className={`${styles["flex-container"]} ${styles["relative-container"]}`}>
+      <h1 className={styles["project-preview-title"]}> Community Name </h1>
+      <div className={styles["community-preview-pp"]}></div>
     </div>
-  );
-};
+    <p>
+      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ullam optio ad dolor iusto fuga velit blanditiis fugiat sint nulla nostrum tempora
+      voluptatum explicabo non, voluptatibus pariatur nam, quas nemo voluptate.
+    </p>
+    <p className="text-md font-bold">Member count: {0}</p>
+  </div>
+);
 
-const RenderMain = (props: any) =>
-  props.highlight === "projects" ? (
+const RenderMain = ({ highlight, projects, router }: { highlight: string; projects: Project[]; router: NextRouter }) =>
+  highlight === "projects" ? (
     <>
-      <ProjectPreview description="a" name="ba" />
-      <ProjectPreview description="a" name="b" />
-      <ProjectPreview description="x" name="dy" />
+      {projects.map((p, i) => (
+        <ProjectPreview
+          project={p}
+          router={router}
+          key={i}
+        />
+      ))}
     </>
   ) : (
     <>
@@ -58,11 +64,46 @@ const RenderMain = (props: any) =>
   );
 
 const Home = () => {
+  const router = useRouter();
   const [showCommunityModal, setShowCommunityModal] = useState(false);
   const [highlight, setHighlight] = useState("projects");
   const [showProjectModal, setShowProjectModal] = useState(false);
+  const [user, setUser] = useState<{
+    projects: Project[];
+    communities: Community[];
+    task_submissions: TaskSubmission[];
+    image: string;
+    name: string;
+    created_at: Date;
+  } | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  return (
+  const [cards, setCards] = useState({ community: { hovered: false }, project: { hovered: false } });
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    fetchJson<{
+      message: string;
+      allowed: boolean;
+      found: boolean;
+      user: {
+        projects: Project[];
+        communities: Community[];
+        task_submissions: TaskSubmission[];
+        image: string;
+        name: string;
+        created_at: Date;
+      } | null;
+    }>("/api/user").then(data => {
+      setUser(data.user);
+      setLoading(false);
+    });
+  }, [router.isReady]);
+
+  return loading ? (
+    <h1 className="text-xxl">Loading...</h1>
+  ) : (
     <>
       {showProjectModal ? (
         <ProjectCreationModal
@@ -78,26 +119,29 @@ const Home = () => {
           }}
         />
       ) : null}
+
       <div className={`${styles["home-section"]} ${styles["dark"]}`}>
         <div className={styles["home-left-nav"]}>
           <button
-            className={styles["home-button"]}
+            className={`button-moonlit-gradient ${styles["home-button"]} modal-card`}
             onClick={() => {
               setShowCommunityModal(true);
             }}
           >
-            <h1>Create a new community</h1>
-            <p>Find collaborators and work on something new</p>
+            <h1 className="text-heading-gradient modal-card-title with-hover">Create a new community</h1>
+            <br />
+            <p className="text-important-gradient modal-card-info">Find collaborators and work on something new</p>
           </button>
           <div>
             <button
-              className={styles["home-button"]}
+              className={`button-moonlit-gradient ${styles["home-button"]} modal-card`}
               onClick={() => {
                 setShowProjectModal(true);
               }}
             >
-              <h1>Create a new project</h1>
-              <p>Write down tasks and project requirements</p>
+              <h1 className="text-heading-gradient modal-card-title with-hover">Create a new project</h1>
+              <br />
+              <p className="text-important-gradient modal-card-info">Write down tasks and project requirements</p>
             </button>
           </div>
         </div>
@@ -113,7 +157,7 @@ const Home = () => {
                 Projects
               </strong>
             </div>
-            <div className={`${styles["home-heading"]} ${highlight === "submissions" ? styles["highlight"] : null} `}>
+            <div className={`${styles["home-heading"]} ${highlight === "submissions" ? styles["highlight"] : null}`}>
               <strong
                 onClick={() => {
                   setHighlight("submissions");
@@ -123,7 +167,11 @@ const Home = () => {
               </strong>
             </div>
           </div>
-          <RenderMain highlight={highlight} />
+          <RenderMain
+            projects={user?.projects.sort((a, b) => b.created_at.getTime() - a.created_at.getTime()) ?? []}
+            highlight={highlight}
+            router={router}
+          />
         </div>
 
         <div className={styles["home-right-nav"]}>

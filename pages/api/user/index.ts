@@ -8,6 +8,14 @@ import bcrypt from "bcrypt";
 import { exclude } from "../../../utils/utils";
 import { Community, Project, TaskSubmission } from "../../../prisma/client";
 
+type ResUser = {
+  communities: Community[];
+  task_submissions: TaskSubmission[];
+  image: string;
+  name: string;
+  created_at: Date;
+};
+
 export default withIronSessionApiRoute(
   async (
     req,
@@ -15,64 +23,91 @@ export default withIronSessionApiRoute(
       message: string;
       allowed: boolean;
       found: boolean;
-      user_model:
-        | Omit<User, "token">
-        | Omit<
-            User & {
-              projects: Project[];
-              communities: Community[];
-              task_submissions: TaskSubmission[];
-            },
-            "token"
-          >
+      user:
+        | (ResUser & {
+            projects: Project[];
+          })
         | null;
     }>
   ) => {
-    if (req.query["username"] === undefined)
-      return res.json({
-        allowed: false,
-        found: false,
-        message: "No username provided.",
-        user_model: null,
-      });
-    else {
+    if (req.query["username"] === undefined) {
+      if (req.session.user) {
+        const { username: name }: { username: string } = req.session.user;
+        req.query["username"] = name;
+
+        const user = await prisma.user.findFirst({
+          where: { name },
+          select: {
+            communities: true,
+            task_submissions: true,
+            image: true,
+            name: true,
+            created_at: true,
+            token: true,
+          },
+        });
+
+        if (!user)
+          return res.json({
+            allowed: false,
+            found: false,
+            message: "User not found.",
+            user: null,
+          });
+
+        const projects = await prisma.project.findMany({
+          where: { OR: [{ owner: name }, { contributors: { some: { name: name } } }] },
+          include: { contributors: true, community: true, messages: true, tasks: true },
+        });
+
+        if (req.session.user.token === user?.token)
+          return res.json({
+            allowed: true,
+            found: true,
+            message: "Full access permitted.",
+            user: { ...exclude<ResUser & { token: string }, "token">(user), projects },
+          });
+      } else
+        return res.json({
+          allowed: false,
+          found: false,
+          message: "No username provided.",
+          user: null,
+        });
+    }
+
+    if (req.query["username"] !== undefined) {
       const user = await prisma.user.findFirst({
         where: { name: req.query["username"] as string },
-        include: { projects: true, communities: true, task_submissions: true },
+        select: { communities: true, task_submissions: true, image: true, name: true, created_at: true, password: true },
       });
 
       if (user === null)
         res.json({
-          allowed: true,
-          found: true,
-          message: "Full access permitted.",
-          user_model: null,
+          allowed: false,
+          found: false,
+          message: "User not found.",
+          user: null,
         });
       else {
+        const projects = await prisma.project.findMany({
+          where: { OR: [{ owner: user.name }, { contributors: { some: { name: user.name } } }] },
+          include: { contributors: true, community: true, messages: true, tasks: true },
+        });
+
         if (req.session.user && user && bcrypt.compareSync(req.query["password"] as string, user.password))
           return res.json({
             allowed: true,
             found: true,
             message: "Full access permitted.",
-            user_model: exclude<User, "token">(user),
+            user: { ...exclude<ResUser & { password: string }, "password">(user), projects },
           });
         else {
-          const res_user = exclude<
-            User & {
-              projects: Project[];
-              communities: Community[];
-              task_submissions: TaskSubmission[];
-            },
-            "token"
-          >(user);
-
-          for (let i = 0; i < res_user.projects.length; ++i) if (user.projects[i].isPrivate) delete user.projects[i];
-
           res.json({
-            user_model: res_user,
             allowed: false,
             found: true,
             message: "Full access denied.",
+            user: { ...exclude<ResUser & { password: string }, "password">(user), projects },
           });
         }
       }

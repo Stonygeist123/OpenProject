@@ -1,0 +1,58 @@
+@import "../../styles/abstract/_variables.scss";
+
+$task-height: 10em;
+$aim-box-height: 250px;
+$top-section-width: 600px;
+
+.task-container {
+    display: flex;
+    width: $top-section-width;
+    height: $task-height;
+    resize: none;
+    background-color: transparent;
+    color: black;
+    border: solid 1px black;
+    border-radius: 5px;
+    margin: auto;
+    outline: 1px solid black;
+    padding: 10px 20px;
+
+    .heading-container {
+        position: absolute;
+        .heading {
+            line-height: $task-height - 8em;
+        }
+    }
+
+    .description-container {
+        position: relative;
+        right: 0.5em;
+        width: 100%;
+        padding: 10px;
+
+        .task-description {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 25em;
+            text-align: start;
+            line-height: $task-height - 5em;
+            margin: 0;
+        }
+    }
+
+    .heading-container,
+    .description-container {
+        display: inline-block;
+        margin-inline: 0;
+    }
+}
+
+.start-button {
+    margin: 0;
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 12px;
+}

@@ -1,0 +1,43 @@
+@import "gradients";
+
+.text-heading-gradient {
+    background: $text-heading-gradient;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: 0.75s;
+
+    &.with-hover:hover &-title {
+        background: $text-heading-hover-gradient;
+        opacity: 1;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+.text-important-gradient {
+    background: $text-important-gradient;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: 0.75s;
+}
+
+.button-moonlit-gradient {
+    background: $button-normal-moonlit-gradient;
+    opacity: 1;
+    transition: 0.75s;
+
+    &:hover {
+        background: $button-hover-moonlit-gradient;
+        opacity: 0.9;
+    }
+}
+
+.modal-card {
+    border-radius: 15px;
+
+    &:hover &-info {
+        background: black;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}

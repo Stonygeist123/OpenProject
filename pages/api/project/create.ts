@@ -1,4 +1,4 @@
-// pages/api/project/create.ts
+// pages/api/project/create/index.ts
 
 import { withIronSessionApiRoute } from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next/types";
@@ -15,24 +15,33 @@ export default withIronSessionApiRoute(
       };
     },
     res: NextApiResponse<{
-      message: string;
       allowed: boolean;
-      project: Project | null;
+      found: boolean;
+      project:
+        | (Project & {
+            contributors: User[];
+            community: Community | null;
+            tasks: Task[];
+          })
+        | null;
+      message: string;
     }>
   ) => {
     let { name, description, isPrivate }: { name?: string; description?: string; isPrivate?: boolean } = req.body;
     if (!req.session.user)
       res.json({
         allowed: false,
-        message: "User needs to be logged in.",
+        found: false,
         project: null,
+        message: "User needs to be logged in.",
       });
     else {
       if (name === undefined || name.trim().length == 0)
         res.json({
           allowed: false,
-          message: "No name provided.",
+          found: false,
           project: null,
+          message: "No name provided.",
         });
       else {
         const project = await prisma.project.findFirst({
@@ -42,8 +51,9 @@ export default withIronSessionApiRoute(
         if (project)
           res.json({
             allowed: false,
-            message: `Project "${name}" already exists.`,
+            found: true,
             project: null,
+            message: `Project "${name}" already exists.`,
           });
         else {
           const user = await prisma.user.findFirst({ where: { token: req.session.user.token } });
@@ -61,14 +71,16 @@ export default withIronSessionApiRoute(
 
             res.json({
               allowed: true,
-              message: `Successfully created project "${name}".`,
+              found: false,
               project: res_project,
+              message: `Successfully created project "${name}".`,
             });
           } else
             res.json({
               allowed: false,
-              message: "User needs to be logged in.",
+              found: false,
               project: null,
+              message: "User needs to be logged in.",
             });
         }
       }

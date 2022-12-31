@@ -1,0 +1,138 @@
+@import "../../../styles/abstract/variables";
+
+$bg-colour: rgba(80, 80, 80, 0.74);
+
+.profile {
+    position: relative;
+    margin-top: 1em;
+}
+
+.author-name {
+    text-align: center;
+    margin-top: 0.5em;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    font-weight: lighter;
+}
+
+.message-profile-icon {
+    position: relative;
+    background-color: black;
+}
+
+.message-wrapper {
+    position: relative;
+    margin-left: 3em;
+    max-width: 83%;
+    .message-content {
+        overflow-x: hidden;
+        overflow-wrap: break-word;
+        white-space: pre-line;
+        position: relative;
+        color: rgb(255, 255, 255);
+        width: 35em;
+        padding-right: 1em;
+        font-size: 1.4rem;
+        height: 7.5rem;
+        margin-top: 1rem;
+
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $overflow-track-color;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #05608d;
+        }
+
+        @at-root &-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+    }
+}
+
+.message-footer {
+    display: flex;
+    position: relative;
+    margin-top: 1.2rem;
+
+    .reply-button-wrapper {
+        .reply-button {
+            background-color: transparent;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+            color: rgb(255, 255, 255);
+            font-size: 1.4rem;
+            padding: 0;
+
+            > .arrow {
+                position: relative;
+                top: 0.2em;
+                left: 1em;
+                width: 1em;
+                height: 1em;
+            }
+        }
+    }
+
+    &-date {
+        font-weight: lighter;
+    }
+}
+
+.reply-container {
+    font-weight: 600;
+    background-color: transparent;
+    flex-grow: 1;
+    margin-bottom: 2rem;
+
+    .reply-text-area-wrapper {
+        background-color: rgba(62, 62, 62, 0.3);
+        padding-bottom: 0.6rem;
+        padding-top: 0.6rem;
+        border-radius: 3px;
+    }
+
+    .reply-text-area {
+        padding-left: 1em;
+        background-color: transparent;
+        width: 100%;
+        height: 10rem;
+        resize: none;
+        outline: none;
+        border: none;
+        overflow-y: auto;
+        color: white;
+
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: $overflow-track-color;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #05608d;
+        }
+    }
+
+    .send-reply-button {
+        float: right;
+    }
+}

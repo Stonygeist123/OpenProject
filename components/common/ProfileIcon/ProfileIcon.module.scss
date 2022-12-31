@@ -1,0 +1,27 @@
+$x-small: 2rem;
+$small: 3rem;
+$medium: 5rem;
+$large: 7rem;
+.icon {
+    background-color: rgb(0, 0, 0);
+    &-xs {
+        height: $x-small;
+        width: $x-small;
+        border-radius: calc($x-small * 0.5);
+    }
+    &-s {
+        height: $small;
+        width: $small;
+        border-radius: calc($small * 0.5);
+    }
+    &-m {
+        height: $medium;
+        width: $medium;
+        border-radius: calc($medium * 0.5);
+    }
+    &-l {
+        height: $large;
+        width: $large;
+        border-radius: calc($large * 0.5);
+    }
+}

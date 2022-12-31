@@ -47,7 +47,8 @@ export type Project = {
   created_at: Date
   isPrivate: boolean
   image: string
-  community_name: string | null
+  communityName: string | null
+  tags: string
 }
 
 /**
@@ -55,6 +56,7 @@ export type Project = {
  * 
  */
 export type Task = {
+  id: number
   name: string
   description: string
   prerequisites: Prisma.JsonValue
@@ -96,6 +98,22 @@ export type Tag = {
   name: string
 }
 
+/**
+ * Model Message
+ * 
+ */
+export type Message = {
+  id: number
+  content: string
+  replyID: number | null
+  edited_at: Date
+  created_at: Date
+  projectId: number | null
+  communityName: string | null
+  username: string
+  hasReplies: boolean
+}
+
 
 /**
  * ##  Prisma Client ʲˢ
@@ -118,31 +136,6 @@ export class PrismaClient<
     ? T['rejectOnNotFound']
     : false
       > {
-      /**
-       * @private
-       */
-      private fetcher;
-      /**
-       * @private
-       */
-      private readonly dmmf;
-      /**
-       * @private
-       */
-      private connectionPromise?;
-      /**
-       * @private
-       */
-      private disconnectionPromise?;
-      /**
-       * @private
-       */
-      private readonly engineConfig;
-      /**
-       * @private
-       */
-      private readonly measurePerformance;
-
     /**
    * ##  Prisma Client ʲˢ
    * 
@@ -237,6 +230,8 @@ export class PrismaClient<
    */
   $transaction<P extends PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): Promise<UnwrapTuple<P>>;
 
+  $transaction<R>(fn: (prisma: Prisma.TransactionClient) => Promise<R>, options?: {maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel}): Promise<R>;
+
       /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
     * Example usage:
@@ -306,6 +301,16 @@ export class PrismaClient<
     * ```
     */
   get tag(): Prisma.TagDelegate<GlobalReject>;
+
+  /**
+   * `prisma.message`: Exposes CRUD operations for the **Message** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.message.findMany()
+    * ```
+    */
+  get message(): Prisma.MessageDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -347,8 +352,8 @@ export namespace Prisma {
 
 
   /**
-   * Prisma Client JS version: 4.6.1
-   * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
+   * Prisma Client JS version: 4.7.1
+   * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
    */
   export type PrismaVersion = {
     client: string
@@ -512,9 +517,9 @@ export namespace Prisma {
     [K in keyof T]-?: {} extends Prisma__Pick<T, K> ? never : K
   }[keyof T]
 
-  export type TruthyKeys<T> = {
-    [key in keyof T]: T[key] extends false | undefined | null ? never : key
-  }[keyof T]
+  export type TruthyKeys<T> = keyof {
+    [K in keyof T as T[K] extends false | undefined | null ? never : K]: K
+  }
 
   export type TrueKeys<T> = TruthyKeys<Prisma__Pick<T, RequiredKeys<T>>>
 
@@ -796,7 +801,8 @@ export namespace Prisma {
     Task: 'Task',
     Submission: 'Submission',
     TaskSubmission: 'TaskSubmission',
-    Tag: 'Tag'
+    Tag: 'Tag',
+    Message: 'Message'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -946,6 +952,11 @@ export namespace Prisma {
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
 
+  /**
+   * `PrismaClient` proxy available in interactive transactions.
+   */
+  export type TransactionClient = Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use'>
+
   export type Datasource = {
     url?: string
   }
@@ -964,15 +975,17 @@ export namespace Prisma {
     communities: number
     projects: number
     task_submissions: number
+    Message: number
   }
 
   export type UserCountOutputTypeSelect = {
     communities?: boolean
     projects?: boolean
     task_submissions?: boolean
+    Message?: boolean
   }
 
-  export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs, U = keyof S> =
+  export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? UserCountOutputType :
     S extends undefined ? never :
@@ -980,7 +993,7 @@ export namespace Prisma {
     ? UserCountOutputType 
     : S extends { select: any } & (UserCountOutputTypeArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
+    [P in TruthyKeys<S['select']>]:
     P extends keyof UserCountOutputType ? UserCountOutputType[P] : never
   } 
       : UserCountOutputType
@@ -1011,14 +1024,16 @@ export namespace Prisma {
   export type CommunityCountOutputType = {
     subscribers: number
     projects: number
+    messages: number
   }
 
   export type CommunityCountOutputTypeSelect = {
     subscribers?: boolean
     projects?: boolean
+    messages?: boolean
   }
 
-  export type CommunityCountOutputTypeGetPayload<S extends boolean | null | undefined | CommunityCountOutputTypeArgs, U = keyof S> =
+  export type CommunityCountOutputTypeGetPayload<S extends boolean | null | undefined | CommunityCountOutputTypeArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? CommunityCountOutputType :
     S extends undefined ? never :
@@ -1026,7 +1041,7 @@ export namespace Prisma {
     ? CommunityCountOutputType 
     : S extends { select: any } & (CommunityCountOutputTypeArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
+    [P in TruthyKeys<S['select']>]:
     P extends keyof CommunityCountOutputType ? CommunityCountOutputType[P] : never
   } 
       : CommunityCountOutputType
@@ -1057,14 +1072,16 @@ export namespace Prisma {
   export type ProjectCountOutputType = {
     contributors: number
     tasks: number
+    messages: number
   }
 
   export type ProjectCountOutputTypeSelect = {
     contributors?: boolean
     tasks?: boolean
+    messages?: boolean
   }
 
-  export type ProjectCountOutputTypeGetPayload<S extends boolean | null | undefined | ProjectCountOutputTypeArgs, U = keyof S> =
+  export type ProjectCountOutputTypeGetPayload<S extends boolean | null | undefined | ProjectCountOutputTypeArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? ProjectCountOutputType :
     S extends undefined ? never :
@@ -1072,7 +1089,7 @@ export namespace Prisma {
     ? ProjectCountOutputType 
     : S extends { select: any } & (ProjectCountOutputTypeArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
+    [P in TruthyKeys<S['select']>]:
     P extends keyof ProjectCountOutputType ? ProjectCountOutputType[P] : never
   } 
       : ProjectCountOutputType
@@ -1273,6 +1290,7 @@ export namespace Prisma {
     password?: boolean
     token?: boolean
     task_submissions?: boolean | TaskSubmissionFindManyArgs
+    Message?: boolean | MessageFindManyArgs
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -1281,28 +1299,31 @@ export namespace Prisma {
     communities?: boolean | CommunityFindManyArgs
     projects?: boolean | ProjectFindManyArgs
     task_submissions?: boolean | TaskSubmissionFindManyArgs
+    Message?: boolean | MessageFindManyArgs
     _count?: boolean | UserCountOutputTypeArgs
   } 
 
-  export type UserGetPayload<S extends boolean | null | undefined | UserArgs, U = keyof S> =
+  export type UserGetPayload<S extends boolean | null | undefined | UserArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? User :
     S extends undefined ? never :
     S extends { include: any } & (UserArgs | UserFindManyArgs)
     ? User  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'communities' ? Array < CommunityGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'projects' ? Array < ProjectGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends '_count' ? UserCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+    [P in TruthyKeys<S['include']>]:
+        P extends 'communities' ? Array < CommunityGetPayload<S['include'][P]>>  :
+        P extends 'projects' ? Array < ProjectGetPayload<S['include'][P]>>  :
+        P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['include'][P]>>  :
+        P extends 'Message' ? Array < MessageGetPayload<S['include'][P]>>  :
+        P extends '_count' ? UserCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (UserArgs | UserFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'communities' ? Array < CommunityGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'projects' ? Array < ProjectGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends '_count' ? UserCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof User ? User[P] : never
+    [P in TruthyKeys<S['select']>]:
+        P extends 'communities' ? Array < CommunityGetPayload<S['select'][P]>>  :
+        P extends 'projects' ? Array < ProjectGetPayload<S['select'][P]>>  :
+        P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['select'][P]>>  :
+        P extends 'Message' ? Array < MessageGetPayload<S['select'][P]>>  :
+        P extends '_count' ? UserCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof User ? User[P] : never
   } 
       : User
 
@@ -1330,6 +1351,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'User'> extends True ? Prisma__UserClient<UserGetPayload<T>> : Prisma__UserClient<UserGetPayload<T> | null, null>
 
     /**
+     * Find one User that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, UserFindUniqueOrThrowArgs>
+    ): Prisma__UserClient<UserGetPayload<T>>
+
+    /**
      * Find the first User that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -1345,6 +1382,24 @@ export namespace Prisma {
     findFirst<T extends UserFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, UserFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'User'> extends True ? Prisma__UserClient<UserGetPayload<T>> : Prisma__UserClient<UserGetPayload<T> | null, null>
+
+    /**
+     * Find the first User that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, UserFindFirstOrThrowArgs>
+    ): Prisma__UserClient<UserGetPayload<T>>
 
     /**
      * Find zero or more Users that matches the filter.
@@ -1489,40 +1544,6 @@ export namespace Prisma {
     **/
     upsert<T extends UserUpsertArgs>(
       args: SelectSubset<T, UserUpsertArgs>
-    ): Prisma__UserClient<UserGetPayload<T>>
-
-    /**
-     * Find one User that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
-     * @example
-     * // Get one User
-     * const user = await prisma.user.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, UserFindUniqueOrThrowArgs>
-    ): Prisma__UserClient<UserGetPayload<T>>
-
-    /**
-     * Find the first User that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
-     * @example
-     * // Get one User
-     * const user = await prisma.user.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, UserFindFirstOrThrowArgs>
     ): Prisma__UserClient<UserGetPayload<T>>
 
     /**
@@ -1682,6 +1703,8 @@ export namespace Prisma {
 
     task_submissions<T extends TaskSubmissionFindManyArgs= {}>(args?: Subset<T, TaskSubmissionFindManyArgs>): PrismaPromise<Array<TaskSubmissionGetPayload<T>>| Null>;
 
+    Message<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
+
     private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1741,6 +1764,28 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * User findUniqueOrThrow
+   */
+  export type UserFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the User
+     * 
+    **/
+    select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
+     * Filter, which User to fetch.
+     * 
+    **/
+    where: UserWhereUniqueInput
+  }
+
 
   /**
    * User base type for findFirst actions
@@ -1809,6 +1854,63 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * User findFirstOrThrow
+   */
+  export type UserFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the User
+     * 
+    **/
+    select?: UserSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: UserInclude | null
+    /**
+     * Filter, which User to fetch.
+     * 
+    **/
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<UserOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     * 
+    **/
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     * 
+    **/
+    distinct?: Enumerable<UserScalarFieldEnum>
+  }
+
 
   /**
    * User findMany
@@ -2007,18 +2109,6 @@ export namespace Prisma {
 
 
   /**
-   * User: findUniqueOrThrow
-   */
-  export type UserFindUniqueOrThrowArgs = UserFindUniqueArgsBase
-      
-
-  /**
-   * User: findFirstOrThrow
-   */
-  export type UserFindFirstOrThrowArgs = UserFindFirstArgsBase
-      
-
-  /**
    * User without action
    */
   export type UserArgs = {
@@ -2197,9 +2287,10 @@ export namespace Prisma {
   export type CommunitySelect = {
     name?: boolean
     description?: boolean
-    subscribers?: boolean | UserFindManyArgs
     owner?: boolean
+    subscribers?: boolean | UserFindManyArgs
     projects?: boolean | ProjectFindManyArgs
+    messages?: boolean | MessageFindManyArgs
     created_at?: boolean
     _count?: boolean | CommunityCountOutputTypeArgs
   }
@@ -2208,26 +2299,29 @@ export namespace Prisma {
   export type CommunityInclude = {
     subscribers?: boolean | UserFindManyArgs
     projects?: boolean | ProjectFindManyArgs
+    messages?: boolean | MessageFindManyArgs
     _count?: boolean | CommunityCountOutputTypeArgs
   } 
 
-  export type CommunityGetPayload<S extends boolean | null | undefined | CommunityArgs, U = keyof S> =
+  export type CommunityGetPayload<S extends boolean | null | undefined | CommunityArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? Community :
     S extends undefined ? never :
     S extends { include: any } & (CommunityArgs | CommunityFindManyArgs)
     ? Community  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'subscribers' ? Array < UserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'projects' ? Array < ProjectGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends '_count' ? CommunityCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+    [P in TruthyKeys<S['include']>]:
+        P extends 'subscribers' ? Array < UserGetPayload<S['include'][P]>>  :
+        P extends 'projects' ? Array < ProjectGetPayload<S['include'][P]>>  :
+        P extends 'messages' ? Array < MessageGetPayload<S['include'][P]>>  :
+        P extends '_count' ? CommunityCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (CommunityArgs | CommunityFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'subscribers' ? Array < UserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'projects' ? Array < ProjectGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends '_count' ? CommunityCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Community ? Community[P] : never
+    [P in TruthyKeys<S['select']>]:
+        P extends 'subscribers' ? Array < UserGetPayload<S['select'][P]>>  :
+        P extends 'projects' ? Array < ProjectGetPayload<S['select'][P]>>  :
+        P extends 'messages' ? Array < MessageGetPayload<S['select'][P]>>  :
+        P extends '_count' ? CommunityCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Community ? Community[P] : never
   } 
       : Community
 
@@ -2255,6 +2349,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Community'> extends True ? Prisma__CommunityClient<CommunityGetPayload<T>> : Prisma__CommunityClient<CommunityGetPayload<T> | null, null>
 
     /**
+     * Find one Community that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {CommunityFindUniqueOrThrowArgs} args - Arguments to find a Community
+     * @example
+     * // Get one Community
+     * const community = await prisma.community.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends CommunityFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, CommunityFindUniqueOrThrowArgs>
+    ): Prisma__CommunityClient<CommunityGetPayload<T>>
+
+    /**
      * Find the first Community that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -2270,6 +2380,24 @@ export namespace Prisma {
     findFirst<T extends CommunityFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, CommunityFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Community'> extends True ? Prisma__CommunityClient<CommunityGetPayload<T>> : Prisma__CommunityClient<CommunityGetPayload<T> | null, null>
+
+    /**
+     * Find the first Community that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CommunityFindFirstOrThrowArgs} args - Arguments to find a Community
+     * @example
+     * // Get one Community
+     * const community = await prisma.community.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends CommunityFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, CommunityFindFirstOrThrowArgs>
+    ): Prisma__CommunityClient<CommunityGetPayload<T>>
 
     /**
      * Find zero or more Communities that matches the filter.
@@ -2414,40 +2542,6 @@ export namespace Prisma {
     **/
     upsert<T extends CommunityUpsertArgs>(
       args: SelectSubset<T, CommunityUpsertArgs>
-    ): Prisma__CommunityClient<CommunityGetPayload<T>>
-
-    /**
-     * Find one Community that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {CommunityFindUniqueOrThrowArgs} args - Arguments to find a Community
-     * @example
-     * // Get one Community
-     * const community = await prisma.community.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends CommunityFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, CommunityFindUniqueOrThrowArgs>
-    ): Prisma__CommunityClient<CommunityGetPayload<T>>
-
-    /**
-     * Find the first Community that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CommunityFindFirstOrThrowArgs} args - Arguments to find a Community
-     * @example
-     * // Get one Community
-     * const community = await prisma.community.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends CommunityFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, CommunityFindFirstOrThrowArgs>
     ): Prisma__CommunityClient<CommunityGetPayload<T>>
 
     /**
@@ -2605,6 +2699,8 @@ export namespace Prisma {
 
     projects<T extends ProjectFindManyArgs= {}>(args?: Subset<T, ProjectFindManyArgs>): PrismaPromise<Array<ProjectGetPayload<T>>| Null>;
 
+    messages<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
+
     private get _document();
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2664,6 +2760,28 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Community findUniqueOrThrow
+   */
+  export type CommunityFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Community
+     * 
+    **/
+    select?: CommunitySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CommunityInclude | null
+    /**
+     * Filter, which Community to fetch.
+     * 
+    **/
+    where: CommunityWhereUniqueInput
+  }
+
 
   /**
    * Community base type for findFirst actions
@@ -2732,6 +2850,63 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Community findFirstOrThrow
+   */
+  export type CommunityFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Community
+     * 
+    **/
+    select?: CommunitySelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: CommunityInclude | null
+    /**
+     * Filter, which Community to fetch.
+     * 
+    **/
+    where?: CommunityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Communities to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<CommunityOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Communities.
+     * 
+    **/
+    cursor?: CommunityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Communities from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Communities.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Communities.
+     * 
+    **/
+    distinct?: Enumerable<CommunityScalarFieldEnum>
+  }
+
 
   /**
    * Community findMany
@@ -2930,18 +3105,6 @@ export namespace Prisma {
 
 
   /**
-   * Community: findUniqueOrThrow
-   */
-  export type CommunityFindUniqueOrThrowArgs = CommunityFindUniqueArgsBase
-      
-
-  /**
-   * Community: findFirstOrThrow
-   */
-  export type CommunityFindFirstOrThrowArgs = CommunityFindFirstArgsBase
-      
-
-  /**
    * Community without action
    */
   export type CommunityArgs = {
@@ -2988,7 +3151,8 @@ export namespace Prisma {
     created_at: Date | null
     isPrivate: boolean | null
     image: string | null
-    community_name: string | null
+    communityName: string | null
+    tags: string | null
   }
 
   export type ProjectMaxAggregateOutputType = {
@@ -2999,7 +3163,8 @@ export namespace Prisma {
     created_at: Date | null
     isPrivate: boolean | null
     image: string | null
-    community_name: string | null
+    communityName: string | null
+    tags: string | null
   }
 
   export type ProjectCountAggregateOutputType = {
@@ -3010,7 +3175,8 @@ export namespace Prisma {
     created_at: number
     isPrivate: number
     image: number
-    community_name: number
+    communityName: number
+    tags: number
     _all: number
   }
 
@@ -3031,7 +3197,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
   }
 
   export type ProjectMaxAggregateInputType = {
@@ -3042,7 +3209,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
   }
 
   export type ProjectCountAggregateInputType = {
@@ -3053,7 +3221,8 @@ export namespace Prisma {
     created_at?: true
     isPrivate?: true
     image?: true
-    community_name?: true
+    communityName?: true
+    tags?: true
     _all?: true
   }
 
@@ -3157,7 +3326,8 @@ export namespace Prisma {
     created_at: Date
     isPrivate: boolean
     image: string
-    community_name: string | null
+    communityName: string | null
+    tags: string
     _count: ProjectCountAggregateOutputType | null
     _avg: ProjectAvgAggregateOutputType | null
     _sum: ProjectSumAggregateOutputType | null
@@ -3185,42 +3355,47 @@ export namespace Prisma {
     description?: boolean
     owner?: boolean
     contributors?: boolean | UserFindManyArgs
-    community?: boolean | CommunityArgs
     tasks?: boolean | TaskFindManyArgs
     created_at?: boolean
     isPrivate?: boolean
     image?: boolean
-    community_name?: boolean
+    community?: boolean | CommunityArgs
+    communityName?: boolean
+    tags?: boolean
+    messages?: boolean | MessageFindManyArgs
     _count?: boolean | ProjectCountOutputTypeArgs
   }
 
 
   export type ProjectInclude = {
     contributors?: boolean | UserFindManyArgs
-    community?: boolean | CommunityArgs
     tasks?: boolean | TaskFindManyArgs
+    community?: boolean | CommunityArgs
+    messages?: boolean | MessageFindManyArgs
     _count?: boolean | ProjectCountOutputTypeArgs
   } 
 
-  export type ProjectGetPayload<S extends boolean | null | undefined | ProjectArgs, U = keyof S> =
+  export type ProjectGetPayload<S extends boolean | null | undefined | ProjectArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? Project :
     S extends undefined ? never :
     S extends { include: any } & (ProjectArgs | ProjectFindManyArgs)
     ? Project  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'contributors' ? Array < UserGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends 'community' ? CommunityGetPayload<Exclude<S['include'], undefined | null>[P]> | null :
-        P extends 'tasks' ? Array < TaskGetPayload<Exclude<S['include'], undefined | null>[P]>>  :
-        P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+    [P in TruthyKeys<S['include']>]:
+        P extends 'contributors' ? Array < UserGetPayload<S['include'][P]>>  :
+        P extends 'tasks' ? Array < TaskGetPayload<S['include'][P]>>  :
+        P extends 'community' ? CommunityGetPayload<S['include'][P]> | null :
+        P extends 'messages' ? Array < MessageGetPayload<S['include'][P]>>  :
+        P extends '_count' ? ProjectCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (ProjectArgs | ProjectFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'contributors' ? Array < UserGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends 'community' ? CommunityGetPayload<Exclude<S['select'], undefined | null>[P]> | null :
-        P extends 'tasks' ? Array < TaskGetPayload<Exclude<S['select'], undefined | null>[P]>>  :
-        P extends '_count' ? ProjectCountOutputTypeGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Project ? Project[P] : never
+    [P in TruthyKeys<S['select']>]:
+        P extends 'contributors' ? Array < UserGetPayload<S['select'][P]>>  :
+        P extends 'tasks' ? Array < TaskGetPayload<S['select'][P]>>  :
+        P extends 'community' ? CommunityGetPayload<S['select'][P]> | null :
+        P extends 'messages' ? Array < MessageGetPayload<S['select'][P]>>  :
+        P extends '_count' ? ProjectCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof Project ? Project[P] : never
   } 
       : Project
 
@@ -3248,6 +3423,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Project'> extends True ? Prisma__ProjectClient<ProjectGetPayload<T>> : Prisma__ProjectClient<ProjectGetPayload<T> | null, null>
 
     /**
+     * Find one Project that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {ProjectFindUniqueOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends ProjectFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, ProjectFindUniqueOrThrowArgs>
+    ): Prisma__ProjectClient<ProjectGetPayload<T>>
+
+    /**
      * Find the first Project that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -3263,6 +3454,24 @@ export namespace Prisma {
     findFirst<T extends ProjectFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, ProjectFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Project'> extends True ? Prisma__ProjectClient<ProjectGetPayload<T>> : Prisma__ProjectClient<ProjectGetPayload<T> | null, null>
+
+    /**
+     * Find the first Project that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProjectFindFirstOrThrowArgs} args - Arguments to find a Project
+     * @example
+     * // Get one Project
+     * const project = await prisma.project.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends ProjectFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, ProjectFindFirstOrThrowArgs>
+    ): Prisma__ProjectClient<ProjectGetPayload<T>>
 
     /**
      * Find zero or more Projects that matches the filter.
@@ -3407,40 +3616,6 @@ export namespace Prisma {
     **/
     upsert<T extends ProjectUpsertArgs>(
       args: SelectSubset<T, ProjectUpsertArgs>
-    ): Prisma__ProjectClient<ProjectGetPayload<T>>
-
-    /**
-     * Find one Project that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {ProjectFindUniqueOrThrowArgs} args - Arguments to find a Project
-     * @example
-     * // Get one Project
-     * const project = await prisma.project.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends ProjectFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, ProjectFindUniqueOrThrowArgs>
-    ): Prisma__ProjectClient<ProjectGetPayload<T>>
-
-    /**
-     * Find the first Project that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjectFindFirstOrThrowArgs} args - Arguments to find a Project
-     * @example
-     * // Get one Project
-     * const project = await prisma.project.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends ProjectFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, ProjectFindFirstOrThrowArgs>
     ): Prisma__ProjectClient<ProjectGetPayload<T>>
 
     /**
@@ -3596,9 +3771,11 @@ export namespace Prisma {
 
     contributors<T extends UserFindManyArgs= {}>(args?: Subset<T, UserFindManyArgs>): PrismaPromise<Array<UserGetPayload<T>>| Null>;
 
+    tasks<T extends TaskFindManyArgs= {}>(args?: Subset<T, TaskFindManyArgs>): PrismaPromise<Array<TaskGetPayload<T>>| Null>;
+
     community<T extends CommunityArgs= {}>(args?: Subset<T, CommunityArgs>): Prisma__CommunityClient<CommunityGetPayload<T> | Null>;
 
-    tasks<T extends TaskFindManyArgs= {}>(args?: Subset<T, TaskFindManyArgs>): PrismaPromise<Array<TaskGetPayload<T>>| Null>;
+    messages<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -3659,6 +3836,28 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Project findUniqueOrThrow
+   */
+  export type ProjectFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Project
+     * 
+    **/
+    select?: ProjectSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ProjectInclude | null
+    /**
+     * Filter, which Project to fetch.
+     * 
+    **/
+    where: ProjectWhereUniqueInput
+  }
+
 
   /**
    * Project base type for findFirst actions
@@ -3727,6 +3926,63 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Project findFirstOrThrow
+   */
+  export type ProjectFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Project
+     * 
+    **/
+    select?: ProjectSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: ProjectInclude | null
+    /**
+     * Filter, which Project to fetch.
+     * 
+    **/
+    where?: ProjectWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Projects to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<ProjectOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Projects.
+     * 
+    **/
+    cursor?: ProjectWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Projects from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Projects.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Projects.
+     * 
+    **/
+    distinct?: Enumerable<ProjectScalarFieldEnum>
+  }
+
 
   /**
    * Project findMany
@@ -3925,18 +4181,6 @@ export namespace Prisma {
 
 
   /**
-   * Project: findUniqueOrThrow
-   */
-  export type ProjectFindUniqueOrThrowArgs = ProjectFindUniqueArgsBase
-      
-
-  /**
-   * Project: findFirstOrThrow
-   */
-  export type ProjectFindFirstOrThrowArgs = ProjectFindFirstArgsBase
-      
-
-  /**
    * Project without action
    */
   export type ProjectArgs = {
@@ -3968,14 +4212,17 @@ export namespace Prisma {
   }
 
   export type TaskAvgAggregateOutputType = {
+    id: number | null
     projectId: number | null
   }
 
   export type TaskSumAggregateOutputType = {
+    id: number | null
     projectId: number | null
   }
 
   export type TaskMinAggregateOutputType = {
+    id: number | null
     name: string | null
     description: string | null
     created_at: Date | null
@@ -3983,6 +4230,7 @@ export namespace Prisma {
   }
 
   export type TaskMaxAggregateOutputType = {
+    id: number | null
     name: string | null
     description: string | null
     created_at: Date | null
@@ -3990,6 +4238,7 @@ export namespace Prisma {
   }
 
   export type TaskCountAggregateOutputType = {
+    id: number
     name: number
     description: number
     prerequisites: number
@@ -4001,14 +4250,17 @@ export namespace Prisma {
 
 
   export type TaskAvgAggregateInputType = {
+    id?: true
     projectId?: true
   }
 
   export type TaskSumAggregateInputType = {
+    id?: true
     projectId?: true
   }
 
   export type TaskMinAggregateInputType = {
+    id?: true
     name?: true
     description?: true
     created_at?: true
@@ -4016,6 +4268,7 @@ export namespace Prisma {
   }
 
   export type TaskMaxAggregateInputType = {
+    id?: true
     name?: true
     description?: true
     created_at?: true
@@ -4023,6 +4276,7 @@ export namespace Prisma {
   }
 
   export type TaskCountAggregateInputType = {
+    id?: true
     name?: true
     description?: true
     prerequisites?: true
@@ -4125,6 +4379,7 @@ export namespace Prisma {
 
 
   export type TaskGroupByOutputType = {
+    id: number
     name: string
     description: string
     prerequisites: JsonValue
@@ -4153,6 +4408,7 @@ export namespace Prisma {
 
 
   export type TaskSelect = {
+    id?: boolean
     project?: boolean | ProjectArgs
     name?: boolean
     description?: boolean
@@ -4167,19 +4423,19 @@ export namespace Prisma {
     project?: boolean | ProjectArgs
   } 
 
-  export type TaskGetPayload<S extends boolean | null | undefined | TaskArgs, U = keyof S> =
+  export type TaskGetPayload<S extends boolean | null | undefined | TaskArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? Task :
     S extends undefined ? never :
     S extends { include: any } & (TaskArgs | TaskFindManyArgs)
     ? Task  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+    [P in TruthyKeys<S['include']>]:
+        P extends 'project' ? ProjectGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (TaskArgs | TaskFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'project' ? ProjectGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof Task ? Task[P] : never
+    [P in TruthyKeys<S['select']>]:
+        P extends 'project' ? ProjectGetPayload<S['select'][P]> :  P extends keyof Task ? Task[P] : never
   } 
       : Task
 
@@ -4207,6 +4463,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Task'> extends True ? Prisma__TaskClient<TaskGetPayload<T>> : Prisma__TaskClient<TaskGetPayload<T> | null, null>
 
     /**
+     * Find one Task that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {TaskFindUniqueOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends TaskFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, TaskFindUniqueOrThrowArgs>
+    ): Prisma__TaskClient<TaskGetPayload<T>>
+
+    /**
      * Find the first Task that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -4224,6 +4496,24 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Task'> extends True ? Prisma__TaskClient<TaskGetPayload<T>> : Prisma__TaskClient<TaskGetPayload<T> | null, null>
 
     /**
+     * Find the first Task that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskFindFirstOrThrowArgs} args - Arguments to find a Task
+     * @example
+     * // Get one Task
+     * const task = await prisma.task.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends TaskFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, TaskFindFirstOrThrowArgs>
+    ): Prisma__TaskClient<TaskGetPayload<T>>
+
+    /**
      * Find zero or more Tasks that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -4235,8 +4525,8 @@ export namespace Prisma {
      * // Get first 10 Tasks
      * const tasks = await prisma.task.findMany({ take: 10 })
      * 
-     * // Only select the `name`
-     * const taskWithNameOnly = await prisma.task.findMany({ select: { name: true } })
+     * // Only select the `id`
+     * const taskWithIdOnly = await prisma.task.findMany({ select: { id: true } })
      * 
     **/
     findMany<T extends TaskFindManyArgs>(
@@ -4366,40 +4656,6 @@ export namespace Prisma {
     **/
     upsert<T extends TaskUpsertArgs>(
       args: SelectSubset<T, TaskUpsertArgs>
-    ): Prisma__TaskClient<TaskGetPayload<T>>
-
-    /**
-     * Find one Task that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {TaskFindUniqueOrThrowArgs} args - Arguments to find a Task
-     * @example
-     * // Get one Task
-     * const task = await prisma.task.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends TaskFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, TaskFindUniqueOrThrowArgs>
-    ): Prisma__TaskClient<TaskGetPayload<T>>
-
-    /**
-     * Find the first Task that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TaskFindFirstOrThrowArgs} args - Arguments to find a Task
-     * @example
-     * // Get one Task
-     * const task = await prisma.task.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends TaskFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, TaskFindFirstOrThrowArgs>
     ): Prisma__TaskClient<TaskGetPayload<T>>
 
     /**
@@ -4616,6 +4872,28 @@ export namespace Prisma {
       
 
   /**
+   * Task findUniqueOrThrow
+   */
+  export type TaskFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Task
+     * 
+    **/
+    select?: TaskSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: TaskInclude | null
+    /**
+     * Filter, which Task to fetch.
+     * 
+    **/
+    where: TaskWhereUniqueInput
+  }
+
+
+  /**
    * Task base type for findFirst actions
    */
   export type TaskFindFirstArgsBase = {
@@ -4682,6 +4960,63 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Task findFirstOrThrow
+   */
+  export type TaskFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Task
+     * 
+    **/
+    select?: TaskSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: TaskInclude | null
+    /**
+     * Filter, which Task to fetch.
+     * 
+    **/
+    where?: TaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tasks to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<TaskOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tasks.
+     * 
+    **/
+    cursor?: TaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tasks from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tasks.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tasks.
+     * 
+    **/
+    distinct?: Enumerable<TaskScalarFieldEnum>
+  }
+
 
   /**
    * Task findMany
@@ -4880,18 +5215,6 @@ export namespace Prisma {
 
 
   /**
-   * Task: findUniqueOrThrow
-   */
-  export type TaskFindUniqueOrThrowArgs = TaskFindUniqueArgsBase
-      
-
-  /**
-   * Task: findFirstOrThrow
-   */
-  export type TaskFindFirstOrThrowArgs = TaskFindFirstArgsBase
-      
-
-  /**
    * Task without action
    */
   export type TaskArgs = {
@@ -5079,7 +5402,7 @@ export namespace Prisma {
   }
 
 
-  export type SubmissionGetPayload<S extends boolean | null | undefined | SubmissionArgs, U = keyof S> =
+  export type SubmissionGetPayload<S extends boolean | null | undefined | SubmissionArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? Submission :
     S extends undefined ? never :
@@ -5087,7 +5410,7 @@ export namespace Prisma {
     ? Submission 
     : S extends { select: any } & (SubmissionArgs | SubmissionFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
+    [P in TruthyKeys<S['select']>]:
     P extends keyof Submission ? Submission[P] : never
   } 
       : Submission
@@ -5116,6 +5439,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Submission'> extends True ? Prisma__SubmissionClient<SubmissionGetPayload<T>> : Prisma__SubmissionClient<SubmissionGetPayload<T> | null, null>
 
     /**
+     * Find one Submission that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {SubmissionFindUniqueOrThrowArgs} args - Arguments to find a Submission
+     * @example
+     * // Get one Submission
+     * const submission = await prisma.submission.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends SubmissionFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, SubmissionFindUniqueOrThrowArgs>
+    ): Prisma__SubmissionClient<SubmissionGetPayload<T>>
+
+    /**
      * Find the first Submission that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -5131,6 +5470,24 @@ export namespace Prisma {
     findFirst<T extends SubmissionFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, SubmissionFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Submission'> extends True ? Prisma__SubmissionClient<SubmissionGetPayload<T>> : Prisma__SubmissionClient<SubmissionGetPayload<T> | null, null>
+
+    /**
+     * Find the first Submission that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SubmissionFindFirstOrThrowArgs} args - Arguments to find a Submission
+     * @example
+     * // Get one Submission
+     * const submission = await prisma.submission.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends SubmissionFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, SubmissionFindFirstOrThrowArgs>
+    ): Prisma__SubmissionClient<SubmissionGetPayload<T>>
 
     /**
      * Find zero or more Submissions that matches the filter.
@@ -5275,40 +5632,6 @@ export namespace Prisma {
     **/
     upsert<T extends SubmissionUpsertArgs>(
       args: SelectSubset<T, SubmissionUpsertArgs>
-    ): Prisma__SubmissionClient<SubmissionGetPayload<T>>
-
-    /**
-     * Find one Submission that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {SubmissionFindUniqueOrThrowArgs} args - Arguments to find a Submission
-     * @example
-     * // Get one Submission
-     * const submission = await prisma.submission.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends SubmissionFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, SubmissionFindUniqueOrThrowArgs>
-    ): Prisma__SubmissionClient<SubmissionGetPayload<T>>
-
-    /**
-     * Find the first Submission that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SubmissionFindFirstOrThrowArgs} args - Arguments to find a Submission
-     * @example
-     * // Get one Submission
-     * const submission = await prisma.submission.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends SubmissionFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, SubmissionFindFirstOrThrowArgs>
     ): Prisma__SubmissionClient<SubmissionGetPayload<T>>
 
     /**
@@ -5519,6 +5842,23 @@ export namespace Prisma {
       
 
   /**
+   * Submission findUniqueOrThrow
+   */
+  export type SubmissionFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Submission
+     * 
+    **/
+    select?: SubmissionSelect | null
+    /**
+     * Filter, which Submission to fetch.
+     * 
+    **/
+    where: SubmissionWhereUniqueInput
+  }
+
+
+  /**
    * Submission base type for findFirst actions
    */
   export type SubmissionFindFirstArgsBase = {
@@ -5580,6 +5920,58 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Submission findFirstOrThrow
+   */
+  export type SubmissionFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Submission
+     * 
+    **/
+    select?: SubmissionSelect | null
+    /**
+     * Filter, which Submission to fetch.
+     * 
+    **/
+    where?: SubmissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Submissions to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<SubmissionOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Submissions.
+     * 
+    **/
+    cursor?: SubmissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Submissions from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Submissions.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Submissions.
+     * 
+    **/
+    distinct?: Enumerable<SubmissionScalarFieldEnum>
+  }
+
 
   /**
    * Submission findMany
@@ -5751,18 +6143,6 @@ export namespace Prisma {
     where?: SubmissionWhereInput
   }
 
-
-  /**
-   * Submission: findUniqueOrThrow
-   */
-  export type SubmissionFindUniqueOrThrowArgs = SubmissionFindUniqueArgsBase
-      
-
-  /**
-   * Submission: findFirstOrThrow
-   */
-  export type SubmissionFindFirstOrThrowArgs = SubmissionFindFirstArgsBase
-      
 
   /**
    * Submission without action
@@ -5960,19 +6340,19 @@ export namespace Prisma {
     author?: boolean | UserArgs
   } 
 
-  export type TaskSubmissionGetPayload<S extends boolean | null | undefined | TaskSubmissionArgs, U = keyof S> =
+  export type TaskSubmissionGetPayload<S extends boolean | null | undefined | TaskSubmissionArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? TaskSubmission :
     S extends undefined ? never :
     S extends { include: any } & (TaskSubmissionArgs | TaskSubmissionFindManyArgs)
     ? TaskSubmission  & {
-    [P in TrueKeys<S['include']>]:
-        P extends 'author' ? UserGetPayload<Exclude<S['include'], undefined | null>[P]> :  never
+    [P in TruthyKeys<S['include']>]:
+        P extends 'author' ? UserGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (TaskSubmissionArgs | TaskSubmissionFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
-        P extends 'author' ? UserGetPayload<Exclude<S['select'], undefined | null>[P]> :  P extends keyof TaskSubmission ? TaskSubmission[P] : never
+    [P in TruthyKeys<S['select']>]:
+        P extends 'author' ? UserGetPayload<S['select'][P]> :  P extends keyof TaskSubmission ? TaskSubmission[P] : never
   } 
       : TaskSubmission
 
@@ -6000,6 +6380,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'TaskSubmission'> extends True ? Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>> : Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T> | null, null>
 
     /**
+     * Find one TaskSubmission that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {TaskSubmissionFindUniqueOrThrowArgs} args - Arguments to find a TaskSubmission
+     * @example
+     * // Get one TaskSubmission
+     * const taskSubmission = await prisma.taskSubmission.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends TaskSubmissionFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, TaskSubmissionFindUniqueOrThrowArgs>
+    ): Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>>
+
+    /**
      * Find the first TaskSubmission that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -6015,6 +6411,24 @@ export namespace Prisma {
     findFirst<T extends TaskSubmissionFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, TaskSubmissionFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'TaskSubmission'> extends True ? Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>> : Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T> | null, null>
+
+    /**
+     * Find the first TaskSubmission that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TaskSubmissionFindFirstOrThrowArgs} args - Arguments to find a TaskSubmission
+     * @example
+     * // Get one TaskSubmission
+     * const taskSubmission = await prisma.taskSubmission.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends TaskSubmissionFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, TaskSubmissionFindFirstOrThrowArgs>
+    ): Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>>
 
     /**
      * Find zero or more TaskSubmissions that matches the filter.
@@ -6159,40 +6573,6 @@ export namespace Prisma {
     **/
     upsert<T extends TaskSubmissionUpsertArgs>(
       args: SelectSubset<T, TaskSubmissionUpsertArgs>
-    ): Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>>
-
-    /**
-     * Find one TaskSubmission that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {TaskSubmissionFindUniqueOrThrowArgs} args - Arguments to find a TaskSubmission
-     * @example
-     * // Get one TaskSubmission
-     * const taskSubmission = await prisma.taskSubmission.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends TaskSubmissionFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, TaskSubmissionFindUniqueOrThrowArgs>
-    ): Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>>
-
-    /**
-     * Find the first TaskSubmission that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TaskSubmissionFindFirstOrThrowArgs} args - Arguments to find a TaskSubmission
-     * @example
-     * // Get one TaskSubmission
-     * const taskSubmission = await prisma.taskSubmission.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends TaskSubmissionFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, TaskSubmissionFindFirstOrThrowArgs>
     ): Prisma__TaskSubmissionClient<TaskSubmissionGetPayload<T>>
 
     /**
@@ -6409,6 +6789,28 @@ export namespace Prisma {
       
 
   /**
+   * TaskSubmission findUniqueOrThrow
+   */
+  export type TaskSubmissionFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the TaskSubmission
+     * 
+    **/
+    select?: TaskSubmissionSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: TaskSubmissionInclude | null
+    /**
+     * Filter, which TaskSubmission to fetch.
+     * 
+    **/
+    where: TaskSubmissionWhereUniqueInput
+  }
+
+
+  /**
    * TaskSubmission base type for findFirst actions
    */
   export type TaskSubmissionFindFirstArgsBase = {
@@ -6475,6 +6877,63 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * TaskSubmission findFirstOrThrow
+   */
+  export type TaskSubmissionFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the TaskSubmission
+     * 
+    **/
+    select?: TaskSubmissionSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: TaskSubmissionInclude | null
+    /**
+     * Filter, which TaskSubmission to fetch.
+     * 
+    **/
+    where?: TaskSubmissionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TaskSubmissions to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<TaskSubmissionOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TaskSubmissions.
+     * 
+    **/
+    cursor?: TaskSubmissionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TaskSubmissions from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TaskSubmissions.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TaskSubmissions.
+     * 
+    **/
+    distinct?: Enumerable<TaskSubmissionScalarFieldEnum>
+  }
+
 
   /**
    * TaskSubmission findMany
@@ -6673,18 +7132,6 @@ export namespace Prisma {
 
 
   /**
-   * TaskSubmission: findUniqueOrThrow
-   */
-  export type TaskSubmissionFindUniqueOrThrowArgs = TaskSubmissionFindUniqueArgsBase
-      
-
-  /**
-   * TaskSubmission: findFirstOrThrow
-   */
-  export type TaskSubmissionFindFirstOrThrowArgs = TaskSubmissionFindFirstArgsBase
-      
-
-  /**
    * TaskSubmission without action
    */
   export type TaskSubmissionArgs = {
@@ -6844,7 +7291,7 @@ export namespace Prisma {
   }
 
 
-  export type TagGetPayload<S extends boolean | null | undefined | TagArgs, U = keyof S> =
+  export type TagGetPayload<S extends boolean | null | undefined | TagArgs> =
     S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
     S extends true ? Tag :
     S extends undefined ? never :
@@ -6852,7 +7299,7 @@ export namespace Prisma {
     ? Tag 
     : S extends { select: any } & (TagArgs | TagFindManyArgs)
       ? {
-    [P in TrueKeys<S['select']>]:
+    [P in TruthyKeys<S['select']>]:
     P extends keyof Tag ? Tag[P] : never
   } 
       : Tag
@@ -6881,6 +7328,22 @@ export namespace Prisma {
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Tag'> extends True ? Prisma__TagClient<TagGetPayload<T>> : Prisma__TagClient<TagGetPayload<T> | null, null>
 
     /**
+     * Find one Tag that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {TagFindUniqueOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends TagFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, TagFindUniqueOrThrowArgs>
+    ): Prisma__TagClient<TagGetPayload<T>>
+
+    /**
      * Find the first Tag that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
@@ -6896,6 +7359,24 @@ export namespace Prisma {
     findFirst<T extends TagFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
       args?: SelectSubset<T, TagFindFirstArgs>
     ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Tag'> extends True ? Prisma__TagClient<TagGetPayload<T>> : Prisma__TagClient<TagGetPayload<T> | null, null>
+
+    /**
+     * Find the first Tag that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TagFindFirstOrThrowArgs} args - Arguments to find a Tag
+     * @example
+     * // Get one Tag
+     * const tag = await prisma.tag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends TagFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, TagFindFirstOrThrowArgs>
+    ): Prisma__TagClient<TagGetPayload<T>>
 
     /**
      * Find zero or more Tags that matches the filter.
@@ -7040,40 +7521,6 @@ export namespace Prisma {
     **/
     upsert<T extends TagUpsertArgs>(
       args: SelectSubset<T, TagUpsertArgs>
-    ): Prisma__TagClient<TagGetPayload<T>>
-
-    /**
-     * Find one Tag that matches the filter or throw
-     * `NotFoundError` if no matches were found.
-     * @param {TagFindUniqueOrThrowArgs} args - Arguments to find a Tag
-     * @example
-     * // Get one Tag
-     * const tag = await prisma.tag.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findUniqueOrThrow<T extends TagFindUniqueOrThrowArgs>(
-      args?: SelectSubset<T, TagFindUniqueOrThrowArgs>
-    ): Prisma__TagClient<TagGetPayload<T>>
-
-    /**
-     * Find the first Tag that matches the filter or
-     * throw `NotFoundError` if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {TagFindFirstOrThrowArgs} args - Arguments to find a Tag
-     * @example
-     * // Get one Tag
-     * const tag = await prisma.tag.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-    **/
-    findFirstOrThrow<T extends TagFindFirstOrThrowArgs>(
-      args?: SelectSubset<T, TagFindFirstOrThrowArgs>
     ): Prisma__TagClient<TagGetPayload<T>>
 
     /**
@@ -7284,6 +7731,23 @@ export namespace Prisma {
       
 
   /**
+   * Tag findUniqueOrThrow
+   */
+  export type TagFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Tag
+     * 
+    **/
+    select?: TagSelect | null
+    /**
+     * Filter, which Tag to fetch.
+     * 
+    **/
+    where: TagWhereUniqueInput
+  }
+
+
+  /**
    * Tag base type for findFirst actions
    */
   export type TagFindFirstArgsBase = {
@@ -7345,6 +7809,58 @@ export namespace Prisma {
     rejectOnNotFound?: RejectOnNotFound
   }
       
+
+  /**
+   * Tag findFirstOrThrow
+   */
+  export type TagFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Tag
+     * 
+    **/
+    select?: TagSelect | null
+    /**
+     * Filter, which Tag to fetch.
+     * 
+    **/
+    where?: TagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Tags to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<TagOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Tags.
+     * 
+    **/
+    cursor?: TagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Tags from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Tags.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Tags.
+     * 
+    **/
+    distinct?: Enumerable<TagScalarFieldEnum>
+  }
+
 
   /**
    * Tag findMany
@@ -7518,18 +8034,6 @@ export namespace Prisma {
 
 
   /**
-   * Tag: findUniqueOrThrow
-   */
-  export type TagFindUniqueOrThrowArgs = TagFindUniqueArgsBase
-      
-
-  /**
-   * Tag: findFirstOrThrow
-   */
-  export type TagFindFirstOrThrowArgs = TagFindFirstArgsBase
-      
-
-  /**
    * Tag without action
    */
   export type TagArgs = {
@@ -7538,6 +8042,1080 @@ export namespace Prisma {
      * 
     **/
     select?: TagSelect | null
+  }
+
+
+
+  /**
+   * Model Message
+   */
+
+
+  export type AggregateMessage = {
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  export type MessageAvgAggregateOutputType = {
+    id: number | null
+    replyID: number | null
+    projectId: number | null
+  }
+
+  export type MessageSumAggregateOutputType = {
+    id: number | null
+    replyID: number | null
+    projectId: number | null
+  }
+
+  export type MessageMinAggregateOutputType = {
+    id: number | null
+    content: string | null
+    replyID: number | null
+    edited_at: Date | null
+    created_at: Date | null
+    projectId: number | null
+    communityName: string | null
+    username: string | null
+    hasReplies: boolean | null
+  }
+
+  export type MessageMaxAggregateOutputType = {
+    id: number | null
+    content: string | null
+    replyID: number | null
+    edited_at: Date | null
+    created_at: Date | null
+    projectId: number | null
+    communityName: string | null
+    username: string | null
+    hasReplies: boolean | null
+  }
+
+  export type MessageCountAggregateOutputType = {
+    id: number
+    content: number
+    replyID: number
+    edited_at: number
+    created_at: number
+    projectId: number
+    communityName: number
+    username: number
+    hasReplies: number
+    _all: number
+  }
+
+
+  export type MessageAvgAggregateInputType = {
+    id?: true
+    replyID?: true
+    projectId?: true
+  }
+
+  export type MessageSumAggregateInputType = {
+    id?: true
+    replyID?: true
+    projectId?: true
+  }
+
+  export type MessageMinAggregateInputType = {
+    id?: true
+    content?: true
+    replyID?: true
+    edited_at?: true
+    created_at?: true
+    projectId?: true
+    communityName?: true
+    username?: true
+    hasReplies?: true
+  }
+
+  export type MessageMaxAggregateInputType = {
+    id?: true
+    content?: true
+    replyID?: true
+    edited_at?: true
+    created_at?: true
+    projectId?: true
+    communityName?: true
+    username?: true
+    hasReplies?: true
+  }
+
+  export type MessageCountAggregateInputType = {
+    id?: true
+    content?: true
+    replyID?: true
+    edited_at?: true
+    created_at?: true
+    projectId?: true
+    communityName?: true
+    username?: true
+    hasReplies?: true
+    _all?: true
+  }
+
+  export type MessageAggregateArgs = {
+    /**
+     * Filter which Message to aggregate.
+     * 
+    **/
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<MessageOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     * 
+    **/
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type GetMessageAggregateType<T extends MessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessage[P]>
+      : GetScalarType<T[P], AggregateMessage[P]>
+  }
+
+
+
+
+  export type MessageGroupByArgs = {
+    where?: MessageWhereInput
+    orderBy?: Enumerable<MessageOrderByWithAggregationInput>
+    by: Array<MessageScalarFieldEnum>
+    having?: MessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCountAggregateInputType | true
+    _avg?: MessageAvgAggregateInputType
+    _sum?: MessageSumAggregateInputType
+    _min?: MessageMinAggregateInputType
+    _max?: MessageMaxAggregateInputType
+  }
+
+
+  export type MessageGroupByOutputType = {
+    id: number
+    content: string
+    replyID: number | null
+    edited_at: Date
+    created_at: Date
+    projectId: number | null
+    communityName: string | null
+    username: string
+    hasReplies: boolean
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  type GetMessageGroupByPayload<T extends MessageGroupByArgs> = PrismaPromise<
+    Array<
+      PickArray<MessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageSelect = {
+    id?: boolean
+    content?: boolean
+    author?: boolean | UserArgs
+    project?: boolean | ProjectArgs
+    community?: boolean | CommunityArgs
+    replyID?: boolean
+    edited_at?: boolean
+    created_at?: boolean
+    projectId?: boolean
+    communityName?: boolean
+    username?: boolean
+    hasReplies?: boolean
+  }
+
+
+  export type MessageInclude = {
+    author?: boolean | UserArgs
+    project?: boolean | ProjectArgs
+    community?: boolean | CommunityArgs
+  } 
+
+  export type MessageGetPayload<S extends boolean | null | undefined | MessageArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? Message :
+    S extends undefined ? never :
+    S extends { include: any } & (MessageArgs | MessageFindManyArgs)
+    ? Message  & {
+    [P in TruthyKeys<S['include']>]:
+        P extends 'author' ? UserGetPayload<S['include'][P]> :
+        P extends 'project' ? ProjectGetPayload<S['include'][P]> | null :
+        P extends 'community' ? CommunityGetPayload<S['include'][P]> | null :  never
+  } 
+    : S extends { select: any } & (MessageArgs | MessageFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+        P extends 'author' ? UserGetPayload<S['select'][P]> :
+        P extends 'project' ? ProjectGetPayload<S['select'][P]> | null :
+        P extends 'community' ? CommunityGetPayload<S['select'][P]> | null :  P extends keyof Message ? Message[P] : never
+  } 
+      : Message
+
+
+  type MessageCountArgs = Merge<
+    Omit<MessageFindManyArgs, 'select' | 'include'> & {
+      select?: MessageCountAggregateInputType | true
+    }
+  >
+
+  export interface MessageDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+    /**
+     * Find zero or one Message that matches the filter.
+     * @param {MessageFindUniqueArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends MessageFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, MessageFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'Message'> extends True ? Prisma__MessageClient<MessageGetPayload<T>> : Prisma__MessageClient<MessageGetPayload<T> | null, null>
+
+    /**
+     * Find one Message that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {MessageFindUniqueOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends MessageFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, MessageFindUniqueOrThrowArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Find the first Message that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends MessageFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, MessageFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'Message'> extends True ? Prisma__MessageClient<MessageGetPayload<T>> : Prisma__MessageClient<MessageGetPayload<T> | null, null>
+
+    /**
+     * Find the first Message that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends MessageFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, MessageFindFirstOrThrowArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.message.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.message.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends MessageFindManyArgs>(
+      args?: SelectSubset<T, MessageFindManyArgs>
+    ): PrismaPromise<Array<MessageGetPayload<T>>>
+
+    /**
+     * Create a Message.
+     * @param {MessageCreateArgs} args - Arguments to create a Message.
+     * @example
+     * // Create one Message
+     * const Message = await prisma.message.create({
+     *   data: {
+     *     // ... data to create a Message
+     *   }
+     * })
+     * 
+    **/
+    create<T extends MessageCreateArgs>(
+      args: SelectSubset<T, MessageCreateArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Create many Messages.
+     *     @param {MessageCreateManyArgs} args - Arguments to create many Messages.
+     *     @example
+     *     // Create many Messages
+     *     const message = await prisma.message.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends MessageCreateManyArgs>(
+      args?: SelectSubset<T, MessageCreateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Message.
+     * @param {MessageDeleteArgs} args - Arguments to delete one Message.
+     * @example
+     * // Delete one Message
+     * const Message = await prisma.message.delete({
+     *   where: {
+     *     // ... filter to delete one Message
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends MessageDeleteArgs>(
+      args: SelectSubset<T, MessageDeleteArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Update one Message.
+     * @param {MessageUpdateArgs} args - Arguments to update one Message.
+     * @example
+     * // Update one Message
+     * const message = await prisma.message.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends MessageUpdateArgs>(
+      args: SelectSubset<T, MessageUpdateArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessageDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.message.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends MessageDeleteManyArgs>(
+      args?: SelectSubset<T, MessageDeleteManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends MessageUpdateManyArgs>(
+      args: SelectSubset<T, MessageUpdateManyArgs>
+    ): PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Message.
+     * @param {MessageUpsertArgs} args - Arguments to update or create a Message.
+     * @example
+     * // Update or create a Message
+     * const message = await prisma.message.upsert({
+     *   create: {
+     *     // ... data to create a Message
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Message we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends MessageUpsertArgs>(
+      args: SelectSubset<T, MessageUpsertArgs>
+    ): Prisma__MessageClient<MessageGetPayload<T>>
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.message.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCountArgs>(
+      args?: Subset<T, MessageCountArgs>,
+    ): PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAggregateArgs>(args: Subset<T, MessageAggregateArgs>): PrismaPromise<GetMessageAggregateType<T>>
+
+    /**
+     * Group by Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageGroupByArgs['orderBy'] }
+        : { orderBy?: MessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageGroupByPayload<T> : PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Message.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__MessageClient<T, Null = never> implements PrismaPromise<T> {
+    [prisma]: true;
+    private readonly _dmmf;
+    private readonly _fetcher;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    constructor(_dmmf: runtime.DMMFClass, _fetcher: PrismaClientFetcher, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+    readonly [Symbol.toStringTag]: 'PrismaClientPromise';
+
+    author<T extends UserArgs= {}>(args?: Subset<T, UserArgs>): Prisma__UserClient<UserGetPayload<T> | Null>;
+
+    project<T extends ProjectArgs= {}>(args?: Subset<T, ProjectArgs>): Prisma__ProjectClient<ProjectGetPayload<T> | Null>;
+
+    community<T extends CommunityArgs= {}>(args?: Subset<T, CommunityArgs>): Prisma__CommunityClient<CommunityGetPayload<T> | Null>;
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * Message base type for findUnique actions
+   */
+  export type MessageFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter, which Message to fetch.
+     * 
+    **/
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message: findUnique
+   */
+  export interface MessageFindUniqueArgs extends MessageFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Message findUniqueOrThrow
+   */
+  export type MessageFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter, which Message to fetch.
+     * 
+    **/
+    where: MessageWhereUniqueInput
+  }
+
+
+  /**
+   * Message base type for findFirst actions
+   */
+  export type MessageFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter, which Message to fetch.
+     * 
+    **/
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<MessageOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     * 
+    **/
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     * 
+    **/
+    distinct?: Enumerable<MessageScalarFieldEnum>
+  }
+
+  /**
+   * Message: findFirst
+   */
+  export interface MessageFindFirstArgs extends MessageFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * Message findFirstOrThrow
+   */
+  export type MessageFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter, which Message to fetch.
+     * 
+    **/
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<MessageOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     * 
+    **/
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     * 
+    **/
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     * 
+    **/
+    distinct?: Enumerable<MessageScalarFieldEnum>
+  }
+
+
+  /**
+   * Message findMany
+   */
+  export type MessageFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter, which Messages to fetch.
+     * 
+    **/
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     * 
+    **/
+    orderBy?: Enumerable<MessageOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     * 
+    **/
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     * 
+    **/
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     * 
+    **/
+    skip?: number
+    distinct?: Enumerable<MessageScalarFieldEnum>
+  }
+
+
+  /**
+   * Message create
+   */
+  export type MessageCreateArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * The data needed to create a Message.
+     * 
+    **/
+    data: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+  }
+
+
+  /**
+   * Message createMany
+   */
+  export type MessageCreateManyArgs = {
+    /**
+     * The data used to create many Messages.
+     * 
+    **/
+    data: Enumerable<MessageCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * Message update
+   */
+  export type MessageUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * The data needed to update a Message.
+     * 
+    **/
+    data: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+    /**
+     * Choose, which Message to update.
+     * 
+    **/
+    where: MessageWhereUniqueInput
+  }
+
+
+  /**
+   * Message updateMany
+   */
+  export type MessageUpdateManyArgs = {
+    /**
+     * The data used to update Messages.
+     * 
+    **/
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     * 
+    **/
+    where?: MessageWhereInput
+  }
+
+
+  /**
+   * Message upsert
+   */
+  export type MessageUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * The filter to search for the Message to update in case it exists.
+     * 
+    **/
+    where: MessageWhereUniqueInput
+    /**
+     * In case the Message found by the `where` argument doesn't exist, create a new Message with this data.
+     * 
+    **/
+    create: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+    /**
+     * In case the Message was found with the provided `where` argument, update it with this data.
+     * 
+    **/
+    update: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+  }
+
+
+  /**
+   * Message delete
+   */
+  export type MessageDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
+    /**
+     * Filter which Message to delete.
+     * 
+    **/
+    where: MessageWhereUniqueInput
+  }
+
+
+  /**
+   * Message deleteMany
+   */
+  export type MessageDeleteManyArgs = {
+    /**
+     * Filter which Messages to delete
+     * 
+    **/
+    where?: MessageWhereInput
+  }
+
+
+  /**
+   * Message without action
+   */
+  export type MessageArgs = {
+    /**
+     * Select specific fields to fetch from the Message
+     * 
+    **/
+    select?: MessageSelect | null
+    /**
+     * Choose, which related nodes to fetch as well.
+     * 
+    **/
+    include?: MessageInclude | null
   }
 
 
@@ -7575,6 +9153,21 @@ export namespace Prisma {
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
+  export const MessageScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    replyID: 'replyID',
+    edited_at: 'edited_at',
+    created_at: 'created_at',
+    projectId: 'projectId',
+    communityName: 'communityName',
+    username: 'username',
+    hasReplies: 'hasReplies'
+  };
+
+  export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
   export const ProjectScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -7583,7 +9176,8 @@ export namespace Prisma {
     created_at: 'created_at',
     isPrivate: 'isPrivate',
     image: 'image',
-    community_name: 'community_name'
+    communityName: 'communityName',
+    tags: 'tags'
   };
 
   export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
@@ -7616,6 +9210,7 @@ export namespace Prisma {
 
 
   export const TaskScalarFieldEnum: {
+    id: 'id',
     name: 'name',
     description: 'description',
     prerequisites: 'prerequisites',
@@ -7677,6 +9272,7 @@ export namespace Prisma {
     password?: StringFilter | string
     token?: StringFilter | string
     task_submissions?: TaskSubmissionListRelationFilter
+    Message?: MessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7688,6 +9284,7 @@ export namespace Prisma {
     password?: SortOrder
     token?: SortOrder
     task_submissions?: TaskSubmissionOrderByRelationAggregateInput
+    Message?: MessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = {
@@ -7723,18 +9320,20 @@ export namespace Prisma {
     NOT?: Enumerable<CommunityWhereInput>
     name?: StringFilter | string
     description?: StringFilter | string
-    subscribers?: UserListRelationFilter
     owner?: StringFilter | string
+    subscribers?: UserListRelationFilter
     projects?: ProjectListRelationFilter
+    messages?: MessageListRelationFilter
     created_at?: DateTimeFilter | Date | string
   }
 
   export type CommunityOrderByWithRelationInput = {
     name?: SortOrder
     description?: SortOrder
-    subscribers?: UserOrderByRelationAggregateInput
     owner?: SortOrder
+    subscribers?: UserOrderByRelationAggregateInput
     projects?: ProjectOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
     created_at?: SortOrder
   }
 
@@ -7771,12 +9370,14 @@ export namespace Prisma {
     description?: StringFilter | string
     owner?: StringFilter | string
     contributors?: UserListRelationFilter
-    community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
     tasks?: TaskListRelationFilter
     created_at?: DateTimeFilter | Date | string
     isPrivate?: BoolFilter | boolean
     image?: StringFilter | string
-    community_name?: StringNullableFilter | string | null
+    community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
+    communityName?: StringNullableFilter | string | null
+    tags?: StringFilter | string
+    messages?: MessageListRelationFilter
   }
 
   export type ProjectOrderByWithRelationInput = {
@@ -7785,12 +9386,14 @@ export namespace Prisma {
     description?: SortOrder
     owner?: SortOrder
     contributors?: UserOrderByRelationAggregateInput
-    community?: CommunityOrderByWithRelationInput
     tasks?: TaskOrderByRelationAggregateInput
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    community?: CommunityOrderByWithRelationInput
+    communityName?: SortOrder
+    tags?: SortOrder
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type ProjectWhereUniqueInput = {
@@ -7805,7 +9408,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
     _count?: ProjectCountOrderByAggregateInput
     _avg?: ProjectAvgOrderByAggregateInput
     _max?: ProjectMaxOrderByAggregateInput
@@ -7824,13 +9428,15 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter | Date | string
     isPrivate?: BoolWithAggregatesFilter | boolean
     image?: StringWithAggregatesFilter | string
-    community_name?: StringNullableWithAggregatesFilter | string | null
+    communityName?: StringNullableWithAggregatesFilter | string | null
+    tags?: StringWithAggregatesFilter | string
   }
 
   export type TaskWhereInput = {
     AND?: Enumerable<TaskWhereInput>
     OR?: Enumerable<TaskWhereInput>
     NOT?: Enumerable<TaskWhereInput>
+    id?: IntFilter | number
     project?: XOR<ProjectRelationFilter, ProjectWhereInput>
     name?: StringFilter | string
     description?: StringFilter | string
@@ -7841,6 +9447,7 @@ export namespace Prisma {
   }
 
   export type TaskOrderByWithRelationInput = {
+    id?: SortOrder
     project?: ProjectOrderByWithRelationInput
     name?: SortOrder
     description?: SortOrder
@@ -7851,10 +9458,11 @@ export namespace Prisma {
   }
 
   export type TaskWhereUniqueInput = {
-    name?: string
+    id?: number
   }
 
   export type TaskOrderByWithAggregationInput = {
+    id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     prerequisites?: SortOrder
@@ -7872,6 +9480,7 @@ export namespace Prisma {
     AND?: Enumerable<TaskScalarWhereWithAggregatesInput>
     OR?: Enumerable<TaskScalarWhereWithAggregatesInput>
     NOT?: Enumerable<TaskScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
     name?: StringWithAggregatesFilter | string
     description?: StringWithAggregatesFilter | string
     prerequisites?: JsonWithAggregatesFilter
@@ -8005,6 +9614,75 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter | string
   }
 
+  export type MessageWhereInput = {
+    AND?: Enumerable<MessageWhereInput>
+    OR?: Enumerable<MessageWhereInput>
+    NOT?: Enumerable<MessageWhereInput>
+    id?: IntFilter | number
+    content?: StringFilter | string
+    author?: XOR<UserRelationFilter, UserWhereInput>
+    project?: XOR<ProjectRelationFilter, ProjectWhereInput> | null
+    community?: XOR<CommunityRelationFilter, CommunityWhereInput> | null
+    replyID?: IntNullableFilter | number | null
+    edited_at?: DateTimeFilter | Date | string
+    created_at?: DateTimeFilter | Date | string
+    projectId?: IntNullableFilter | number | null
+    communityName?: StringNullableFilter | string | null
+    username?: StringFilter | string
+    hasReplies?: BoolFilter | boolean
+  }
+
+  export type MessageOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    author?: UserOrderByWithRelationInput
+    project?: ProjectOrderByWithRelationInput
+    community?: CommunityOrderByWithRelationInput
+    replyID?: SortOrder
+    edited_at?: SortOrder
+    created_at?: SortOrder
+    projectId?: SortOrder
+    communityName?: SortOrder
+    username?: SortOrder
+    hasReplies?: SortOrder
+  }
+
+  export type MessageWhereUniqueInput = {
+    id?: number
+  }
+
+  export type MessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    replyID?: SortOrder
+    edited_at?: SortOrder
+    created_at?: SortOrder
+    projectId?: SortOrder
+    communityName?: SortOrder
+    username?: SortOrder
+    hasReplies?: SortOrder
+    _count?: MessageCountOrderByAggregateInput
+    _avg?: MessageAvgOrderByAggregateInput
+    _max?: MessageMaxOrderByAggregateInput
+    _min?: MessageMinOrderByAggregateInput
+    _sum?: MessageSumOrderByAggregateInput
+  }
+
+  export type MessageScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<MessageScalarWhereWithAggregatesInput>
+    OR?: Enumerable<MessageScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<MessageScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    content?: StringWithAggregatesFilter | string
+    replyID?: IntNullableWithAggregatesFilter | number | null
+    edited_at?: DateTimeWithAggregatesFilter | Date | string
+    created_at?: DateTimeWithAggregatesFilter | Date | string
+    projectId?: IntNullableWithAggregatesFilter | number | null
+    communityName?: StringNullableWithAggregatesFilter | string | null
+    username?: StringWithAggregatesFilter | string
+    hasReplies?: BoolWithAggregatesFilter | boolean
+  }
+
   export type UserCreateInput = {
     name: string
     created_at?: Date | string
@@ -8014,6 +9692,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8025,6 +9704,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -8036,6 +9716,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8047,6 +9728,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8076,36 +9758,40 @@ export namespace Prisma {
   export type CommunityCreateInput = {
     name: string
     description: string
-    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
     owner: string
+    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
     projects?: ProjectCreateNestedManyWithoutCommunityInput
+    messages?: MessageCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
 
   export type CommunityUncheckedCreateInput = {
     name: string
     description: string
-    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
     owner: string
+    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
     projects?: ProjectUncheckedCreateNestedManyWithoutCommunityInput
+    messages?: MessageUncheckedCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
 
   export type CommunityUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
     owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
     projects?: ProjectUpdateManyWithoutCommunityNestedInput
+    messages?: MessageUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommunityUncheckedUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
     owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
     projects?: ProjectUncheckedUpdateManyWithoutCommunityNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8135,11 +9821,13 @@ export namespace Prisma {
     description: string
     owner: string
     contributors?: UserCreateNestedManyWithoutProjectsInput
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     tasks?: TaskCreateNestedManyWithoutProjectInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
+    messages?: MessageCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateInput = {
@@ -8152,7 +9840,9 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
+    messages?: MessageUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUpdateInput = {
@@ -8160,11 +9850,13 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     contributors?: UserUpdateManyWithoutProjectsNestedInput
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     tasks?: TaskUpdateManyWithoutProjectNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateInput = {
@@ -8177,7 +9869,9 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectCreateManyInput = {
@@ -8188,7 +9882,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
   }
 
   export type ProjectUpdateManyMutationInput = {
@@ -8198,6 +9893,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUncheckedUpdateManyInput = {
@@ -8208,7 +9904,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateInput = {
@@ -8221,6 +9918,7 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedCreateInput = {
+    id?: number
     name: string
     description: string
     prerequisites: JsonNullValueInput | InputJsonValue
@@ -8239,6 +9937,7 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     prerequisites?: JsonNullValueInput | InputJsonValue
@@ -8248,6 +9947,7 @@ export namespace Prisma {
   }
 
   export type TaskCreateManyInput = {
+    id?: number
     name: string
     description: string
     prerequisites: JsonNullValueInput | InputJsonValue
@@ -8265,6 +9965,7 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     prerequisites?: JsonNullValueInput | InputJsonValue
@@ -8419,6 +10120,84 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
   }
 
+  export type MessageCreateInput = {
+    content: string
+    author: UserCreateNestedOneWithoutMessageInput
+    project?: ProjectCreateNestedOneWithoutMessagesInput
+    community?: CommunityCreateNestedOneWithoutMessagesInput
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    hasReplies: boolean
+  }
+
+  export type MessageUncheckedCreateInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
+    username: string
+    hasReplies: boolean
+  }
+
+  export type MessageUpdateInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    project?: ProjectUpdateOneWithoutMessagesNestedInput
+    community?: CommunityUpdateOneWithoutMessagesNestedInput
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageCreateManyInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
+    username: string
+    hasReplies: boolean
+  }
+
+  export type MessageUpdateManyMutationInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type StringFilter = {
     equals?: string
     in?: Enumerable<string>
@@ -8462,6 +10241,12 @@ export namespace Prisma {
     none?: TaskSubmissionWhereInput
   }
 
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
   export type CommunityOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -8471,6 +10256,10 @@ export namespace Prisma {
   }
 
   export type TaskSubmissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MessageOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8571,11 +10360,6 @@ export namespace Prisma {
     not?: NestedIntFilter | number
   }
 
-  export type CommunityRelationFilter = {
-    is?: CommunityWhereInput | null
-    isNot?: CommunityWhereInput | null
-  }
-
   export type TaskListRelationFilter = {
     every?: TaskWhereInput
     some?: TaskWhereInput
@@ -8585,6 +10369,11 @@ export namespace Prisma {
   export type BoolFilter = {
     equals?: boolean
     not?: NestedBoolFilter | boolean
+  }
+
+  export type CommunityRelationFilter = {
+    is?: CommunityWhereInput | null
+    isNot?: CommunityWhereInput | null
   }
 
   export type StringNullableFilter = {
@@ -8613,7 +10402,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectAvgOrderByAggregateInput = {
@@ -8628,7 +10418,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectMinOrderByAggregateInput = {
@@ -8639,7 +10430,8 @@ export namespace Prisma {
     created_at?: SortOrder
     isPrivate?: SortOrder
     image?: SortOrder
-    community_name?: SortOrder
+    communityName?: SortOrder
+    tags?: SortOrder
   }
 
   export type ProjectSumOrderByAggregateInput = {
@@ -8715,6 +10507,7 @@ export namespace Prisma {
   }
 
   export type TaskCountOrderByAggregateInput = {
+    id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     prerequisites?: SortOrder
@@ -8724,10 +10517,12 @@ export namespace Prisma {
   }
 
   export type TaskAvgOrderByAggregateInput = {
+    id?: SortOrder
     projectId?: SortOrder
   }
 
   export type TaskMaxOrderByAggregateInput = {
+    id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     created_at?: SortOrder
@@ -8735,6 +10530,7 @@ export namespace Prisma {
   }
 
   export type TaskMinOrderByAggregateInput = {
+    id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     created_at?: SortOrder
@@ -8742,6 +10538,7 @@ export namespace Prisma {
   }
 
   export type TaskSumOrderByAggregateInput = {
+    id?: SortOrder
     projectId?: SortOrder
   }
   export type JsonWithAggregatesFilter = 
@@ -8834,6 +10631,81 @@ export namespace Prisma {
     name?: SortOrder
   }
 
+  export type IntNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableFilter | number | null
+  }
+
+  export type MessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    replyID?: SortOrder
+    edited_at?: SortOrder
+    created_at?: SortOrder
+    projectId?: SortOrder
+    communityName?: SortOrder
+    username?: SortOrder
+    hasReplies?: SortOrder
+  }
+
+  export type MessageAvgOrderByAggregateInput = {
+    id?: SortOrder
+    replyID?: SortOrder
+    projectId?: SortOrder
+  }
+
+  export type MessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    replyID?: SortOrder
+    edited_at?: SortOrder
+    created_at?: SortOrder
+    projectId?: SortOrder
+    communityName?: SortOrder
+    username?: SortOrder
+    hasReplies?: SortOrder
+  }
+
+  export type MessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    replyID?: SortOrder
+    edited_at?: SortOrder
+    created_at?: SortOrder
+    projectId?: SortOrder
+    communityName?: SortOrder
+    username?: SortOrder
+    hasReplies?: SortOrder
+  }
+
+  export type MessageSumOrderByAggregateInput = {
+    id?: SortOrder
+    replyID?: SortOrder
+    projectId?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableWithAggregatesFilter | number | null
+    _count?: NestedIntNullableFilter
+    _avg?: NestedFloatNullableFilter
+    _sum?: NestedIntNullableFilter
+    _min?: NestedIntNullableFilter
+    _max?: NestedIntNullableFilter
+  }
+
   export type CommunityCreateNestedManyWithoutSubscribersInput = {
     create?: XOR<Enumerable<CommunityCreateWithoutSubscribersInput>, Enumerable<CommunityUncheckedCreateWithoutSubscribersInput>>
     connectOrCreate?: Enumerable<CommunityCreateOrConnectWithoutSubscribersInput>
@@ -8853,6 +10725,13 @@ export namespace Prisma {
     connect?: Enumerable<TaskSubmissionWhereUniqueInput>
   }
 
+  export type MessageCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
+  }
+
   export type CommunityUncheckedCreateNestedManyWithoutSubscribersInput = {
     create?: XOR<Enumerable<CommunityCreateWithoutSubscribersInput>, Enumerable<CommunityUncheckedCreateWithoutSubscribersInput>>
     connectOrCreate?: Enumerable<CommunityCreateOrConnectWithoutSubscribersInput>
@@ -8870,6 +10749,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<TaskSubmissionCreateOrConnectWithoutAuthorInput>
     createMany?: TaskSubmissionCreateManyAuthorInputEnvelope
     connect?: Enumerable<TaskSubmissionWhereUniqueInput>
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8920,6 +10806,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<TaskSubmissionScalarWhereInput>
   }
 
+  export type MessageUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type CommunityUncheckedUpdateManyWithoutSubscribersNestedInput = {
     create?: XOR<Enumerable<CommunityCreateWithoutSubscribersInput>, Enumerable<CommunityUncheckedCreateWithoutSubscribersInput>>
     connectOrCreate?: Enumerable<CommunityCreateOrConnectWithoutSubscribersInput>
@@ -8960,6 +10860,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<TaskSubmissionScalarWhereInput>
   }
 
+  export type MessageUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutAuthorInput>, Enumerable<MessageUncheckedCreateWithoutAuthorInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutAuthorInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutAuthorInput>
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutAuthorInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutAuthorInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type UserCreateNestedManyWithoutCommunitiesInput = {
     create?: XOR<Enumerable<UserCreateWithoutCommunitiesInput>, Enumerable<UserUncheckedCreateWithoutCommunitiesInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutCommunitiesInput>
@@ -8973,6 +10887,13 @@ export namespace Prisma {
     connect?: Enumerable<ProjectWhereUniqueInput>
   }
 
+  export type MessageCreateNestedManyWithoutCommunityInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutCommunityInput>, Enumerable<MessageUncheckedCreateWithoutCommunityInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutCommunityInput>
+    createMany?: MessageCreateManyCommunityInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
+  }
+
   export type UserUncheckedCreateNestedManyWithoutCommunitiesInput = {
     create?: XOR<Enumerable<UserCreateWithoutCommunitiesInput>, Enumerable<UserUncheckedCreateWithoutCommunitiesInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutCommunitiesInput>
@@ -8984,6 +10905,13 @@ export namespace Prisma {
     connectOrCreate?: Enumerable<ProjectCreateOrConnectWithoutCommunityInput>
     createMany?: ProjectCreateManyCommunityInputEnvelope
     connect?: Enumerable<ProjectWhereUniqueInput>
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutCommunityInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutCommunityInput>, Enumerable<MessageUncheckedCreateWithoutCommunityInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutCommunityInput>
+    createMany?: MessageCreateManyCommunityInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
   }
 
   export type UserUpdateManyWithoutCommunitiesNestedInput = {
@@ -9013,6 +10941,20 @@ export namespace Prisma {
     deleteMany?: Enumerable<ProjectScalarWhereInput>
   }
 
+  export type MessageUpdateManyWithoutCommunityNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutCommunityInput>, Enumerable<MessageUncheckedCreateWithoutCommunityInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutCommunityInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutCommunityInput>
+    createMany?: MessageCreateManyCommunityInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutCommunityInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutCommunityInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type UserUncheckedUpdateManyWithoutCommunitiesNestedInput = {
     create?: XOR<Enumerable<UserCreateWithoutCommunitiesInput>, Enumerable<UserUncheckedCreateWithoutCommunitiesInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutCommunitiesInput>
@@ -9040,10 +10982,31 @@ export namespace Prisma {
     deleteMany?: Enumerable<ProjectScalarWhereInput>
   }
 
+  export type MessageUncheckedUpdateManyWithoutCommunityNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutCommunityInput>, Enumerable<MessageUncheckedCreateWithoutCommunityInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutCommunityInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutCommunityInput>
+    createMany?: MessageCreateManyCommunityInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutCommunityInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutCommunityInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type UserCreateNestedManyWithoutProjectsInput = {
     create?: XOR<Enumerable<UserCreateWithoutProjectsInput>, Enumerable<UserUncheckedCreateWithoutProjectsInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutProjectsInput>
     connect?: Enumerable<UserWhereUniqueInput>
+  }
+
+  export type TaskCreateNestedManyWithoutProjectInput = {
+    create?: XOR<Enumerable<TaskCreateWithoutProjectInput>, Enumerable<TaskUncheckedCreateWithoutProjectInput>>
+    connectOrCreate?: Enumerable<TaskCreateOrConnectWithoutProjectInput>
+    createMany?: TaskCreateManyProjectInputEnvelope
+    connect?: Enumerable<TaskWhereUniqueInput>
   }
 
   export type CommunityCreateNestedOneWithoutProjectsInput = {
@@ -9052,11 +11015,11 @@ export namespace Prisma {
     connect?: CommunityWhereUniqueInput
   }
 
-  export type TaskCreateNestedManyWithoutProjectInput = {
-    create?: XOR<Enumerable<TaskCreateWithoutProjectInput>, Enumerable<TaskUncheckedCreateWithoutProjectInput>>
-    connectOrCreate?: Enumerable<TaskCreateOrConnectWithoutProjectInput>
-    createMany?: TaskCreateManyProjectInputEnvelope
-    connect?: Enumerable<TaskWhereUniqueInput>
+  export type MessageCreateNestedManyWithoutProjectInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutProjectInput>, Enumerable<MessageUncheckedCreateWithoutProjectInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutProjectInput>
+    createMany?: MessageCreateManyProjectInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
   }
 
   export type UserUncheckedCreateNestedManyWithoutProjectsInput = {
@@ -9072,6 +11035,13 @@ export namespace Prisma {
     connect?: Enumerable<TaskWhereUniqueInput>
   }
 
+  export type MessageUncheckedCreateNestedManyWithoutProjectInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutProjectInput>, Enumerable<MessageUncheckedCreateWithoutProjectInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutProjectInput>
+    createMany?: MessageCreateManyProjectInputEnvelope
+    connect?: Enumerable<MessageWhereUniqueInput>
+  }
+
   export type UserUpdateManyWithoutProjectsNestedInput = {
     create?: XOR<Enumerable<UserCreateWithoutProjectsInput>, Enumerable<UserUncheckedCreateWithoutProjectsInput>>
     connectOrCreate?: Enumerable<UserCreateOrConnectWithoutProjectsInput>
@@ -9083,16 +11053,6 @@ export namespace Prisma {
     update?: Enumerable<UserUpdateWithWhereUniqueWithoutProjectsInput>
     updateMany?: Enumerable<UserUpdateManyWithWhereWithoutProjectsInput>
     deleteMany?: Enumerable<UserScalarWhereInput>
-  }
-
-  export type CommunityUpdateOneWithoutProjectsNestedInput = {
-    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
-    upsert?: CommunityUpsertWithoutProjectsInput
-    disconnect?: boolean
-    delete?: boolean
-    connect?: CommunityWhereUniqueInput
-    update?: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
   }
 
   export type TaskUpdateManyWithoutProjectNestedInput = {
@@ -9111,6 +11071,30 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type CommunityUpdateOneWithoutProjectsNestedInput = {
+    create?: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutProjectsInput
+    upsert?: CommunityUpsertWithoutProjectsInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: CommunityWhereUniqueInput
+    update?: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
+  }
+
+  export type MessageUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutProjectInput>, Enumerable<MessageUncheckedCreateWithoutProjectInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutProjectInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutProjectInput>
+    createMany?: MessageCreateManyProjectInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutProjectInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutProjectInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -9152,6 +11136,20 @@ export namespace Prisma {
     set?: string | null
   }
 
+  export type MessageUncheckedUpdateManyWithoutProjectNestedInput = {
+    create?: XOR<Enumerable<MessageCreateWithoutProjectInput>, Enumerable<MessageUncheckedCreateWithoutProjectInput>>
+    connectOrCreate?: Enumerable<MessageCreateOrConnectWithoutProjectInput>
+    upsert?: Enumerable<MessageUpsertWithWhereUniqueWithoutProjectInput>
+    createMany?: MessageCreateManyProjectInputEnvelope
+    set?: Enumerable<MessageWhereUniqueInput>
+    disconnect?: Enumerable<MessageWhereUniqueInput>
+    delete?: Enumerable<MessageWhereUniqueInput>
+    connect?: Enumerable<MessageWhereUniqueInput>
+    update?: Enumerable<MessageUpdateWithWhereUniqueWithoutProjectInput>
+    updateMany?: Enumerable<MessageUpdateManyWithWhereWithoutProjectInput>
+    deleteMany?: Enumerable<MessageScalarWhereInput>
+  }
+
   export type ProjectCreateNestedOneWithoutTasksInput = {
     create?: XOR<ProjectCreateWithoutTasksInput, ProjectUncheckedCreateWithoutTasksInput>
     connectOrCreate?: ProjectCreateOrConnectWithoutTasksInput
@@ -9178,6 +11176,60 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutTask_submissionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<UserUpdateWithoutTask_submissionsInput, UserUncheckedUpdateWithoutTask_submissionsInput>
+  }
+
+  export type UserCreateNestedOneWithoutMessageInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type ProjectCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<ProjectCreateWithoutMessagesInput, ProjectUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutMessagesInput
+    connect?: ProjectWhereUniqueInput
+  }
+
+  export type CommunityCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutMessagesInput
+    connect?: CommunityWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutMessageNestedInput = {
+    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+    upsert?: UserUpsertWithoutMessageInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+  }
+
+  export type ProjectUpdateOneWithoutMessagesNestedInput = {
+    create?: XOR<ProjectCreateWithoutMessagesInput, ProjectUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: ProjectCreateOrConnectWithoutMessagesInput
+    upsert?: ProjectUpsertWithoutMessagesInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: ProjectWhereUniqueInput
+    update?: XOR<ProjectUpdateWithoutMessagesInput, ProjectUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type CommunityUpdateOneWithoutMessagesNestedInput = {
+    create?: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: CommunityCreateOrConnectWithoutMessagesInput
+    upsert?: CommunityUpsertWithoutMessagesInput
+    disconnect?: boolean
+    delete?: boolean
+    connect?: CommunityWhereUniqueInput
+    update?: XOR<CommunityUpdateWithoutMessagesInput, CommunityUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter = {
@@ -9351,11 +11403,39 @@ export namespace Prisma {
     not?: InputJsonValue | JsonNullValueFilter
   }
 
+  export type NestedIntNullableWithAggregatesFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedIntNullableWithAggregatesFilter | number | null
+    _count?: NestedIntNullableFilter
+    _avg?: NestedFloatNullableFilter
+    _sum?: NestedIntNullableFilter
+    _min?: NestedIntNullableFilter
+    _max?: NestedIntNullableFilter
+  }
+
+  export type NestedFloatNullableFilter = {
+    equals?: number | null
+    in?: Enumerable<number> | null
+    notIn?: Enumerable<number> | null
+    lt?: number
+    lte?: number
+    gt?: number
+    gte?: number
+    not?: NestedFloatNullableFilter | number | null
+  }
+
   export type CommunityCreateWithoutSubscribersInput = {
     name: string
     description: string
     owner: string
     projects?: ProjectCreateNestedManyWithoutCommunityInput
+    messages?: MessageCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
 
@@ -9364,6 +11444,7 @@ export namespace Prisma {
     description: string
     owner: string
     projects?: ProjectUncheckedCreateNestedManyWithoutCommunityInput
+    messages?: MessageUncheckedCreateNestedManyWithoutCommunityInput
     created_at?: Date | string
   }
 
@@ -9376,11 +11457,13 @@ export namespace Prisma {
     name: string
     description: string
     owner: string
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     tasks?: TaskCreateNestedManyWithoutProjectInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
+    messages?: MessageCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutContributorsInput = {
@@ -9392,7 +11475,9 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
+    messages?: MessageUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutContributorsInput = {
@@ -9423,6 +11508,37 @@ export namespace Prisma {
 
   export type TaskSubmissionCreateManyAuthorInputEnvelope = {
     data: Enumerable<TaskSubmissionCreateManyAuthorInput>
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutAuthorInput = {
+    content: string
+    project?: ProjectCreateNestedOneWithoutMessagesInput
+    community?: CommunityCreateNestedOneWithoutMessagesInput
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    hasReplies: boolean
+  }
+
+  export type MessageUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
+    hasReplies: boolean
+  }
+
+  export type MessageCreateOrConnectWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageCreateManyAuthorInputEnvelope = {
+    data: Enumerable<MessageCreateManyAuthorInput>
     skipDuplicates?: boolean
   }
 
@@ -9479,7 +11595,8 @@ export namespace Prisma {
     created_at?: DateTimeFilter | Date | string
     isPrivate?: BoolFilter | boolean
     image?: StringFilter | string
-    community_name?: StringNullableFilter | string | null
+    communityName?: StringNullableFilter | string | null
+    tags?: StringFilter | string
   }
 
   export type TaskSubmissionUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -9510,6 +11627,37 @@ export namespace Prisma {
     userName?: StringFilter | string
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutAuthorInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessageInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: Enumerable<MessageScalarWhereInput>
+    OR?: Enumerable<MessageScalarWhereInput>
+    NOT?: Enumerable<MessageScalarWhereInput>
+    id?: IntFilter | number
+    content?: StringFilter | string
+    replyID?: IntNullableFilter | number | null
+    edited_at?: DateTimeFilter | Date | string
+    created_at?: DateTimeFilter | Date | string
+    projectId?: IntNullableFilter | number | null
+    communityName?: StringNullableFilter | string | null
+    username?: StringFilter | string
+    hasReplies?: BoolFilter | boolean
+  }
+
   export type UserCreateWithoutCommunitiesInput = {
     name: string
     created_at?: Date | string
@@ -9518,6 +11666,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -9528,6 +11677,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -9544,6 +11694,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
+    messages?: MessageCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutCommunityInput = {
@@ -9556,6 +11708,8 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
+    messages?: MessageUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutCommunityInput = {
@@ -9565,6 +11719,37 @@ export namespace Prisma {
 
   export type ProjectCreateManyCommunityInputEnvelope = {
     data: Enumerable<ProjectCreateManyCommunityInput>
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutCommunityInput = {
+    content: string
+    author: UserCreateNestedOneWithoutMessageInput
+    project?: ProjectCreateNestedOneWithoutMessagesInput
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    hasReplies: boolean
+  }
+
+  export type MessageUncheckedCreateWithoutCommunityInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    username: string
+    hasReplies: boolean
+  }
+
+  export type MessageCreateOrConnectWithoutCommunityInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutCommunityInput, MessageUncheckedCreateWithoutCommunityInput>
+  }
+
+  export type MessageCreateManyCommunityInputEnvelope = {
+    data: Enumerable<MessageCreateManyCommunityInput>
     skipDuplicates?: boolean
   }
 
@@ -9611,6 +11796,22 @@ export namespace Prisma {
     data: XOR<ProjectUpdateManyMutationInput, ProjectUncheckedUpdateManyWithoutProjectsInput>
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutCommunityInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutCommunityInput, MessageUncheckedUpdateWithoutCommunityInput>
+    create: XOR<MessageCreateWithoutCommunityInput, MessageUncheckedCreateWithoutCommunityInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutCommunityInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutCommunityInput, MessageUncheckedUpdateWithoutCommunityInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutCommunityInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessagesInput>
+  }
+
   export type UserCreateWithoutProjectsInput = {
     name: string
     created_at?: Date | string
@@ -9619,6 +11820,7 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutProjectsInput = {
@@ -9629,32 +11831,12 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutProjectsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutProjectsInput, UserUncheckedCreateWithoutProjectsInput>
-  }
-
-  export type CommunityCreateWithoutProjectsInput = {
-    name: string
-    description: string
-    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
-    owner: string
-    created_at?: Date | string
-  }
-
-  export type CommunityUncheckedCreateWithoutProjectsInput = {
-    name: string
-    description: string
-    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
-    owner: string
-    created_at?: Date | string
-  }
-
-  export type CommunityCreateOrConnectWithoutProjectsInput = {
-    where: CommunityWhereUniqueInput
-    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
   }
 
   export type TaskCreateWithoutProjectInput = {
@@ -9666,6 +11848,7 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedCreateWithoutProjectInput = {
+    id?: number
     name: string
     description: string
     prerequisites: JsonNullValueInput | InputJsonValue
@@ -9683,6 +11866,60 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CommunityCreateWithoutProjectsInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
+    messages?: MessageCreateNestedManyWithoutCommunityInput
+    created_at?: Date | string
+  }
+
+  export type CommunityUncheckedCreateWithoutProjectsInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
+    messages?: MessageUncheckedCreateNestedManyWithoutCommunityInput
+    created_at?: Date | string
+  }
+
+  export type CommunityCreateOrConnectWithoutProjectsInput = {
+    where: CommunityWhereUniqueInput
+    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type MessageCreateWithoutProjectInput = {
+    content: string
+    author: UserCreateNestedOneWithoutMessageInput
+    community?: CommunityCreateNestedOneWithoutMessagesInput
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    hasReplies: boolean
+  }
+
+  export type MessageUncheckedCreateWithoutProjectInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    communityName?: string | null
+    username: string
+    hasReplies: boolean
+  }
+
+  export type MessageCreateOrConnectWithoutProjectInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutProjectInput, MessageUncheckedCreateWithoutProjectInput>
+  }
+
+  export type MessageCreateManyProjectInputEnvelope = {
+    data: Enumerable<MessageCreateManyProjectInput>
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutProjectsInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutProjectsInput, UserUncheckedUpdateWithoutProjectsInput>
@@ -9697,27 +11934,6 @@ export namespace Prisma {
   export type UserUpdateManyWithWhereWithoutProjectsInput = {
     where: UserScalarWhereInput
     data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutContributorsInput>
-  }
-
-  export type CommunityUpsertWithoutProjectsInput = {
-    update: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
-    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
-  }
-
-  export type CommunityUpdateWithoutProjectsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
-    owner?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CommunityUncheckedUpdateWithoutProjectsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
-    owner?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskUpsertWithWhereUniqueWithoutProjectInput = {
@@ -9740,6 +11956,7 @@ export namespace Prisma {
     AND?: Enumerable<TaskScalarWhereInput>
     OR?: Enumerable<TaskScalarWhereInput>
     NOT?: Enumerable<TaskScalarWhereInput>
+    id?: IntFilter | number
     name?: StringFilter | string
     description?: StringFilter | string
     prerequisites?: JsonFilter
@@ -9748,15 +11965,56 @@ export namespace Prisma {
     projectId?: IntFilter | number
   }
 
+  export type CommunityUpsertWithoutProjectsInput = {
+    update: XOR<CommunityUpdateWithoutProjectsInput, CommunityUncheckedUpdateWithoutProjectsInput>
+    create: XOR<CommunityCreateWithoutProjectsInput, CommunityUncheckedCreateWithoutProjectsInput>
+  }
+
+  export type CommunityUpdateWithoutProjectsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
+    messages?: MessageUpdateManyWithoutCommunityNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommunityUncheckedUpdateWithoutProjectsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutCommunityNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUpsertWithWhereUniqueWithoutProjectInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutProjectInput, MessageUncheckedUpdateWithoutProjectInput>
+    create: XOR<MessageCreateWithoutProjectInput, MessageUncheckedCreateWithoutProjectInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutProjectInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutProjectInput, MessageUncheckedUpdateWithoutProjectInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutProjectInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessagesInput>
+  }
+
   export type ProjectCreateWithoutTasksInput = {
     name: string
     description: string
     owner: string
     contributors?: UserCreateNestedManyWithoutProjectsInput
-    community?: CommunityCreateNestedOneWithoutProjectsInput
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
+    messages?: MessageCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectUncheckedCreateWithoutTasksInput = {
@@ -9768,7 +12026,9 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
-    community_name?: string | null
+    communityName?: string | null
+    tags?: string
+    messages?: MessageUncheckedCreateNestedManyWithoutProjectInput
   }
 
   export type ProjectCreateOrConnectWithoutTasksInput = {
@@ -9786,10 +12046,12 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     contributors?: UserUpdateManyWithoutProjectsNestedInput
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutTasksInput = {
@@ -9801,7 +12063,9 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type UserCreateWithoutTask_submissionsInput = {
@@ -9812,6 +12076,7 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutContributorsInput
     password: string
     token: string
+    Message?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutTask_submissionsInput = {
@@ -9822,6 +12087,7 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutContributorsInput
     password: string
     token: string
+    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutTask_submissionsInput = {
@@ -9842,6 +12108,7 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTask_submissionsInput = {
@@ -9852,6 +12119,171 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserCreateWithoutMessageInput = {
+    name: string
+    created_at?: Date | string
+    image: string
+    communities?: CommunityCreateNestedManyWithoutSubscribersInput
+    projects?: ProjectCreateNestedManyWithoutContributorsInput
+    password: string
+    token: string
+    task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserUncheckedCreateWithoutMessageInput = {
+    name: string
+    created_at?: Date | string
+    image: string
+    communities?: CommunityUncheckedCreateNestedManyWithoutSubscribersInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutContributorsInput
+    password: string
+    token: string
+    task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+  }
+
+  export type UserCreateOrConnectWithoutMessageInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+  }
+
+  export type ProjectCreateWithoutMessagesInput = {
+    name: string
+    description: string
+    owner: string
+    contributors?: UserCreateNestedManyWithoutProjectsInput
+    tasks?: TaskCreateNestedManyWithoutProjectInput
+    created_at?: Date | string
+    isPrivate: boolean
+    image: string
+    community?: CommunityCreateNestedOneWithoutProjectsInput
+    tags?: string
+  }
+
+  export type ProjectUncheckedCreateWithoutMessagesInput = {
+    id?: number
+    name: string
+    description: string
+    owner: string
+    contributors?: UserUncheckedCreateNestedManyWithoutProjectsInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutProjectInput
+    created_at?: Date | string
+    isPrivate: boolean
+    image: string
+    communityName?: string | null
+    tags?: string
+  }
+
+  export type ProjectCreateOrConnectWithoutMessagesInput = {
+    where: ProjectWhereUniqueInput
+    create: XOR<ProjectCreateWithoutMessagesInput, ProjectUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type CommunityCreateWithoutMessagesInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserCreateNestedManyWithoutCommunitiesInput
+    projects?: ProjectCreateNestedManyWithoutCommunityInput
+    created_at?: Date | string
+  }
+
+  export type CommunityUncheckedCreateWithoutMessagesInput = {
+    name: string
+    description: string
+    owner: string
+    subscribers?: UserUncheckedCreateNestedManyWithoutCommunitiesInput
+    projects?: ProjectUncheckedCreateNestedManyWithoutCommunityInput
+    created_at?: Date | string
+  }
+
+  export type CommunityCreateOrConnectWithoutMessagesInput = {
+    where: CommunityWhereUniqueInput
+    create: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserUpsertWithoutMessageInput = {
+    update: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+  }
+
+  export type UserUpdateWithoutMessageInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: StringFieldUpdateOperationsInput | string
+    communities?: CommunityUpdateManyWithoutSubscribersNestedInput
+    projects?: ProjectUpdateManyWithoutContributorsNestedInput
+    password?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessageInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    image?: StringFieldUpdateOperationsInput | string
+    communities?: CommunityUncheckedUpdateManyWithoutSubscribersNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutContributorsNestedInput
+    password?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+  }
+
+  export type ProjectUpsertWithoutMessagesInput = {
+    update: XOR<ProjectUpdateWithoutMessagesInput, ProjectUncheckedUpdateWithoutMessagesInput>
+    create: XOR<ProjectCreateWithoutMessagesInput, ProjectUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type ProjectUpdateWithoutMessagesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    contributors?: UserUpdateManyWithoutProjectsNestedInput
+    tasks?: TaskUpdateManyWithoutProjectNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProjectUncheckedUpdateWithoutMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    contributors?: UserUncheckedUpdateManyWithoutProjectsNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutProjectNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPrivate?: BoolFieldUpdateOperationsInput | boolean
+    image?: StringFieldUpdateOperationsInput | string
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type CommunityUpsertWithoutMessagesInput = {
+    update: XOR<CommunityUpdateWithoutMessagesInput, CommunityUncheckedUpdateWithoutMessagesInput>
+    create: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type CommunityUpdateWithoutMessagesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUpdateManyWithoutCommunitiesNestedInput
+    projects?: ProjectUpdateManyWithoutCommunityNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommunityUncheckedUpdateWithoutMessagesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    owner?: StringFieldUpdateOperationsInput | string
+    subscribers?: UserUncheckedUpdateManyWithoutCommunitiesNestedInput
+    projects?: ProjectUncheckedUpdateManyWithoutCommunityNestedInput
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TaskSubmissionCreateManyAuthorInput = {
@@ -9862,11 +12294,23 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type MessageCreateManyAuthorInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    communityName?: string | null
+    hasReplies: boolean
+  }
+
   export type CommunityUpdateWithoutSubscribersInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     projects?: ProjectUpdateManyWithoutCommunityNestedInput
+    messages?: MessageUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9875,6 +12319,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
     projects?: ProjectUncheckedUpdateManyWithoutCommunityNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutCommunityNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -9889,11 +12334,13 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     owner?: StringFieldUpdateOperationsInput | string
-    community?: CommunityUpdateOneWithoutProjectsNestedInput
     tasks?: TaskUpdateManyWithoutProjectNestedInput
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    community?: CommunityUpdateOneWithoutProjectsNestedInput
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutContributorsInput = {
@@ -9905,7 +12352,9 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateManyWithoutProjectsInput = {
@@ -9916,7 +12365,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
-    community_name?: NullableStringFieldUpdateOperationsInput | string | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskSubmissionUpdateWithoutAuthorInput = {
@@ -9943,6 +12393,38 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MessageUpdateWithoutAuthorInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    project?: ProjectUpdateOneWithoutMessagesNestedInput
+    community?: CommunityUpdateOneWithoutMessagesNestedInput
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateManyWithoutMessageInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type ProjectCreateManyCommunityInput = {
     id?: number
     name: string
@@ -9951,6 +12433,18 @@ export namespace Prisma {
     created_at?: Date | string
     isPrivate: boolean
     image: string
+    tags?: string
+  }
+
+  export type MessageCreateManyCommunityInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    projectId?: number | null
+    username: string
+    hasReplies: boolean
   }
 
   export type UserUpdateWithoutCommunitiesInput = {
@@ -9961,6 +12455,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -9971,6 +12466,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutSubscribersInput = {
@@ -9990,6 +12486,8 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUpdateManyWithoutProjectNestedInput
   }
 
   export type ProjectUncheckedUpdateWithoutCommunityInput = {
@@ -10002,14 +12500,60 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     isPrivate?: BoolFieldUpdateOperationsInput | boolean
     image?: StringFieldUpdateOperationsInput | string
+    tags?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutProjectNestedInput
+  }
+
+  export type MessageUpdateWithoutCommunityInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    project?: ProjectUpdateOneWithoutMessagesNestedInput
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateWithoutCommunityInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateManyWithoutMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    projectId?: NullableIntFieldUpdateOperationsInput | number | null
+    username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type TaskCreateManyProjectInput = {
+    id?: number
     name: string
     description: string
     prerequisites: JsonNullValueInput | InputJsonValue
     files: JsonNullValueInput | InputJsonValue
     created_at?: Date | string
+  }
+
+  export type MessageCreateManyProjectInput = {
+    id?: number
+    content: string
+    replyID?: number | null
+    edited_at?: Date | string
+    created_at?: Date | string
+    communityName?: string | null
+    username: string
+    hasReplies: boolean
   }
 
   export type UserUpdateWithoutProjectsInput = {
@@ -10020,6 +12564,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -10030,6 +12575,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutContributorsInput = {
@@ -10049,6 +12595,7 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedUpdateWithoutProjectInput = {
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     prerequisites?: JsonNullValueInput | InputJsonValue
@@ -10057,11 +12604,33 @@ export namespace Prisma {
   }
 
   export type TaskUncheckedUpdateManyWithoutTasksInput = {
+    id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     prerequisites?: JsonNullValueInput | InputJsonValue
     files?: JsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUpdateWithoutProjectInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    community?: CommunityUpdateOneWithoutMessagesNestedInput
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MessageUncheckedUpdateWithoutProjectInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    replyID?: NullableIntFieldUpdateOperationsInput | number | null
+    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    communityName?: NullableStringFieldUpdateOperationsInput | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
 

@@ -33,10 +33,12 @@ $width: 800px;
             width: 600px;
         }
     }
+
     .content-wrapper {
         width: 60%;
         margin: auto;
     }
+
     .modal-title {
         text-align: center;
     }
@@ -54,12 +56,15 @@ $width: 800px;
         background-color: $color-1;
         color: $color-text;
         padding: 2px 10px;
+
         &::placeholder {
             color: $color-text-placeholder;
         }
+
         &:hover {
             background-color: lighten($color-1, 5%);
         }
+
         &:focus {
             background-color: ($color-1);
         }
@@ -88,24 +93,23 @@ $width: 800px;
             background-color: $color-1;
         }
     }
-}
 
-/* The Close Button */
-.close {
-    color: $color-text;
-    font-size: 28px;
-    font-weight: bold;
-    position: relative;
-    z-index: 2;
-    bottom: 680px;
-    left: 95%;
-}
+    /* The Close Button */
+    .close {
+        color: $color-text;
+        font-size: 28px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        left: 95%;
+    }
 
-.close:hover,
-.close:focus {
-    // color: black;
-    text-decoration: none;
-    cursor: pointer;
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
 }
 
 .footer {
@@ -113,8 +117,6 @@ $width: 800px;
 }
 
 .submit-button {
-    // width: 200px;
-    // height: 100px;
     margin-top: 20px;
     background-color: rgb(4, 4, 73);
     text-decoration: none;
@@ -130,4 +132,21 @@ $width: 800px;
         background-color: rgba(0, 221, 169, 0.74);
         color: black;
     }
+}
+
+.tag {
+    background-color: rgb(224, 224, 224);
+    color: black;
+    margin: 0px 3px;
+    padding: 0px 5px;
+    border-radius: 8px;
+    display: inline-block;
+    height: 2rem;
+    line-height: 2rem;
+    margin-bottom: 4px;
+}
+
+.tag-cross {
+    display: inline-block;
+    cursor: pointer;
 }

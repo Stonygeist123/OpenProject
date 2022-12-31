@@ -18,21 +18,23 @@ model User {
   password         String
   token            String           @unique
   task_submissions TaskSubmission[]
+  Message          Message[]
 }
 
 model Community {
   name        String    @id @unique
-  description String
+  description String    @db.LongText
   owner       String
   subscribers User[]
   projects    Project[]
+  messages    Message[]
   created_at  DateTime  @default(now())
 }
 
 model Project {
   id            Int        @id @unique @default(autoincrement())
   name          String
-  description   String
+  description   String     @db.LongText
   owner         String
   contributors  User[]
   tasks         Task[]
@@ -41,12 +43,15 @@ model Project {
   image         String
   community     Community? @relation(fields: [communityName], references: [name])
   communityName String?
+  tags          String     @default("")
+  messages      Message[]
 }
 
 model Task {
+  id            Int      @id @unique @default(autoincrement())
   project       Project  @relation(fields: [projectId], references: [id])
-  name          String   @id @unique
-  description   String
+  name          String
+  description   String   @db.LongText
   prerequisites Json
   files         Json
   created_at    DateTime @default(now())
@@ -73,4 +78,19 @@ model TaskSubmission {
 
 model Tag {
   name String @id @unique
+}
+
+model Message {
+  id            Int        @id @unique @default(autoincrement())
+  content       String     @db.MediumText
+  author        User       @relation(fields: [username], references: [name])
+  project       Project?   @relation(fields: [projectId], references: [id])
+  community     Community? @relation(fields: [communityName], references: [name])
+  replyID       Int?
+  edited_at     DateTime   @default(now())
+  created_at    DateTime   @default(now())
+  projectId     Int?
+  communityName String?
+  username      String
+  hasReplies    Boolean
 }

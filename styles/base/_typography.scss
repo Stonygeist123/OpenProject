@@ -1,25 +1,58 @@
-.heading-primary {
+.text-3xs {
+    font-size: 1rem;
 }
 
-.heading-primary--main {
+.text-xxs {
+    font-size: 1.2rem;
 }
 
-.heading-primary--sub {
+.text-xs {
+    font-size: 1.3rem;
 }
 
-html {
-    font-size: 62.5%;
+.text-sm {
+    font-size: 1.4rem;
 }
 
-body {
-    font-family: "Lato", sans-serif;
-    font-weight: 400;
-    line-height: 1.7;
-    color: #777;
+.text-md {
+    font-size: 1.5rem;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    font-size: inherit;
+.text-lg {
+    font-size: 1.6rem;
+}
+.text-xl {
+    font-size: 1.7rem;
+}
+
+.text-2x {
+    font-size: 1.8rem;
+}
+
+.text-3x {
+    font-size: 1.9rem;
+}
+
+.text-4x {
+    font-size: 2rem;
+}
+
+.text-xxl {
+    font-size: 3rem;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.font-normal {
+    font-weight: normal;
+}
+
+.font-lighter {
+    font-weight: lighter;
+}
+
+.full-height {
+    height: 100%;
 }

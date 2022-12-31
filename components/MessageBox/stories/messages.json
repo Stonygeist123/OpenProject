@@ -1,0 +1,31 @@
+[
+    {
+        "id": 1,
+        "content": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos\nLorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos",
+        "replyID": null,
+        "edited_at": "2022-12-06T19:01:26.449Z",
+        "created_at": "2022-12-06T19:01:26.449Z",
+        "projectId": 1,
+        "communityName": null,
+        "username": "Oki",
+        "author": {
+            "name": "Oki",
+            "created_at": "2022-12-05T18:54:37.266Z",
+            "image": "",
+            "password": "$2b$05$F2dB/DRdKxEwYuYr4/SgUeI130yeNhDZ7U0bTtizZ3vonMMaEdvdC",
+            "token": "$2b$06$a7IkNsFZn4p4w8LH9T7xq.fD6ymispkKLQKDmVF2dt4qEvYJCqS2S"
+        },
+        "community": null,
+        "project": {
+            "id": 1,
+            "name": "Stony's project",
+            "description": "      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos\n      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus asperiores delectus obcaecati!\n\n      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magnam fugiat distinctio quidem sint provident laborum placeat, adipisci dignissimos\n      laudantium! Ipsam atque odio incidunt dolorem officiis minus. Ducimus asperiores delectus obcaecati!\n",
+            "owner": "Oki",
+            "created_at": "2022-12-05T18:55:15.511Z",
+            "isPrivate": false,
+            "image": "",
+            "communityName": null,
+            "tags": ""
+        }
+    }
+]

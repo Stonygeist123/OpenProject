@@ -6,7 +6,10 @@ import { sessionOptions } from "../../../lib/session";
 
 export default withIronSessionApiRoute(async (_, res) => {
   const projects = await prisma.project.findMany({
+    where: {
+      isPrivate: false,
+    },
     include: { community: true, contributors: true, tasks: true },
   });
-  res.json(projects.flatMap(p => (!p.isPrivate ? p : null)));
+  res.json(projects);
 }, sessionOptions);

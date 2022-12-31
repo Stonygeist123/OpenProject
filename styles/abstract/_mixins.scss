@@ -4,10 +4,10 @@
     margin-top: 3.5rem;
     margin-bottom: 3.5rem;
     width: 35rem;
-    height: 250px;
+    height: 20rem;
     background-color: rgb(87, 250, 231);
     color: black;
-    border-radius: 3px;
+    border-radius: 10px;
     padding: 15px;
     overflow: hidden;
     font-size: 1.2rem;
@@ -40,4 +40,19 @@
     @media screen and (min-width: 1200px) {
         display: none;
     }
+}
+
+@mixin flex-responsive {
+    display: flex;
+    flex-direction: row;
+    @media screen and (max-width: 1600px) {
+        flex-direction: column;
+    }
+}
+
+@mixin centerItemAbsolute {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
