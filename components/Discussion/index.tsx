@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import { useRouter } from "next/router";
 import fetchJson from "../../lib/fetchJson";
+import ProfileCard from "../ProfileCard";
 
 const Discussion = ({
   user,
@@ -30,6 +31,7 @@ const Discussion = ({
 }) => {
   const router = useRouter();
   const [replies, setReplies] = useState<Thread<true> | null>(null);
+  const [profileCard, setProfileCard] = useState<{ u: User; msg: React.RefObject<HTMLDivElement> } | null>(null);
 
   useEffect(() => {
     fetchJson<{ message: string; found: boolean; allowed: boolean; thread: Thread<true> | null }>(`/api/project/${projectID}/message/threads`, {
@@ -37,9 +39,8 @@ const Discussion = ({
       body: JSON.stringify({ topID: activeThreadID }),
     }).then(data => {
       setReplies(data.thread);
-      console.log(data.thread?.replies.map(r => ({ ...r, community: null })) ?? []);
     });
-  }, [activeThreadID]);
+  }, [activeThreadID, projectID]);
 
   useEffect(() => {
     if (router.isReady) setReload(false);
@@ -47,6 +48,17 @@ const Discussion = ({
 
   return (
     <div className={`${styles["discussion"]}`}>
+      {profileCard ? (
+        <div
+          className={styles["profile-card"]}
+          style={{ top: (profileCard.msg.current?.getBoundingClientRect().top ?? 0) + "px" }}
+        >
+          <ProfileCard
+            user={profileCard.u}
+            shadow
+          />
+        </div>
+      ) : null}
       <div className={styles["message-input-wrapper"]}>
         <textarea
           className={`${user === null ? styles["error"] : null} ${styles["message-input"]}`}
@@ -75,9 +87,11 @@ const Discussion = ({
         <DiscussionThread
           msgs={topLevel.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())}
           sub={false}
-          setActiveID={setActiveThreadID}
           setReload={setReload}
+          setActiveID={setActiveThreadID}
+          activeID={null}
           projectID={projectID}
+          setProfileCard={setProfileCard}
         />
 
         {activeThreadID !== null ? (
@@ -89,10 +103,11 @@ const Discussion = ({
                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) ?? []
             }
             sub
-            setActiveID={setActiveThreadID}
             setReload={setReload}
+            setActiveID={setActiveThreadID}
             activeID={activeThreadID}
             projectID={projectID}
+            setProfileCard={setProfileCard}
           />
         ) : null}
       </div>

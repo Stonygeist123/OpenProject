@@ -4,11 +4,11 @@ import styles from "./index.module.scss";
 const Footer = ({ onReply, message }: { onReply: () => void; message: Msg }) => {
   const formatDate = (d: Date) => {
     const y = new Date();
-    if (y.toLocaleDateString() === d.toLocaleDateString()) return `Today - ${d.toLocaleTimeString()}`;
+    if (y.toLocaleDateString() === d.toLocaleDateString()) return `Today, ${d.toLocaleTimeString()}`;
 
     y.setDate(y.getDate() - 1);
-    if (y.toLocaleDateString() === d.toLocaleDateString()) return `Yesterday - ${d.toLocaleTimeString()}`;
-    return `${d.toLocaleDateString()} - ${d.toLocaleTimeString()}`;
+    if (y.toLocaleDateString() === d.toLocaleDateString()) return `Yesterday, ${d.toLocaleTimeString()}`;
+    return `${d.toLocaleString()}`;
   };
   return (
     <div className={`${styles["message-footer"]} flex flex-row px-1 `}>

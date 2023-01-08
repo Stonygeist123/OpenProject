@@ -18,7 +18,8 @@ model User {
   password         String
   token            String           @unique
   task_submissions TaskSubmission[]
-  Message          Message[]
+  messages         Message[]
+  description      String
 }
 
 model Community {

@@ -1,11 +1,11 @@
-import styles from "../../styles/modules/NavBar.module.scss";
+import styles from "./index.module.scss";
 import Link from "next/link";
 import SearchBar from "../SearchBar";
 
-export default function NavBar() {
+const NavBar = () => {
   return (
     <>
-      <nav className={styles["nav"]}>
+      <div className={styles["nav"]}>
         <div className={styles["nav-flex-container"]}>
           <Link href="/">
             <div className={styles["logo-container"]}>
@@ -23,7 +23,9 @@ export default function NavBar() {
             <Link href="/user/signup">Signup</Link>
           </div>
         </div>
-      </nav>
+      </div>
     </>
   );
-}
+};
+
+export default NavBar;

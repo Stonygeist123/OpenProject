@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-
 import ProjectStarter from "../";
+import { Formik } from "formik";
 
 export default {
   title: "Main/ProjectStarter",

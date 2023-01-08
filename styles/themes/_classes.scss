@@ -1,4 +1,5 @@
 @import "gradients";
+@import "../abstract/variables";
 
 .text-heading-gradient {
     background: $text-heading-gradient;
@@ -22,13 +23,15 @@
 }
 
 .button-moonlit-gradient {
-    background: $button-normal-moonlit-gradient;
-    opacity: 1;
-    transition: 0.75s;
+    background: linear-gradient(135deg, rgba(182, 200, 218, 0.8), rgb(182, 174, 174));
+    transition: 0.2s ease-in-out;
 
     &:hover {
-        background: $button-hover-moonlit-gradient;
-        opacity: 0.9;
+        background: linear-gradient(
+            135deg,
+            lighten(rgba(182, 200, 218, 0.3), 10%),
+            lighten(rgba(182, 174, 174, 0.5), 10%)
+        );
     }
 }
 
@@ -39,5 +42,43 @@
         background: black;
         background-clip: text;
         -webkit-text-fill-color: transparent;
+    }
+}
+
+.scrollbar {
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: lighten($color-base, 15%);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #05608d;
+    }
+}
+
+.scrollbar-x {
+    overflow-x: auto;
+    &::-webkit-scrollbar {
+        height: 3px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: lighten($color-base, 15%);
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #05608d;
     }
 }

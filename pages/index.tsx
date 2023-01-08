@@ -4,6 +4,7 @@ import CommunityCreationModal from "../components/Modals/CommunityCreationModal"
 import ProjectCreationModal from "../components/Modals/ProjectCreationModal";
 import fetchJson from "../lib/fetchJson";
 import { NextRouter, useRouter } from "next/router";
+import Loading from "../components/Loading";
 
 const ProjectPreview = ({ project, router }: { project: Project; router: NextRouter }) => (
   <div
@@ -78,8 +79,6 @@ const Home = () => {
   } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [cards, setCards] = useState({ community: { hovered: false }, project: { hovered: false } });
-
   useEffect(() => {
     if (!router.isReady) return;
 
@@ -102,7 +101,7 @@ const Home = () => {
   }, [router.isReady]);
 
   return loading ? (
-    <h1 className="text-xxl">Loading...</h1>
+    <Loading />
   ) : (
     <>
       {showProjectModal ? (

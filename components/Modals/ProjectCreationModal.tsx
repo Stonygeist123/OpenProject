@@ -6,6 +6,7 @@ import fetchJson from "../../lib/fetchJson";
 import { useRouter } from "next/router";
 import { Provided } from "../../utils/utils";
 import Button from "../common/Button";
+import Loading from "../Loading";
 
 const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const someRef = useRef(null);
@@ -64,7 +65,7 @@ const ProjectCreationModal = ({ closeFunction }: { closeFunction: () => void }) 
         ref={someRef}
       >
         {loading ? (
-          <h1 className={styles["modal-title"]}> Loading... </h1>
+          <Loading />
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new project! </h1>

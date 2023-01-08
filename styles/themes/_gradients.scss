@@ -6,17 +6,3 @@ $text-heading-gradient: linear-gradient(45deg, $text-cyan, $text-purple);
 $text-important-gradient: linear-gradient(45deg, lighten(black, 5%), $text-purple);
 
 $text-heading-hover-gradient: linear-gradient(45deg, $text-cyan-light, $text-purple-light);
-
-$button-normal-moonlit-gradient: linear-gradient(
-    135deg,
-    $button-normal-moonlit-1,
-    $button-normal-moonlit-2,
-    $button-normal-moonlit-3
-);
-
-$button-hover-moonlit-gradient: linear-gradient(
-    135deg,
-    darken($button-normal-moonlit-1, 15%),
-    darken($button-normal-moonlit-2, 15%),
-    darken($button-normal-moonlit-3, 15%)
-);

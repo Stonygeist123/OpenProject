@@ -59,6 +59,7 @@ export default withIronSessionApiRoute(
           projects: {},
           task_submissions: {},
           token: bcrypt.hashSync(password, 6),
+          description: req.body["description"] ?? "",
         },
       });
 

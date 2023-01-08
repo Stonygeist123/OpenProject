@@ -1,14 +1,13 @@
 .discussion {
-    position: relative;
-    top: 15em;
-    height: 70em;
-    z-index: 1;
+    position: static;
+    margin-top: 15em;
+    height: 80em;
+    z-index: 0;
 
     .message-input-wrapper {
-        z-index: 1;
         display: inline-flex;
         position: relative;
-        margin-bottom: 0.2em;
+        margin-bottom: 1.2em;
         width: 100em;
         height: 5em;
 
@@ -16,6 +15,7 @@
             background: rgb(0, 0, 0);
             border-radius: 10px;
             transition: background 0.5s;
+            margin-left: 2rem;
 
             &:hover {
                 background: rgba(115, 3, 192, 0.2);
@@ -54,6 +54,12 @@
         border-radius: 10px;
         background-color: rgba(47, 47, 47, 0.74);
         display: flex;
-        z-index: 2;
+        z-index: 1;
     }
+}
+
+.profile-card {
+    position: absolute;
+    left: 2em;
+    z-index: 2;
 }

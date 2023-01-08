@@ -14,6 +14,7 @@ type User = {
   image: string;
   password: string;
   token: string;
+  description: string;
 };
 
 /**

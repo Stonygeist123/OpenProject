@@ -17,7 +17,7 @@ const ReplyBox = ({
       <div className={`${styles["reply-container"]}`}>
         <div className={`${styles["reply-text-area-wrapper"]}`}>
           <textarea
-            className={`${styles["reply-text-area"]}`}
+            className={`${styles["reply-text-area"]} scrollbar`}
             value={messageInput}
             onChange={handleChange}
             // e => setMessageInput(e.target.value)

@@ -5,6 +5,7 @@ import styles from "../../../../styles/pages/project/[id]/index.module.scss";
 import TaskBox from "../../../../components/TaskBox/TaskBox";
 import Button from "../../../../components/common/Button";
 import Discussion from "../../../../components/Discussion";
+import Loading from "../../../../components/Loading";
 
 const ProjectPage = () => {
   const router = useRouter();
@@ -78,7 +79,7 @@ const ProjectPage = () => {
   const handleCreateTask = () => router.push(`/project/${id}/task/add`);
 
   return !projectLoaded ? (
-    <h1 style={{ color: "white", textAlign: "center", top: "10em", position: "relative" }}>Loading...</h1>
+    <Loading />
   ) : project === null ? (
     <h1 style={{ color: "white", textAlign: "center", top: "10em", position: "relative" }}>
       Could not find project with id{" "}

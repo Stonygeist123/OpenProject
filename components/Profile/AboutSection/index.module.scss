@@ -1,0 +1,17 @@
+.wrapper {
+    height: 20em;
+    // margin: auto;
+    margin-bottom: 4em;
+
+    .description {
+        // padding-left: 1em;
+        padding-top: 1em;
+        max-width: 90%;
+        margin-top: 2em;
+        // margin: auto;
+        height: 100%;
+        width: 80%;
+        border-radius: 4px;
+        background-color: rgba(41, 41, 41, 0.1);
+    }
+}

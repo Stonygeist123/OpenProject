@@ -10,10 +10,12 @@ import { Community, Project, TaskSubmission } from "../../../prisma/client";
 
 type ResUser = {
   communities: Community[];
+  projects: Project[];
   task_submissions: TaskSubmission[];
   image: string;
   name: string;
   created_at: Date;
+  description: string;
 };
 
 export default withIronSessionApiRoute(
@@ -44,6 +46,12 @@ export default withIronSessionApiRoute(
             name: true,
             created_at: true,
             token: true,
+            projects: {
+              where: {
+                isPrivate: false,
+              },
+            },
+            description: true,
           },
         });
 
@@ -79,7 +87,20 @@ export default withIronSessionApiRoute(
     if (req.query["username"] !== undefined) {
       const user = await prisma.user.findFirst({
         where: { name: req.query["username"] as string },
-        select: { communities: true, task_submissions: true, image: true, name: true, created_at: true, password: true },
+        select: {
+          communities: true,
+          task_submissions: true,
+          image: true,
+          name: true,
+          created_at: true,
+          password: true,
+          projects: {
+            where: {
+              isPrivate: false,
+            },
+          },
+          description: true,
+        },
       });
 
       if (user === null)

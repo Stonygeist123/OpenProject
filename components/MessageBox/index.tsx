@@ -1,12 +1,11 @@
 import styles from "./index.module.scss";
 import { NextRouter, useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import fetchJson from "../../lib/fetchJson";
 import Body from "./Body";
 import Footer from "./Footer";
 import ReplyBox from "./ReplyBox";
 import Switch from "./Switch";
-
 const MessageBox = ({
   key,
   message,
@@ -18,6 +17,7 @@ const MessageBox = ({
   activeID,
   setActiveID,
   projectID,
+  setProfileCard,
 }: {
   key: number;
   message: Msg;
@@ -30,10 +30,12 @@ const MessageBox = ({
   activeID: number;
   setActiveID: React.Dispatch<React.SetStateAction<number | null>>;
   projectID: number;
+  setProfileCard: React.Dispatch<React.SetStateAction<{ u: User; msg: React.RefObject<HTMLDivElement> } | null>>;
 }) => {
+  const router = useRouter();
   const [replyOn, setReplyOn] = useState<boolean>(false);
   const [messageInput, setMessageInput] = useState<string>("");
-  const router = useRouter();
+  const msgRef = useRef<HTMLDivElement>(null);
 
   const sendReply = async () => {
     await fetchJson(`/api/project/${message.projectId}/message/create`, {
@@ -48,7 +50,10 @@ const MessageBox = ({
 
   return (
     <>
-      <div className={"flex flex-col " + `${styles["message-box-wrapper"]}`}>
+      <div
+        ref={msgRef}
+        className={"flex flex-col " + `${styles["message-box-wrapper"]}`}
+      >
         <div className="flex flex-row">
           <Switch
             id={message.id}
@@ -67,10 +72,14 @@ const MessageBox = ({
           <div
             className={`${styles["message-container"]} ${isFirst ? styles["first"] : null} ${
               isLast ? styles["last"] : null
-            } ${className} flex flex-col`}
+            } ${className} scrollbar flex flex-col`}
             key={key}
           >
-            <Body message={message} />
+            <Body
+              message={message}
+              setProfileCard={setProfileCard}
+              msgRef={msgRef}
+            />
             <Footer
               onReply={() => setReplyOn(v => !v)}
               message={message}

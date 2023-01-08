@@ -2,6 +2,10 @@
 
 $bg-colour: rgba(80, 80, 80, 0.74);
 
+.body {
+    z-index: 2;
+}
+
 .profile {
     position: relative;
     margin-top: 1em;
@@ -35,22 +39,6 @@ $bg-colour: rgba(80, 80, 80, 0.74);
         font-size: 1.4rem;
         height: 7.5rem;
         margin-top: 1rem;
-
-        &::-webkit-scrollbar {
-            width: 3px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: $overflow-track-color;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-            background: #05608d;
-        }
 
         @at-root &-wrapper {
             position: relative;

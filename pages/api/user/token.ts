@@ -14,6 +14,7 @@ type ResUser = {
   image: string;
   name: string;
   created_at: Date;
+  description: string;
 };
 
 export default withIronSessionApiRoute(
@@ -36,8 +37,19 @@ export default withIronSessionApiRoute(
     else {
       const user = await prisma.user.findFirst({
         where: { token: req.body["token"] as string },
-        select: { projects: true, communities: true, task_submissions: true, image: true, name: true, created_at: true, password: true },
+        select: {
+          communities: true,
+          task_submissions: true,
+          image: true,
+          name: true,
+          created_at: true,
+          password: true,
+          projects: true,
+          description: true,
+        },
       });
+
+      console.log(user?.projects);
 
       if (user === null)
         res.json({

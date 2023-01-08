@@ -22,6 +22,7 @@ export type User = {
   image: string
   password: string
   token: string
+  description: string
 }
 
 /**
@@ -353,7 +354,7 @@ export namespace Prisma {
 
   /**
    * Prisma Client JS version: 4.7.1
-   * Query Engine version: 272861e07ab64f234d3ffc4094e32bd61775599c
+   * Query Engine version: 694eea289a8462c80264df36757e4fdc129b1b32
    */
   export type PrismaVersion = {
     client: string
@@ -975,14 +976,14 @@ export namespace Prisma {
     communities: number
     projects: number
     task_submissions: number
-    Message: number
+    messages: number
   }
 
   export type UserCountOutputTypeSelect = {
     communities?: boolean
     projects?: boolean
     task_submissions?: boolean
-    Message?: boolean
+    messages?: boolean
   }
 
   export type UserCountOutputTypeGetPayload<S extends boolean | null | undefined | UserCountOutputTypeArgs> =
@@ -1133,6 +1134,7 @@ export namespace Prisma {
     image: string | null
     password: string | null
     token: string | null
+    description: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -1141,6 +1143,7 @@ export namespace Prisma {
     image: string | null
     password: string | null
     token: string | null
+    description: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -1149,6 +1152,7 @@ export namespace Prisma {
     image: number
     password: number
     token: number
+    description: number
     _all: number
   }
 
@@ -1159,6 +1163,7 @@ export namespace Prisma {
     image?: true
     password?: true
     token?: true
+    description?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -1167,6 +1172,7 @@ export namespace Prisma {
     image?: true
     password?: true
     token?: true
+    description?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -1175,6 +1181,7 @@ export namespace Prisma {
     image?: true
     password?: true
     token?: true
+    description?: true
     _all?: true
   }
 
@@ -1262,6 +1269,7 @@ export namespace Prisma {
     image: string
     password: string
     token: string
+    description: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1290,7 +1298,8 @@ export namespace Prisma {
     password?: boolean
     token?: boolean
     task_submissions?: boolean | TaskSubmissionFindManyArgs
-    Message?: boolean | MessageFindManyArgs
+    messages?: boolean | MessageFindManyArgs
+    description?: boolean
     _count?: boolean | UserCountOutputTypeArgs
   }
 
@@ -1299,7 +1308,7 @@ export namespace Prisma {
     communities?: boolean | CommunityFindManyArgs
     projects?: boolean | ProjectFindManyArgs
     task_submissions?: boolean | TaskSubmissionFindManyArgs
-    Message?: boolean | MessageFindManyArgs
+    messages?: boolean | MessageFindManyArgs
     _count?: boolean | UserCountOutputTypeArgs
   } 
 
@@ -1313,7 +1322,7 @@ export namespace Prisma {
         P extends 'communities' ? Array < CommunityGetPayload<S['include'][P]>>  :
         P extends 'projects' ? Array < ProjectGetPayload<S['include'][P]>>  :
         P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['include'][P]>>  :
-        P extends 'Message' ? Array < MessageGetPayload<S['include'][P]>>  :
+        P extends 'messages' ? Array < MessageGetPayload<S['include'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['include'][P]> :  never
   } 
     : S extends { select: any } & (UserArgs | UserFindManyArgs)
@@ -1322,7 +1331,7 @@ export namespace Prisma {
         P extends 'communities' ? Array < CommunityGetPayload<S['select'][P]>>  :
         P extends 'projects' ? Array < ProjectGetPayload<S['select'][P]>>  :
         P extends 'task_submissions' ? Array < TaskSubmissionGetPayload<S['select'][P]>>  :
-        P extends 'Message' ? Array < MessageGetPayload<S['select'][P]>>  :
+        P extends 'messages' ? Array < MessageGetPayload<S['select'][P]>>  :
         P extends '_count' ? UserCountOutputTypeGetPayload<S['select'][P]> :  P extends keyof User ? User[P] : never
   } 
       : User
@@ -1703,7 +1712,7 @@ export namespace Prisma {
 
     task_submissions<T extends TaskSubmissionFindManyArgs= {}>(args?: Subset<T, TaskSubmissionFindManyArgs>): PrismaPromise<Array<TaskSubmissionGetPayload<T>>| Null>;
 
-    Message<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
+    messages<T extends MessageFindManyArgs= {}>(args?: Subset<T, MessageFindManyArgs>): PrismaPromise<Array<MessageGetPayload<T>>| Null>;
 
     private get _document();
     /**
@@ -9249,7 +9258,8 @@ export namespace Prisma {
     created_at: 'created_at',
     image: 'image',
     password: 'password',
-    token: 'token'
+    token: 'token',
+    description: 'description'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -9272,7 +9282,8 @@ export namespace Prisma {
     password?: StringFilter | string
     token?: StringFilter | string
     task_submissions?: TaskSubmissionListRelationFilter
-    Message?: MessageListRelationFilter
+    messages?: MessageListRelationFilter
+    description?: StringFilter | string
   }
 
   export type UserOrderByWithRelationInput = {
@@ -9284,7 +9295,8 @@ export namespace Prisma {
     password?: SortOrder
     token?: SortOrder
     task_submissions?: TaskSubmissionOrderByRelationAggregateInput
-    Message?: MessageOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
+    description?: SortOrder
   }
 
   export type UserWhereUniqueInput = {
@@ -9298,6 +9310,7 @@ export namespace Prisma {
     image?: SortOrder
     password?: SortOrder
     token?: SortOrder
+    description?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -9312,6 +9325,7 @@ export namespace Prisma {
     image?: StringWithAggregatesFilter | string
     password?: StringWithAggregatesFilter | string
     token?: StringWithAggregatesFilter | string
+    description?: StringWithAggregatesFilter | string
   }
 
   export type CommunityWhereInput = {
@@ -9692,7 +9706,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
-    Message?: MessageCreateNestedManyWithoutAuthorInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserUncheckedCreateInput = {
@@ -9704,7 +9719,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
-    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserUpdateInput = {
@@ -9716,7 +9732,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateInput = {
@@ -9728,7 +9745,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserCreateManyInput = {
@@ -9737,6 +9755,7 @@ export namespace Prisma {
     image: string
     password: string
     token: string
+    description: string
   }
 
   export type UserUpdateManyMutationInput = {
@@ -9745,6 +9764,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -9753,6 +9773,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type CommunityCreateInput = {
@@ -10122,7 +10143,7 @@ export namespace Prisma {
 
   export type MessageCreateInput = {
     content: string
-    author: UserCreateNestedOneWithoutMessageInput
+    author: UserCreateNestedOneWithoutMessagesInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
     replyID?: number | null
@@ -10145,7 +10166,7 @@ export namespace Prisma {
 
   export type MessageUpdateInput = {
     content?: StringFieldUpdateOperationsInput | string
-    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
     replyID?: NullableIntFieldUpdateOperationsInput | number | null
@@ -10269,6 +10290,7 @@ export namespace Prisma {
     image?: SortOrder
     password?: SortOrder
     token?: SortOrder
+    description?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -10277,6 +10299,7 @@ export namespace Prisma {
     image?: SortOrder
     password?: SortOrder
     token?: SortOrder
+    description?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -10285,6 +10308,7 @@ export namespace Prisma {
     image?: SortOrder
     password?: SortOrder
     token?: SortOrder
+    description?: SortOrder
   }
 
   export type StringWithAggregatesFilter = {
@@ -11178,9 +11202,9 @@ export namespace Prisma {
     update?: XOR<UserUpdateWithoutTask_submissionsInput, UserUncheckedUpdateWithoutTask_submissionsInput>
   }
 
-  export type UserCreateNestedOneWithoutMessageInput = {
-    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
+  export type UserCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
     connect?: UserWhereUniqueInput
   }
 
@@ -11196,12 +11220,12 @@ export namespace Prisma {
     connect?: CommunityWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutMessageNestedInput = {
-    create?: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMessageInput
-    upsert?: UserUpsertWithoutMessageInput
+  export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
+    upsert?: UserUpsertWithoutMessagesInput
     connect?: UserWhereUniqueInput
-    update?: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
+    update?: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
   }
 
   export type ProjectUpdateOneWithoutMessagesNestedInput = {
@@ -11640,7 +11664,7 @@ export namespace Prisma {
 
   export type MessageUpdateManyWithWhereWithoutAuthorInput = {
     where: MessageScalarWhereInput
-    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessageInput>
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutMessagesInput>
   }
 
   export type MessageScalarWhereInput = {
@@ -11666,7 +11690,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
-    Message?: MessageCreateNestedManyWithoutAuthorInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserUncheckedCreateWithoutCommunitiesInput = {
@@ -11677,7 +11702,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
-    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserCreateOrConnectWithoutCommunitiesInput = {
@@ -11724,7 +11750,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutCommunityInput = {
     content: string
-    author: UserCreateNestedOneWithoutMessageInput
+    author: UserCreateNestedOneWithoutMessagesInput
     project?: ProjectCreateNestedOneWithoutMessagesInput
     replyID?: number | null
     edited_at?: Date | string
@@ -11778,6 +11804,7 @@ export namespace Prisma {
     image?: StringFilter | string
     password?: StringFilter | string
     token?: StringFilter | string
+    description?: StringFilter | string
   }
 
   export type ProjectUpsertWithWhereUniqueWithoutCommunityInput = {
@@ -11820,7 +11847,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
-    Message?: MessageCreateNestedManyWithoutAuthorInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserUncheckedCreateWithoutProjectsInput = {
@@ -11831,7 +11859,8 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
-    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserCreateOrConnectWithoutProjectsInput = {
@@ -11891,7 +11920,7 @@ export namespace Prisma {
 
   export type MessageCreateWithoutProjectInput = {
     content: string
-    author: UserCreateNestedOneWithoutMessageInput
+    author: UserCreateNestedOneWithoutMessagesInput
     community?: CommunityCreateNestedOneWithoutMessagesInput
     replyID?: number | null
     edited_at?: Date | string
@@ -12076,7 +12105,8 @@ export namespace Prisma {
     projects?: ProjectCreateNestedManyWithoutContributorsInput
     password: string
     token: string
-    Message?: MessageCreateNestedManyWithoutAuthorInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserUncheckedCreateWithoutTask_submissionsInput = {
@@ -12087,7 +12117,8 @@ export namespace Prisma {
     projects?: ProjectUncheckedCreateNestedManyWithoutContributorsInput
     password: string
     token: string
-    Message?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
   export type UserCreateOrConnectWithoutTask_submissionsInput = {
@@ -12108,7 +12139,8 @@ export namespace Prisma {
     projects?: ProjectUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
-    Message?: MessageUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateWithoutTask_submissionsInput = {
@@ -12119,10 +12151,11 @@ export namespace Prisma {
     projects?: ProjectUncheckedUpdateManyWithoutContributorsNestedInput
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
-    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserCreateWithoutMessageInput = {
+  export type UserCreateWithoutMessagesInput = {
     name: string
     created_at?: Date | string
     image: string
@@ -12131,9 +12164,10 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
-  export type UserUncheckedCreateWithoutMessageInput = {
+  export type UserUncheckedCreateWithoutMessagesInput = {
     name: string
     created_at?: Date | string
     image: string
@@ -12142,11 +12176,12 @@ export namespace Prisma {
     password: string
     token: string
     task_submissions?: TaskSubmissionUncheckedCreateNestedManyWithoutAuthorInput
+    description: string
   }
 
-  export type UserCreateOrConnectWithoutMessageInput = {
+  export type UserCreateOrConnectWithoutMessagesInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
   }
 
   export type ProjectCreateWithoutMessagesInput = {
@@ -12204,12 +12239,12 @@ export namespace Prisma {
     create: XOR<CommunityCreateWithoutMessagesInput, CommunityUncheckedCreateWithoutMessagesInput>
   }
 
-  export type UserUpsertWithoutMessageInput = {
-    update: XOR<UserUpdateWithoutMessageInput, UserUncheckedUpdateWithoutMessageInput>
-    create: XOR<UserCreateWithoutMessageInput, UserUncheckedCreateWithoutMessageInput>
+  export type UserUpsertWithoutMessagesInput = {
+    update: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
   }
 
-  export type UserUpdateWithoutMessageInput = {
+  export type UserUpdateWithoutMessagesInput = {
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     image?: StringFieldUpdateOperationsInput | string
@@ -12218,9 +12253,10 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserUncheckedUpdateWithoutMessageInput = {
+  export type UserUncheckedUpdateWithoutMessagesInput = {
     name?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     image?: StringFieldUpdateOperationsInput | string
@@ -12229,6 +12265,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUpsertWithoutMessagesInput = {
@@ -12414,7 +12451,7 @@ export namespace Prisma {
     hasReplies?: BoolFieldUpdateOperationsInput | boolean
   }
 
-  export type MessageUncheckedUpdateManyWithoutMessageInput = {
+  export type MessageUncheckedUpdateManyWithoutMessagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     replyID?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12455,7 +12492,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateWithoutCommunitiesInput = {
@@ -12466,7 +12504,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyWithoutSubscribersInput = {
@@ -12475,6 +12514,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProjectUpdateWithoutCommunityInput = {
@@ -12506,7 +12546,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutCommunityInput = {
     content?: StringFieldUpdateOperationsInput | string
-    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
     project?: ProjectUpdateOneWithoutMessagesNestedInput
     replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12515,17 +12555,6 @@ export namespace Prisma {
   }
 
   export type MessageUncheckedUpdateWithoutCommunityInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    content?: StringFieldUpdateOperationsInput | string
-    replyID?: NullableIntFieldUpdateOperationsInput | number | null
-    edited_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    projectId?: NullableIntFieldUpdateOperationsInput | number | null
-    username?: StringFieldUpdateOperationsInput | string
-    hasReplies?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MessageUncheckedUpdateManyWithoutMessagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     replyID?: NullableIntFieldUpdateOperationsInput | number | null
@@ -12564,7 +12593,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -12575,7 +12605,8 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     task_submissions?: TaskSubmissionUncheckedUpdateManyWithoutAuthorNestedInput
-    Message?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyWithoutContributorsInput = {
@@ -12584,6 +12615,7 @@ export namespace Prisma {
     image?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskUpdateWithoutProjectInput = {
@@ -12614,7 +12646,7 @@ export namespace Prisma {
 
   export type MessageUpdateWithoutProjectInput = {
     content?: StringFieldUpdateOperationsInput | string
-    author?: UserUpdateOneRequiredWithoutMessageNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
     community?: CommunityUpdateOneWithoutMessagesNestedInput
     replyID?: NullableIntFieldUpdateOperationsInput | number | null
     edited_at?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -11,15 +11,17 @@ const DiscussionThread = ({
   setReload,
   activeID,
   projectID,
+  setProfileCard,
 }: {
   changeThread?: () => {};
   msgs: Omit<Msg, "community">[];
   sub?: boolean;
   className?: string;
-  activeID?: number | null;
+  activeID: number | null;
   setActiveID?: React.Dispatch<React.SetStateAction<number | null>>;
   setReload: React.Dispatch<React.SetStateAction<boolean>>;
   projectID: number;
+  setProfileCard: React.Dispatch<React.SetStateAction<{ u: User; msg: React.RefObject<HTMLDivElement> } | null>>;
 }) =>
   !activeID && sub ? (
     <NotFound />
@@ -50,9 +52,10 @@ const DiscussionThread = ({
             isLast={i + 1 >= msgs.length}
             setReload={setReload}
             hasReplies={m.hasReplies}
-            activeID={activeID}
+            activeID={activeID ?? -1}
             setActiveID={setActiveID!}
             projectID={projectID}
+            setProfileCard={setProfileCard}
           />
         </div>
       ))}

@@ -1,17 +1,20 @@
-import { useState } from "react";
 import ProfileIcon from "../../common/ProfileIcon/ProfileIcon";
-import ProfileCard from "../../ProfileCard";
 import styles from "./index.module.scss";
 
-const Body = ({ message }: { message: Msg }) => {
-  const [profile, setProfile] = useState(false);
-
+const Body = ({
+  message,
+  setProfileCard,
+  msgRef,
+}: {
+  message: Msg;
+  setProfileCard: React.Dispatch<React.SetStateAction<{ u: User; msg: React.RefObject<HTMLDivElement> } | null>>;
+  msgRef: React.RefObject<HTMLDivElement>;
+}) => {
   return (
     <>
-      <div className="flex flex-row overflow-hidden justify-center content-center ">
-        <div className="flex flex-col items-center">
-          {profile ? <ProfileCard user={message.author} /> : null}
-          <div onClick={() => setProfile(v => !v)}>
+      <div className={`flex flex-row overflow-hidden justify-center content-center ${styles["body"]}`}>
+        <div className={"flex flex-col items-center"}>
+          <div onClick={() => setProfileCard(v => (v === null || v.u.name !== message.author.name ? { u: message.author, msg: msgRef } : null))}>
             <ProfileIcon
               className={styles["profile"]}
               size="m"
@@ -27,7 +30,7 @@ const Body = ({ message }: { message: Msg }) => {
 
         <div className={`${styles["message-wrapper"]} `}>
           <div className={styles["message-content-wrapper"]}>
-            <p className={`text-sm ${styles["message-content"]}`}>{message?.content}</p>
+            <p className={`text-sm ${styles["message-content"]} scrollbar`}>{message?.content}</p>
           </div>
         </div>
       </div>

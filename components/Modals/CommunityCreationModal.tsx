@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import fetchJson from "../../lib/fetchJson";
 import { Provided } from "../../utils/utils";
 import { useRouter } from "next/router";
+import Loading from "../Loading";
 
 const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }) => {
   const someRef = useRef(null);
@@ -62,7 +63,7 @@ const CommunityCreationModal = ({ closeFunction }: { closeFunction: () => void }
         ref={someRef}
       >
         {loading ? (
-          <h1 className={styles["modal-title"]}> Loading... </h1>
+          <Loading />
         ) : logged ? (
           <>
             <h1 className={styles["modal-title"]}> Create a new community! </h1>

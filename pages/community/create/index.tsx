@@ -4,6 +4,7 @@ import Button from "../../../components/common/Button";
 import fetchJson from "../../../lib/fetchJson";
 import { Provided } from "../../../utils/utils";
 import styles from "../../../styles/pages/project/create/index.module.scss";
+import Loading from "../../../components/Loading";
 
 const CommunityCreationPage = () => {
   const [tags, setTags] = useState<Array<string | null>>([]);
@@ -53,7 +54,7 @@ const CommunityCreationPage = () => {
   return (
     <div className={styles["page-content"]}>
       {loading ? (
-        <h1 className={styles["title"]}> Loading... </h1>
+        <Loading />
       ) : logged ? (
         <>
           <h1 className={styles["title"]}> Create a new project! </h1>

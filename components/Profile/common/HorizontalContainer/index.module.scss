@@ -1,0 +1,55 @@
+$container-height: 28em;
+$card-height: $container-height * 0.9;
+$card-width: $card-height * 1.4;
+
+.wrapper {
+    margin-top: 1rem;
+    margin-bottom: 10em;
+
+    .container {
+        margin: auto;
+        height: 30em;
+        background-color: rgba(37, 37, 37, 0.4);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.card {
+    height: $card-height;
+    min-width: $card-width;
+    width: $card-width;
+    background-color: rgba(138, 138, 138, 0.2);
+    margin-left: 1em;
+    margin-right: 1em;
+    border-radius: 4px;
+    border: 0.5px solid black;
+
+    > p {
+        text-align: start;
+        padding-top: 0.5em;
+    }
+
+    .title {
+        padding-left: 0.3em;
+    }
+
+    .details {
+        padding-left: 0.5em;
+        max-width: 90%;
+    }
+
+    .date {
+        position: relative;
+        text-align: end;
+        color: gray;
+        top: 10em;
+        padding-right: 0.5em;
+    }
+}
+
+.none-heading {
+    font-size: 1.7rem;
+    margin: auto;
+}

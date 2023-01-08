@@ -16,7 +16,9 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       >
         <NavBar />
-        <Component {...pageProps} />
+        <main className="scrollbar">
+          <Component {...pageProps} />
+        </main>
       </SWRConfig>
     </>
   );
